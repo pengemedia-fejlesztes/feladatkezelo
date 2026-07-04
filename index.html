@@ -184,12 +184,72 @@ body{
 .stepinput::placeholder{ color:var(--ink-faint); }
 .stepchip{ display:inline-flex; align-items:center; gap:3px; font-size:11.5px; font-weight:600; color:var(--ink-soft); background:var(--line); padding:2px 7px; border-radius:20px; }
 .stepchip .ic{ width:12px; height:12px; }
+.searchrow{ position:relative; padding:0 16px 10px; z-index:16; }
+.searchwrap{ display:flex; align-items:center; gap:9px; background:var(--surface); border:1px solid var(--line); border-radius:13px; padding:0 10px 0 12px; height:44px; box-shadow:var(--shadow); }
+.searchwrap:focus-within{ border-color:var(--brand); }
+.searchicon{ flex:none; color:var(--ink-faint); display:grid; place-items:center; }
+.searchicon .ic{ width:18px; height:18px; }
+#searchinput{ flex:1; border:none; background:none; font-family:inherit; font-size:15px; color:var(--ink); outline:none; height:100%; min-width:0; }
+#searchinput::placeholder{ color:var(--ink-faint); }
+.searchclear{ flex:none; background:none; border:none; color:var(--ink-faint); cursor:pointer; padding:5px; display:none; }
+.searchclear.show{ display:grid; place-items:center; }
+.searchclear .ic{ width:16px; height:16px; }
+.searchdrop{ position:absolute; left:16px; right:16px; top:48px; background:var(--surface); border:1px solid var(--line); border-radius:14px; box-shadow:0 12px 30px rgba(20,30,25,.16); max-height:52vh; overflow-y:auto; z-index:18; display:none; }
+.searchdrop.show{ display:block; }
+.sugg{ display:flex; align-items:center; gap:10px; padding:11px 13px; cursor:pointer; border-bottom:1px solid var(--line); }
+.sugg:last-child{ border-bottom:none; }
+.sugg:hover, .sugg.active{ background:var(--surface-2); }
+.suggmain{ flex:1; min-width:0; }
+.suggtitle{ font-size:14.5px; color:var(--ink); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.suggtitle b{ color:var(--brand); font-weight:600; }
+.suggtitle.sdone{ color:var(--ink-faint); text-decoration:line-through; }
+.suggmeta{ font-size:11.5px; color:var(--ink-soft); margin-top:3px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.suggsub{ font-size:11.5px; color:var(--ink-faint); margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.suggempty{ padding:16px 14px; text-align:center; color:var(--ink-faint); font-size:13.5px; }
+.syncinfo{ display:flex; align-items:center; gap:9px; padding:9px 8px; font-size:13px; color:var(--ink-soft); }
+.syncinfo.muted{ color:var(--ink-faint); }
+.synctop{ font-weight:600; color:var(--ink); font-size:13px; }
+.syncmail{ font-size:11.5px; color:var(--ink-faint); }
+.syncdot{ width:9px; height:9px; border-radius:50%; background:var(--ink-faint); flex:none; }
+.syncdot.on{ background:var(--brand); box-shadow:0 0 0 3px var(--brand-soft); }
+.synclogin{ display:flex; align-items:center; gap:9px; width:100%; text-align:left; background:none; border:none; cursor:pointer; font-family:inherit; font-size:13.5px; color:var(--brand); font-weight:600; padding:10px 8px; }
+.authsheet{ text-align:left; }
+.authtitle{ font-family:'Bricolage Grotesque',sans-serif; font-weight:700; font-size:20px; color:var(--ink); }
+.authhint{ margin-top:8px; font-size:13px; color:var(--ink-soft); line-height:1.45; }
+.authinput{ width:100%; height:46px; border:1px solid var(--line); border-radius:12px; padding:0 14px; margin-top:12px; font-family:inherit; font-size:15px; color:var(--ink); background:var(--surface-2); outline:none; }
+.authinput:focus{ border-color:var(--brand); }
+.autherr{ min-height:18px; margin-top:10px; font-size:13px; color:var(--danger); }
+.authbtns{ display:flex; gap:10px; margin-top:8px; }
+.authbtn{ flex:1; height:46px; border-radius:12px; border:1px solid var(--line); background:var(--surface); color:var(--ink); font-family:inherit; font-size:14.5px; font-weight:600; cursor:pointer; }
+.authbtn.primary{ background:var(--brand); color:#fff; border-color:var(--brand); }
+.authbtn:active{ transform:scale(.97); }
 @media (prefers-reduced-motion:reduce){ *{ animation:none !important; transition:none !important; } }
 </style>
 </head>
 <body>
 <div id="app"></div>
+<script src="https://www.gstatic.com/firebasejs/12.15.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/12.15.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore-compat.js"></script>
 <script>
+/* =========================================================================
+   ILLESZD IDE A SAJÁT FIREBASE ADATAIDAT (a Firebase konzolból másold ki).
+   Amíg placeholder van itt, az app offline módban fut (szinkron nélkül).
+   ========================================================================= */
+const firebaseConfig = {
+  apiKey: "IDE_JON_AZ_API_KEY",
+  authDomain: "IDE_JON.firebaseapp.com",
+  projectId: "IDE_JON",
+  storageBucket: "IDE_JON.appspot.com",
+  messagingSenderId: "IDE_JON",
+  appId: "IDE_JON"
+};
+/* ========================================================================= */
+const SYNC_ENABLED = firebaseConfig.apiKey && firebaseConfig.apiKey.indexOf("IDE_JON")===-1;
+
+let fbAuth=null, fbDb=null, fbUser=null, fbUnsub=null, lastSyncedBlob=null, pushTimer=null;
+let authOpen=false, authError="";
+
 /* ----------------------------- ikonok ----------------------------- */
 const P = {
   menu:'<line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="18" y2="18"/>',
@@ -200,6 +260,7 @@ const P = {
   calendar:'<rect width="18" height="18" x="3" y="4" rx="2"/><line x1="3" x2="21" y1="10" y2="10"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="16" x2="16" y1="2" y2="6"/>',
   list:'<path d="m3 17 2 2 4-4"/><path d="m3 7 2 2 4-4"/><path d="M13 6h8M13 12h8M13 18h8"/>',
   plus:'<path d="M5 12h14M12 5v14"/>',
+  search:'<circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>',
   trash:'<path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>',
   pencil:'<path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/>',
   chevron:'<path d="m6 9 6 6 6-6"/>',
@@ -240,6 +301,7 @@ function defaultData(){
 
 /* ----------------------------- állapot ----------------------------- */
 let data, view={type:"smart",key:"today"}, drawerOpen=false, editLists=false, openTaskId=null, showDone=false, focusAdd=false, focusStep=false;
+let searchQuery="", searchSel=-1, suggPicking=false, focusSearch=false;
 let dragState=null, suppressClick=false;
 
 function ensureOrders(){
@@ -268,7 +330,17 @@ function load(){
   try{const raw=localStorage.getItem(STORE); if(raw){const d=JSON.parse(raw); if(d&&d.lists&&d.lists.length)return d;}}catch(e){}
   return null;
 }
-function save(){ try{ localStorage.setItem(STORE,JSON.stringify(data)); }catch(e){ console.error("Mentés sikertelen",e);} }
+function saveLocal(){ try{ localStorage.setItem(STORE,JSON.stringify(data)); }catch(e){ console.error("Helyi mentés sikertelen",e);} }
+function pushToCloud(){
+  if(!fbUser||!fbDb) return;
+  clearTimeout(pushTimer);
+  pushTimer=setTimeout(()=>{
+    const blob=JSON.stringify(data);
+    lastSyncedBlob=blob;
+    fbDb.collection("appdata").doc(fbUser.uid).set({ blob, ts:Date.now() }).catch(e=>console.error("Felhő mentés hiba",e));
+  }, 700);
+}
+function save(){ saveLocal(); pushToCloud(); }
 
 const listById=id=>data.lists.find(l=>l.id===id);
 const activeCount=p=>data.tasks.filter(t=>!t.done&&p(t)).length;
@@ -365,12 +437,22 @@ function render(){
     +'<div class="listhead"><span class="lbl">Listáim</span><button class="edittoggle" data-action="editlists">'+(editLists?"Kész":"Szerkesztés")+'</button></div>'
     +'<nav class="lists">'+listRows+'</nav>'
     +'<div class="newlist">'+icon("plus")+'<input id="newlist" placeholder="Új lista neve…"></div>'
-    +'<div class="drawerfoot"><button class="reset" data-action="reset">'+icon("settings")+' Adatok visszaállítása</button></div>'
+    +'<div class="drawerfoot">'
+      +(SYNC_ENABLED
+        ? (fbUser
+            ? '<div class="syncinfo"><span class="syncdot on"></span><div><div class="synctop">Szinkron bekapcsolva</div><div class="syncmail">'+esc(fbUser.email||"")+'</div></div></div><button class="synclogin" data-action="signout">Kijelentkezés</button>'
+            : '<button class="synclogin" data-action="openauth"><span class="syncdot"></span>Bejelentkezés a szinkronhoz</button>')
+        : '<div class="syncinfo muted"><span class="syncdot"></span>Szinkron: nincs beállítva</div>')
+      +'<button class="reset" data-action="reset">'+icon("settings")+' Adatok visszaállítása</button></div>'
   +'</aside>'
   +'<main class="main">'
     +'<header class="header"><button class="menu" data-action="opendrawer">'+icon("menu")+'</button>'
       +'<div class="titlewrap"><h1 class="title">'+(H.dot?'<span class="titledot" style="background:'+H.dot+'"></span>':'')+(H.ic?'<span class="titleicon">'+icon(H.ic)+'</span>':'')+H.title+'</h1><p class="sub">'+H.sub+'</p></div>'
     +'</header>'
+    +'<div class="searchrow"><div class="searchwrap"><span class="searchicon">'+icon("search")+'</span>'
+      +'<input id="searchinput" placeholder="Keresés a feladatok közt…" autocomplete="off" autocapitalize="off">'
+      +'<button class="searchclear" aria-label="Törlés">'+icon("x")+'</button></div>'
+      +'<div id="searchdrop" class="searchdrop"></div></div>'
     +'<section class="scroll">'
       +((open.length===0&&done.length===0)?'<div class="empty"><div class="emptyicon">'+icon("inbox")+'</div><p class="emptytitle">'+emptyT+'</p><p class="emptysub">'+emptyS+'</p></div>':'')
       +'<ul class="tasklist">'+open.map(t=>taskRow(t,true)).join("")+'</ul>'
@@ -395,6 +477,17 @@ function render(){
       +'<div class="field"><label class="fieldlabel">'+icon("pencil")+' Jegyzet</label><textarea class="note" id="dnote" data-id="'+detail.id+'" placeholder="Írj ide bármilyen megjegyzést…">'+esc(detail.note)+'</textarea></div>'
       +'<div class="sheetfoot"><button class="delete" data-action="deltask" data-id="'+detail.id+'">'+icon("trash")+' Feladat törlése</button><button class="done2" data-action="closesheet">Kész</button></div>'
     +'</div>'
+  ):'')
+  +(authOpen?(
+    '<div class="scrim on" data-action="closeauth"></div>'
+    +'<div class="sheet authsheet"><div class="grip"></div>'
+      +'<h2 class="authtitle">Szinkron bejelentkezés</h2>'
+      +'<p class="authhint">Jelentkezz be ugyanazzal az e-mail-címmel minden eszközön, és a feladataid automatikusan egyeznek. Ha még nincs fiókod, add meg az adatokat és nyomd a Regisztrációt.</p>'
+      +'<input id="authemail" class="authinput" type="email" placeholder="E-mail" autocomplete="username" autocapitalize="off">'
+      +'<input id="authpass" class="authinput" type="password" placeholder="Jelszó (legalább 6 karakter)" autocomplete="current-password">'
+      +'<div id="autherr" class="autherr">'+esc(authError)+'</div>'
+      +'<div class="authbtns"><button class="authbtn" data-action="authsignup">Regisztráció</button><button class="authbtn primary" data-action="authlogin">Bejelentkezés</button></div>'
+    +'</div>'
   ):'');
 
   // input figyelők (újrarajzolás nélkül a gépeléshez)
@@ -415,6 +508,7 @@ function render(){
   const si=document.getElementById("stepinput");
   if(si){ si.addEventListener("keydown",e=>{ if(e.key==="Enter") addStep(openTaskId, si.value); }); if(focusStep){ si.focus(); focusStep=false; } }
 
+  attachSearch();
   setupDrag();
 }
 
@@ -473,7 +567,83 @@ document.getElementById("app").addEventListener("click",e=>{
   else if(a==="stepdone"){ const t=data.tasks.find(x=>x.id===openTaskId); if(t&&t.steps){ const s=t.steps.find(x=>x.id===el.dataset.sid); if(s){ s.done=!s.done; save(); render(); } } }
   else if(a==="stepdel"){ const t=data.tasks.find(x=>x.id===openTaskId); if(t&&t.steps){ t.steps=t.steps.filter(x=>x.id!==el.dataset.sid); save(); render(); } }
   else if(a==="reset"){ if(confirm("Biztosan törölsz minden listát és feladatot? Ez nem vonható vissza.")){ data=defaultData(); view={type:"list",key:data.lists[0].id}; drawerOpen=false; save(); render(); } }
+  else if(a==="openauth"){ authOpen=true; openTaskId=null; drawerOpen=false; authError=""; render(); }
+  else if(a==="closeauth"){ authOpen=false; render(); }
+  else if(a==="authlogin"){ doAuth("login"); }
+  else if(a==="authsignup"){ doAuth("signup"); }
+  else if(a==="signout"){ signOut(); }
 });
+
+/* ----------------------------- kereső (autocomplete) ----------------------------- */
+function norm(s){ return (s||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,""); }
+function highlight(text, rawQ){
+  if(!rawQ) return esc(text);
+  const idx=text.toLowerCase().indexOf(rawQ.toLowerCase());
+  if(idx<0) return esc(text);
+  return esc(text.slice(0,idx))+'<b>'+esc(text.slice(idx,idx+rawQ.length))+'</b>'+esc(text.slice(idx+rawQ.length));
+}
+function attachSearch(){
+  const si=document.getElementById("searchinput");
+  const drop=document.getElementById("searchdrop");
+  const clr=document.querySelector(".searchclear");
+  if(!si)return;
+  si.addEventListener("input",()=>{ searchQuery=si.value; updateSearch(); });
+  si.addEventListener("keydown",onSearchKey);
+  si.addEventListener("blur",()=>{ setTimeout(()=>{ if(!suggPicking&&drop){ drop.classList.remove("show"); } }, 160); });
+  if(drop) drop.addEventListener("pointerdown",()=>{ suggPicking=true; });
+  if(drop) drop.addEventListener("click",e=>{ const s=e.target.closest(".sugg"); if(s&&s.dataset.id){ openSuggestion(s.dataset.id); } suggPicking=false; });
+  if(clr) clr.addEventListener("click",()=>{ si.value=""; searchQuery=""; updateSearch(); si.focus(); });
+  if(focusSearch){ si.focus(); focusSearch=false; }
+}
+function matchTask(t,q){
+  if(norm(t.title).includes(q)) return "title";
+  if(t.note && norm(t.note).includes(q)) return "note";
+  if(t.steps && t.steps.some(s=>norm(s.text).includes(q))) return "step";
+  return null;
+}
+function updateSearch(){
+  const si=document.getElementById("searchinput");
+  const drop=document.getElementById("searchdrop");
+  const clr=document.querySelector(".searchclear");
+  if(!si||!drop)return;
+  const raw=si.value.trim(), q=norm(raw);
+  if(clr) clr.classList.toggle("show", si.value.length>0);
+  searchSel=-1;
+  if(!q){ drop.classList.remove("show"); drop.innerHTML=""; return; }
+  const matches=[];
+  for(const t of data.tasks){ const via=matchTask(t,q); if(via){ matches.push({t,via}); if(matches.length>=12)break; } }
+  if(!matches.length){ drop.innerHTML='<div class="suggempty">Nincs találat</div>'; drop.classList.add("show"); return; }
+  drop.innerHTML=matches.map((m,i)=>{
+    const t=m.t, ln=listById(t.listId);
+    let sub="";
+    if(m.via==="step"){ const s=t.steps.find(s=>norm(s.text).includes(q)); if(s) sub="↳ lépés: "+esc(s.text); }
+    else if(m.via==="note"){ sub="↳ a jegyzetben"; }
+    const meta=esc(ln?ln.name:"")+(t.due?" · "+formatDue(t.due):"")+((t.steps&&t.steps.length)?" · "+t.steps.filter(s=>s.done).length+"/"+t.steps.length:"");
+    return '<div class="sugg" data-id="'+t.id+'">'
+      +'<span class="dot" style="background:'+(ln?ln.color:"var(--ink-faint)")+'"></span>'
+      +'<div class="suggmain"><div class="suggtitle'+(t.done?" sdone":"")+'">'+highlight(t.title,raw)+'</div>'
+      +'<div class="suggmeta">'+meta+'</div>'
+      +(sub?'<div class="suggsub">'+sub+'</div>':'')
+      +'</div></div>';
+  }).join("");
+  drop.classList.add("show");
+}
+function onSearchKey(e){
+  const drop=document.getElementById("searchdrop");
+  const items=drop?Array.from(drop.querySelectorAll(".sugg")):[];
+  if(e.key==="ArrowDown"){ e.preventDefault(); if(!items.length)return; searchSel=(searchSel+1)%items.length; paintSel(items); }
+  else if(e.key==="ArrowUp"){ e.preventDefault(); if(!items.length)return; searchSel=(searchSel-1+items.length)%items.length; paintSel(items); }
+  else if(e.key==="Enter"){ e.preventDefault(); const pick=searchSel>=0?items[searchSel]:items[0]; if(pick&&pick.dataset.id) openSuggestion(pick.dataset.id); }
+  else if(e.key==="Escape"){ const si=document.getElementById("searchinput"); si.value=""; searchQuery=""; updateSearch(); si.blur(); }
+}
+function paintSel(items){ items.forEach((el,i)=>el.classList.toggle("active",i===searchSel)); if(items[searchSel]) items[searchSel].scrollIntoView({block:"nearest"}); }
+function openSuggestion(id){
+  const t=data.tasks.find(x=>x.id===id); if(!t)return;
+  searchQuery=""; suggPicking=false;
+  view={type:"list",key:t.listId};
+  openTaskId=id;
+  render();
+}
 
 /* ----------------------------- húzásos átrendezés ----------------------------- */
 function setupDrag(){
@@ -532,11 +702,63 @@ function onGripUp(){
   render();
 }
 
+/* ----------------------------- Firebase szinkron ----------------------------- */
+function initFirebase(){
+  if(!SYNC_ENABLED || typeof firebase==="undefined") return;
+  try{
+    firebase.initializeApp(firebaseConfig);
+    fbAuth=firebase.auth();
+    fbDb=firebase.firestore();
+    fbAuth.onAuthStateChanged(onAuthChange);
+  }catch(e){ console.error("Firebase init hiba",e); }
+}
+function onAuthChange(user){
+  fbUser=user;
+  if(fbUnsub){ fbUnsub(); fbUnsub=null; }
+  if(user && fbDb){
+    const ref=fbDb.collection("appdata").doc(user.uid);
+    fbUnsub=ref.onSnapshot(snap=>{
+      const d=snap.data();
+      if(!snap.exists || !d || !d.blob){ pushToCloud(); return; }
+      if(d.blob===lastSyncedBlob) return;
+      try{
+        const remote=JSON.parse(d.blob);
+        if(remote && remote.lists){
+          data=remote; lastSyncedBlob=d.blob;
+          ensureOrders(); saveLocal(); render();
+        }
+      }catch(e){ console.error("Felhő adat hiba",e); }
+    }, err=>console.error("Szinkron hiba",err));
+  }
+  render();
+}
+function doAuth(kind){
+  const emEl=document.getElementById("authemail"), pwEl=document.getElementById("authpass");
+  const em=(emEl?emEl.value:"").trim(), pw=pwEl?pwEl.value:"";
+  if(!em||!pw){ authError="Add meg az e-mailt és a jelszót."; renderAuthErr(); return; }
+  authError="Folyamatban…"; renderAuthErr();
+  const p = kind==="signup" ? fbAuth.createUserWithEmailAndPassword(em,pw) : fbAuth.signInWithEmailAndPassword(em,pw);
+  p.then(()=>{ authOpen=false; authError=""; render(); })
+   .catch(e=>{ authError=authMsg(e); renderAuthErr(); });
+}
+function authMsg(e){
+  const c=(e&&e.code)||"";
+  if(c==="auth/invalid-email") return "Érvénytelen e-mail-cím.";
+  if(c==="auth/weak-password") return "A jelszó legalább 6 karakter legyen.";
+  if(c==="auth/email-already-in-use") return "Ez az e-mail már regisztrálva van — inkább jelentkezz be.";
+  if(c==="auth/invalid-credential"||c==="auth/wrong-password"||c==="auth/user-not-found") return "Hibás e-mail vagy jelszó.";
+  if(c==="auth/network-request-failed") return "Nincs internetkapcsolat.";
+  return (e&&e.message)||"Ismeretlen hiba.";
+}
+function renderAuthErr(){ const el=document.getElementById("autherr"); if(el) el.textContent=authError; }
+function signOut(){ if(fbAuth) fbAuth.signOut().catch(e=>console.error(e)); }
+
 /* ----------------------------- indítás ----------------------------- */
 data=load();
 if(!data){ data=defaultData(); view={type:"list",key:data.lists[0].id}; save(); }
 ensureOrders();
 render();
+initFirebase();
 </script>
 </body>
 </html>
