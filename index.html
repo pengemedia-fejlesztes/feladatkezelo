@@ -106,6 +106,14 @@ body{
 .hdrbtn.on{ background:var(--brand-soft); border-color:var(--brand-soft); }
 .hdrbtn .ic{ width:20px; height:20px; }
 .hdrbtn:active{ transform:scale(.94); }
+.hdrbtns{ display:flex; gap:8px; flex:none; }
+.ndcard{ display:flex; align-items:center; gap:11px; background:var(--brand-soft); border-radius:14px; padding:12px 14px; margin-bottom:12px; }
+.ndicon{ flex:none; width:34px; height:34px; border-radius:10px; background:var(--surface); display:grid; place-items:center; color:var(--brand); }
+.ndicon .ic{ width:18px; height:18px; }
+.ndtext{ font-size:14px; color:var(--ink); line-height:1.4; }
+.ndtext b{ color:var(--brand); font-weight:700; }
+.ndtom{ color:var(--ink-soft); }
+.ndtom b{ color:var(--ink-soft); }
 .tabbar{ display:flex; align-items:stretch; background:var(--surface); border-top:1px solid var(--line); padding-bottom:env(safe-area-inset-bottom); box-shadow:0 -2px 12px rgba(18,40,45,.05); }
 .tab{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; padding:7px 2px 7px; background:none; border:none; cursor:pointer; font-family:inherit; font-size:11px; font-weight:600; color:var(--ink-faint); }
 .tabic{ display:grid; place-items:center; width:46px; height:30px; border-radius:14px; transition:background .15s; }
@@ -272,7 +280,7 @@ body{
 .check.big .ic{ width:17px; height:17px; }
 .fstitle{ flex:1; border:none; outline:none; resize:none; font-family:'Hanken Grotesk',sans-serif; font-weight:700; font-size:24px; line-height:1.25; color:var(--ink); background:none; overflow:hidden; }
 .fstitle::placeholder{ color:var(--ink-faint); }
-.fsbody .note{ resize:none; font-size:15.5px; line-height:1.55; min-height:70px; }
+.fsbody .note{ resize:vertical; font-size:15.5px; line-height:1.55; min-height:70px; }
 .notelinks{ margin-top:2px; }
 .linkshead{ font-size:11.5px; font-weight:600; letter-spacing:.04em; text-transform:uppercase; color:var(--ink-faint); margin:16px 0 9px; }
 .linkslist{ display:flex; flex-direction:column; gap:9px; }
@@ -385,8 +393,13 @@ body{
   .pstep{ font-size:12.5px; color:#222; margin:2px 0; }
   .pnote{ font-size:12px; color:#333; margin-top:5px; white-space:pre-wrap; }
   .pfoot{ margin-top:16px; font-size:11px; color:#666; }
-  .pempty{ font-size:14px; }
+  .pempty{ font-size:14px; margin:6px 0 10px; }
+  .pnames{ font-size:12.5px; color:#222; margin-top:4px; }
+  .pcount{ font-size:13px; color:#111; margin:12px 0; padding:8px 0; border-top:1px solid #999; border-bottom:1px solid #999; }
+  .psec{ font-size:15px; margin:16px 0 6px; }
 }
+.printopt{ display:flex; align-items:center; gap:8px; font-size:13.5px; color:var(--ink-soft); margin-bottom:12px; cursor:pointer; }
+.printopt input{ width:18px; height:18px; accent-color:var(--brand); }
 .duerow .dateinput{ max-width:100%; }
 .toast{ position:fixed; left:50%; bottom:calc(22px + env(safe-area-inset-bottom)); transform:translateX(-50%) translateY(16px); background:var(--ink); color:#fff; padding:12px 18px; border-radius:14px; font-size:14px; font-weight:500; box-shadow:0 8px 26px rgba(0,0,0,.26); opacity:0; pointer-events:none; transition:.25s; z-index:100; max-width:88%; text-align:center; }
 .toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
@@ -468,6 +481,19 @@ const GRIP='<svg class="ic" width="20" height="20" viewBox="0 0 24 24" fill="cur
 const LIST_COLORS=["#2E6FB0","#2C8C8C","#C77A16","#8A5BB8","#C0392B","#3B6FB0","#C9518A"];
 const STORE="todo-data-v1";
 const uid=()=>Math.random().toString(36).slice(2,10)+Date.now().toString(36).slice(-4);
+const NAMEDAYS={"01-01":"Fruzsina","01-02":"Ábel","01-03":"Genovéva, Benjámin","01-04":"Titusz, Leona","01-05":"Simon","01-06":"Boldizsár","01-07":"Attila, Ramóna","01-08":"Gyöngyvér","01-09":"Marcell","01-10":"Melánia","01-11":"Ágota","01-12":"Ernő","01-13":"Veronika","01-14":"Bódog","01-15":"Lóránt, Loránd","01-16":"Gusztáv","01-17":"Antal, Antónia","01-18":"Piroska","01-19":"Sára, Márió","01-20":"Fábián, Sebestyén","01-21":"Ágnes","01-22":"Vince, Artúr","01-23":"Zelma, Rajmund","01-24":"Timót","01-25":"Pál","01-26":"Vanda, Paula","01-27":"Angelika","01-28":"Károly, Karola","01-29":"Adél","01-30":"Martina, Gerda","01-31":"Marcella",
+"02-01":"Ignác","02-02":"Karolina, Aida","02-03":"Balázs","02-04":"Ráhel, Csenge","02-05":"Ágota, Ingrid","02-06":"Dorottya, Dóra","02-07":"Tódor, Rómeó","02-08":"Aranka","02-09":"Abigél, Alex","02-10":"Elvira","02-11":"Bertold, Marietta","02-12":"Lívia, Lídia","02-13":"Ella, Linda","02-14":"Bálint, Valentin","02-15":"Kolos, Georgina","02-16":"Julianna, Lilla","02-17":"Donát","02-18":"Bernadett","02-19":"Zsuzsanna","02-20":"Aladár, Álmos","02-21":"Eleonóra","02-22":"Gerzson","02-23":"Alfréd","02-24":"Mátyás","02-25":"Géza","02-26":"Edina","02-27":"Ákos, Bátor","02-28":"Elemér","02-29":"Antónia",
+"03-01":"Albin","03-02":"Lujza","03-03":"Kornélia","03-04":"Kázmér","03-05":"Adorján, Adrián","03-06":"Leonóra, Inez","03-07":"Tamás","03-08":"Zoltán","03-09":"Franciska, Fanni","03-10":"Ildikó","03-11":"Szilárd","03-12":"Gergely","03-13":"Krisztián, Ajtony","03-14":"Matild","03-15":"Kristóf","03-16":"Henrietta","03-17":"Gertrúd, Patrik","03-18":"Sándor, Ede","03-19":"József, Bánk","03-20":"Klaudia","03-21":"Benedek","03-22":"Beáta, Izolda","03-23":"Emőke","03-24":"Gábor, Karina","03-25":"Irén, Írisz","03-26":"Emánuel","03-27":"Hajnalka","03-28":"Gedeon, Johanna","03-29":"Auguszta","03-30":"Zalán","03-31":"Árpád",
+"04-01":"Hugó","04-02":"Áron","04-03":"Buda, Richárd","04-04":"Izidor","04-05":"Vince","04-06":"Vilmos, Bíborka","04-07":"Herman","04-08":"Dénes","04-09":"Erhard","04-10":"Zsolt","04-11":"Leó, Szaniszló","04-12":"Gyula","04-13":"Ida","04-14":"Tibor","04-15":"Anasztázia, Tas","04-16":"Csongor","04-17":"Rudolf","04-18":"Andrea, Ilma","04-19":"Emma","04-20":"Tivadar","04-21":"Konrád","04-22":"Csilla, Noémi","04-23":"Béla","04-24":"György","04-25":"Márk","04-26":"Ervin","04-27":"Zita","04-28":"Valéria","04-29":"Péter","04-30":"Katalin, Kitti",
+"05-01":"Fülöp, Jakab","05-02":"Zsigmond","05-03":"Tímea, Irma","05-04":"Mónika, Flórián","05-05":"Györgyi","05-06":"Ivett, Frida","05-07":"Gizella","05-08":"Mihály","05-09":"Gergely","05-10":"Ármin, Pálma","05-11":"Ferenc","05-12":"Pongrác","05-13":"Szervác, Imola","05-14":"Bonifác","05-15":"Zsófia, Szonja","05-16":"Mózes, Botond","05-17":"Paszkál","05-18":"Erik, Alexandra","05-19":"Ivó, Milán","05-20":"Bernát, Felícia","05-21":"Konstantin","05-22":"Júlia, Rita","05-23":"Dezső","05-24":"Eszter, Eliza","05-25":"Orbán","05-26":"Fülöp, Evelin","05-27":"Hella","05-28":"Emil, Csanád","05-29":"Magdolna","05-30":"Janka, Zsanett","05-31":"Angéla, Petronella",
+"06-01":"Tünde","06-02":"Kármen, Anita","06-03":"Klotild","06-04":"Bulcsú","06-05":"Fatime","06-06":"Norbert, Cintia","06-07":"Róbert","06-08":"Medárd","06-09":"Félix","06-10":"Margit, Gréta","06-11":"Barnabás","06-12":"Villő","06-13":"Antal, Anett","06-14":"Vazul","06-15":"Jolán, Vid","06-16":"Jusztin","06-17":"Laura, Alida","06-18":"Arnold, Levente","06-19":"Gyárfás","06-20":"Rafael","06-21":"Alajos, Leila","06-22":"Paulina","06-23":"Zoltán","06-24":"Iván","06-25":"Vilmos","06-26":"János, Pál","06-27":"László","06-28":"Levente, Irén","06-29":"Péter, Pál","06-30":"Pál",
+"07-01":"Tihamér, Annamária","07-02":"Ottó","07-03":"Kornél, Soma","07-04":"Ulrik","07-05":"Emese, Sarolta","07-06":"Csaba","07-07":"Apollónia","07-08":"Ellák","07-09":"Lukrécia","07-10":"Amália","07-11":"Nóra, Lili","07-12":"Izabella, Dalma","07-13":"Jenő","07-14":"Örs, Stella","07-15":"Henrik, Roland","07-16":"Valter","07-17":"Endre, Elek","07-18":"Frigyes","07-19":"Emília","07-20":"Illés","07-21":"Dániel, Daniella","07-22":"Magdolna","07-23":"Lenke","07-24":"Kinga, Kincső","07-25":"Kristóf, Jakab","07-26":"Anna, Anikó","07-27":"Olga, Liliána","07-28":"Szabolcs","07-29":"Márta, Flóra","07-30":"Judit, Xénia","07-31":"Oszkár",
+"08-01":"Boglárka","08-02":"Lehel","08-03":"Hermina","08-04":"Domonkos, Dominika","08-05":"Krisztina","08-06":"Berta, Bettina","08-07":"Ibolya","08-08":"László","08-09":"Emőd","08-10":"Lőrinc","08-11":"Zsuzsanna, Tiborc","08-12":"Klára","08-13":"Ipoly","08-14":"Marcell","08-15":"Mária","08-16":"Ábrahám","08-17":"Jácint","08-18":"Ilona","08-19":"Huba","08-20":"István","08-21":"Sámuel, Hajna","08-22":"Menyhért, Mirjam","08-23":"Bence","08-24":"Bertalan","08-25":"Lajos, Patrícia","08-26":"Izsó","08-27":"Gáspár","08-28":"Ágoston","08-29":"Beatrix, Erna","08-30":"Rózsa","08-31":"Erika, Bella",
+"09-01":"Egyed, Egon","09-02":"Rebeka, Dorina","09-03":"Hilda","09-04":"Rozália","09-05":"Viktor, Lőrinc","09-06":"Zakariás","09-07":"Regina","09-08":"Mária, Adrienn","09-09":"Ádám","09-10":"Nikolett, Hunor","09-11":"Teodóra","09-12":"Mária","09-13":"Kornél","09-14":"Szeréna, Roxána","09-15":"Enikő, Melitta","09-16":"Edit","09-17":"Zsófia","09-18":"Diána","09-19":"Vilhelmina","09-20":"Friderika","09-21":"Máté, Mirella","09-22":"Móric","09-23":"Tekla","09-24":"Gellért, Mercédesz","09-25":"Eufrozina, Kende","09-26":"Jusztina","09-27":"Adalbert","09-28":"Vencel","09-29":"Mihály","09-30":"Jeromos",
+"10-01":"Malvin","10-02":"Petra","10-03":"Helga","10-04":"Ferenc","10-05":"Aurél","10-06":"Brúnó, Renáta","10-07":"Amália","10-08":"Koppány","10-09":"Dénes","10-10":"Gedeon","10-11":"Brigitta","10-12":"Miksa","10-13":"Kálmán, Ede","10-14":"Helén","10-15":"Teréz","10-16":"Gál","10-17":"Hedvig","10-18":"Lukács","10-19":"Nándor","10-20":"Vendel","10-21":"Orsolya","10-22":"Előd","10-23":"Gyöngyi","10-24":"Salamon","10-25":"Blanka, Bianka","10-26":"Dömötör","10-27":"Szabina","10-28":"Simon, Szimonetta","10-29":"Nárcisz","10-30":"Alfonz","10-31":"Farkas",
+"11-01":"Marianna","11-02":"Achilles","11-03":"Győző","11-04":"Károly","11-05":"Imre","11-06":"Lénárd","11-07":"Rezső","11-08":"Zsombor","11-09":"Tivadar","11-10":"Réka","11-11":"Márton","11-12":"Jónás, Renátó","11-13":"Szilvia","11-14":"Aliz","11-15":"Albert, Lipót","11-16":"Ödön","11-17":"Hortenzia, Gergő","11-18":"Jenő","11-19":"Erzsébet","11-20":"Jolán","11-21":"Olivér","11-22":"Cecília","11-23":"Kelemen, Klementina","11-24":"Emma","11-25":"Katalin","11-26":"Virág","11-27":"Virgil","11-28":"Stefánia","11-29":"Taksony","11-30":"András, Andor",
+"12-01":"Elza","12-02":"Melinda, Vivien","12-03":"Ferenc, Olívia","12-04":"Borbála, Barbara","12-05":"Vilma","12-06":"Miklós","12-07":"Ambrus","12-08":"Mária","12-09":"Natália","12-10":"Judit","12-11":"Árpád","12-12":"Gabriella","12-13":"Luca, Otília","12-14":"Szilárda","12-15":"Valér","12-16":"Etelka, Aletta","12-17":"Lázár, Olimpia","12-18":"Auguszta","12-19":"Viola","12-20":"Teofil","12-21":"Tamás","12-22":"Zénó","12-23":"Viktória","12-24":"Ádám, Éva","12-25":"Eugénia","12-26":"István","12-27":"János","12-28":"Kamilla","12-29":"Tamás, Tamara","12-30":"Dávid","12-31":"Szilveszter"};
+function nameDay(d){ const mm=String(d.getMonth()+1).padStart(2,"0"), dd=String(d.getDate()).padStart(2,"0"); return NAMEDAYS[mm+"-"+dd]||""; }
 const localISO=d=>{const z=new Date(d.getTime()-d.getTimezoneOffset()*60000);return z.toISOString().slice(0,10);};
 const todayISO=()=>localISO(new Date());
 const parseISO=s=>{const[a,b,c]=s.split("-").map(Number);return new Date(a,b-1,c);};
@@ -489,6 +515,13 @@ function dueBucket(iso){
   if(iso===addDaysISO(1)) return "tomorrow";
   if(iso<=endOfWeekISO()) return "week";
   return "later";
+}
+function bucketDate(b){
+  if(b==="today") return todayISO();
+  if(b==="tomorrow") return addDaysISO(1);
+  if(b==="week"){ const e=endOfWeekISO(); return e>addDaysISO(1)?e:addDaysISO(2); }
+  if(b==="later") return addDaysISO(8);
+  return null;
 }
 function timeOptions(sel){
   let o='<option value="">– óra:perc –</option>';
@@ -552,15 +585,16 @@ function statsHTML(){
 
   return '<div class="statspage v1b">'
     +'<button class="printbtn" data-action="printtoday">'+icon("file")+' Napi feladatok nyomtatása</button>'
-    +'<div class="stathero"><div class="statherolabel">Teljesítve összesen</div>'
+    +'<label class="printopt"><input type="checkbox" id="printnotes"'+(printNotes?" checked":"")+'> Leírásokkal együtt nyomtat</label>'
+    +'<div class="stathero" data-action="statnav" data-target="all"><div class="statherolabel">Teljesítve összesen</div>'
       +'<div class="statheropct">'+rate+'%</div>'
       +'<div class="statherosub">'+done+' / '+total+' feladat</div>'
       +'<div class="statherobar"><div class="statherofill" style="width:'+rate+'%"></div></div></div>'
     +'<div class="statsgrid">'
-      +card("Aktív",active)
-      +'<div class="statcard"><div class="statval" style="color:var(--danger)">'+overdue+'</div><div class="statlabel">Késedelmes</div></div>'
-      +'<div class="statcard"><div class="statval" style="color:var(--teal)">'+createdTotal+'</div><div class="statlabel">Összesen létrehozott</div></div>'
-      +card("Listák",data.lists.length)
+      +'<div class="statcard" data-action="statnav" data-target="all"><div class="statval">'+active+'</div><div class="statlabel">Aktív</div></div>'
+      +'<div class="statcard" data-action="statnav" data-target="overdue"><div class="statval" style="color:var(--danger)">'+overdue+'</div><div class="statlabel">Késedelmes</div></div>'
+      +'<div class="statcard" data-action="statnav" data-target="all"><div class="statval" style="color:var(--teal)">'+createdTotal+'</div><div class="statlabel">Összesen létrehozott</div></div>'
+      +'<div class="statcard" data-action="statnav" data-target="lists"><div class="statval">'+data.lists.length+'</div><div class="statlabel">Listák</div></div>'
     +'</div>'
     +'<div class="statsince"><div class="statsincetop">'+icon("calendar")+' Az első feladat óta</div>'
       +'<div class="statsinceval">'+firstStr+'</div>'
@@ -579,22 +613,29 @@ function statsHTML(){
     +'</div>';
 }
 function printDaily(){
-  const today=todayISO();
-  const list=data.tasks.filter(t=>!t.done && (t.due===today || isOverdue(t.due))).sort((a,b)=>(a.due||"")<(b.due||"")?-1:1);
-  let pa=document.getElementById("printarea"); if(!pa){ pa=document.createElement("div"); pa.id="printarea"; document.body.appendChild(pa); }
-  const dateStr=new Date().toLocaleDateString("hu-HU",{year:"numeric",month:"long",day:"numeric",weekday:"long"});
-  const body=list.length?list.map(t=>{
+  const today=todayISO(), tom=addDaysISO(1);
+  const sortP=(a,b)=>{ if(!!a.important!==!!b.important) return a.important?-1:1; return (a.order||0)-(b.order||0); };
+  const todayTasks=data.tasks.filter(t=>!t.done && (t.due===today || isOverdue(t.due))).sort(sortP);
+  const tomTasks=data.tasks.filter(t=>!t.done && t.due===tom).sort(sortP);
+  const impCount=arr=>arr.filter(t=>t.important).length;
+  const row=t=>{
     const ln=listById(t.listId);
     const steps=(t.steps||[]).map(s=>'<div class="pstep">'+(s.done?"☑":"☐")+' '+esc(s.text)+'</div>').join("");
-    const meta=[ln?esc(ln.name):"", t.due?(isOverdue(t.due)?"KÉSÉSBEN ("+formatDue(t.due)+")":"Határidő: "+formatDue(t.due)):"", t.reminder?"Emlék.: "+t.reminder.slice(11,16):""].filter(Boolean).join("  ·  ");
-    return '<div class="pitem"><div class="pcheck">☐</div><div class="pbody"><div class="ptitle">'+esc(t.title)+'</div>'
+    const meta=[ln?esc(ln.name):"", t.important?"FONTOS":"", t.due&&isOverdue(t.due)?"KÉSÉSBEN ("+formatDue(t.due)+")":"", t.reminder?"Emlék.: "+t.reminder.slice(11,16):""].filter(Boolean).join("  ·  ");
+    return '<div class="pitem"><div class="pcheck">☐</div><div class="pbody"><div class="ptitle">'+(t.important?"★ ":"")+esc(t.title)+'</div>'
       +(meta?'<div class="pmeta">'+meta+'</div>':'')
       +(steps?'<div class="psteps">'+steps+'</div>':'')
-      +(t.note?'<div class="pnote">'+esc(t.note)+'</div>':'')
+      +((printNotes&&t.note)?'<div class="pnote">'+esc(t.note)+'</div>':'')
       +'</div></div>';
-  }).join(""):'<p class="pempty">Ma nincs esedékes feladat.</p>';
-  pa.innerHTML='<div class="phead"><h1>Napi feladatok</h1><div class="pdate">'+dateStr+'</div></div>'+body
-    +'<div class="pfoot">Mai esedékes és késésben lévő feladatok · '+list.length+' tétel</div>';
+  };
+  const dateStr=new Date().toLocaleDateString("hu-HU",{year:"numeric",month:"long",day:"numeric",weekday:"long"});
+  const nToday=nameDay(new Date()), nTom=nameDay(new Date(Date.now()+86400000));
+  let pa=document.getElementById("printarea"); if(!pa){ pa=document.createElement("div"); pa.id="printarea"; document.body.appendChild(pa); }
+  pa.innerHTML='<div class="phead"><h1>Napi feladatok</h1><div class="pdate">'+dateStr+'</div>'
+      +'<div class="pnames">Névnap — <b>Ma:</b> '+esc(nToday||"—")+' · <b>Holnap:</b> '+esc(nTom||"—")+'</div></div>'
+    +'<div class="pcount">Mai feladatok: <b>'+todayTasks.length+'</b> (ebből fontos: '+impCount(todayTasks)+') · Holnapra: <b>'+tomTasks.length+'</b> (fontos: '+impCount(tomTasks)+')</div>'
+    +'<h2 class="psec">Ma</h2>'+(todayTasks.length?todayTasks.map(row).join(""):'<p class="pempty">Ma nincs esedékes feladat.</p>')
+    +'<h2 class="psec">Holnap</h2>'+(tomTasks.length?tomTasks.map(row).join(""):'<p class="pempty">Holnapra nincs feladat.</p>');
   setTimeout(()=>{ try{ window.print(); }catch(e){ showToast("Ezen az eszközön a böngésző nyomtatás/megosztás menüjét használd."); } }, 60);
 }
 function greeting(){const h=new Date().getHours();return h<5?"Még fent vagy?":h<10?"Jó reggelt!":h<18?"Szép napot!":h<22?"Jó estét!":"Szép estét!";}
@@ -615,6 +656,8 @@ function defaultData(){
 let data, view={type:"smart",key:"today"}, drawerOpen=false, editLists=false, openTaskId=null, showDone=true, focusAdd=false, focusStep=false;
 let lastDoneId=null;
 let showFilter=false;
+let searchOpen=false;
+let printNotes=false;
 let searchQuery="", searchSel=-1, suggPicking=false, focusSearch=false;
 let plannedFilter="all";
 let dueOpen=false, remindOpen=false;
@@ -775,6 +818,9 @@ function render(){
   const barOn=hasQuickBar();
   const isStats=view.type==="smart"&&view.key==="stats";
   const grouped=view.type==="smart"&&view.key==="planned"&&plannedFilter==="all";
+  const nameDayCard=(view.type==="smart"&&view.key==="today")
+    ? '<div class="ndcard"><span class="ndicon">'+icon("user")+'</span><div class="ndtext"><div><b>Ma:</b> '+(esc(nameDay(new Date()))||"—")+'</div><div class="ndtom"><b>Holnap:</b> '+(esc(nameDay(new Date(Date.now()+86400000)))||"—")+'</div></div></div>'
+    : '';
   const tasks=(barOn && plannedFilter!=="all") ? (plannedFilter==="none" ? scope.filter(t=>!t.due) : scope.filter(t=>t.due && dueBucket(t.due)===plannedFilter)) : scope;
   const open=tasks.filter(t=>!t.done).sort((a,b)=>a.order-b.order);
   const done=tasks.filter(t=>t.done).sort((a,b)=>(b.completedAt||0)-(a.completedAt||0));
@@ -828,7 +874,7 @@ function render(){
     list.forEach(t=>{ const b=dueBucket(t.due)||"later"; (groups[b]||(groups[b]=[])).push(t); });
     return order.filter(x=>groups[x[0]]&&groups[x[0]].length).map(x=>
       '<div class="tlgroup"><div class="tlhead '+x[2]+'"><span class="tllabel">'+x[1]+'</span><span class="tlrule"></span><span class="tlcount">'+groups[x[0]].length+'</span></div>'
-      +'<ul class="tasklist">'+groups[x[0]].map(t=>taskRow(t,true,true)).join("")+'</ul></div>'
+      +'<ul class="tasklist" data-bucket="'+x[0]+'">'+groups[x[0]].map(t=>taskRow(t,true,true)).join("")+'</ul></div>'
     ).join("");
   };
 
@@ -903,17 +949,19 @@ function render(){
   +'<main class="main">'
     +'<header class="header nomenu">'
       +'<div class="titlewrap"><h1 class="title">'+(H.dot?'<span class="titledot" style="background:'+H.dot+'"></span>':'')+(H.ic?'<span class="titleicon">'+icon(H.ic)+'</span>':'')+H.title+'</h1><p class="sub">'+H.sub+'</p></div>'
-      +(isStats?'':'<button class="hdrbtn'+(showFilter?" on":"")+'" data-action="togglefilter" aria-label="Szűrő">'+icon("filter")+'</button>')
+      +(isStats?'':'<div class="hdrbtns"><button class="hdrbtn'+(searchOpen?" on":"")+'" data-action="togglesearch" aria-label="Keresés">'+icon("search")+'</button>'
+        +'<button class="hdrbtn'+(showFilter?" on":"")+'" data-action="togglefilter" aria-label="Szűrő">'+icon("filter")+'</button></div>')
     +'</header>'
-    +'<div class="searchrow"><div class="searchwrap"><span class="searchicon">'+icon("search")+'</span>'
+    +((searchOpen&&!isStats)?'<div class="searchrow"><div class="searchwrap"><span class="searchicon">'+icon("search")+'</span>'
       +'<input id="searchinput" placeholder="Keresés a feladatok közt…" autocomplete="off" autocapitalize="off">'
       +'<button class="searchclear" aria-label="Törlés">'+icon("x")+'</button></div>'
-      +'<div id="searchdrop" class="searchdrop"></div></div>'
+      +'<div id="searchdrop" class="searchdrop"></div></div>':'')
     +plannedBar
     +bulkBar
     +'<section class="scroll">'
       +(isStats ? statsHTML() : (
-        ((open.length===0&&done.length===0)?'<div class="empty"><div class="emptyicon">'+icon("inbox")+'</div><p class="emptytitle">'+emptyT+'</p><p class="emptysub">'+emptyS+'</p></div>':'')
+        nameDayCard
+        +((open.length===0&&done.length===0)?'<div class="empty"><div class="emptyicon">'+icon("inbox")+'</div><p class="emptytitle">'+emptyT+'</p><p class="emptysub">'+emptyS+'</p></div>':'')
         +(grouped ? timelineHTML(open) : '<ul class="tasklist">'+open.map(t=>taskRow(t,true)).join("")+'</ul>')
         +(done.length>0?'<div class="donewrap"><button class="donehead '+(showDone?"open":"")+'" data-action="toggledone">'+icon("chevron")+'Kész ('+done.length+')</button>'+(showDone?'<ul class="tasklist">'+done.map(t=>taskRow(t,false)).join("")+'</ul>':'')+'</div>':'')
       ))
@@ -1033,6 +1081,8 @@ function render(){
   if(dmm) dmm.addEventListener("change", combineRemind);
   const fi=document.getElementById("fileinput");
   if(fi) fi.addEventListener("change",()=>{ if(fi.files&&fi.files.length){ handleFiles(openTaskId, fi.files); } });
+  const pn=document.getElementById("printnotes");
+  if(pn) pn.addEventListener("change",()=>{ printNotes=pn.checked; });
 
   const si=document.getElementById("stepinput");
   if(si){ si.addEventListener("keydown",e=>{ if(e.key==="Enter") addStep(openTaskId, si.value); }); if(focusStep){ si.focus(); focusStep=false; } }
@@ -1087,7 +1137,7 @@ document.getElementById("app").addEventListener("click",e=>{
   else if(a==="editlists"){editLists=!editLists;render();}
   else if(a==="view"){view={type:el.dataset.vt,key:el.dataset.vk};plannedFilter="all";drawerOpen=false;render();}
   else if(a==="toggle"){const t=data.tasks.find(x=>x.id===id);t.done=!t.done;t.completedAt=t.done?Date.now():null;if(t.done){lastDoneId=id;data.completedTotal=(data.completedTotal||0)+1;}save();render();}
-  else if(a==="star"){const t=data.tasks.find(x=>x.id===id);t.important=!t.important;save();render();}
+  else if(a==="star"){const t=data.tasks.find(x=>x.id===id);t.important=!t.important;if(t.important){const mn=data.tasks.length?Math.min(...data.tasks.map(x=>typeof x.order==="number"?x.order:0)):0;t.order=mn-1;}save();render();}
   else if(a==="open"){trackOpen(id);openTaskId=id;dueOpen=false;remindOpen=false;render();}
   else if(a==="toggledue"){ dueOpen=!dueOpen; render(); }
   else if(a==="togglereminder"){ remindOpen=!remindOpen; render(); }
@@ -1105,6 +1155,8 @@ document.getElementById("app").addEventListener("click",e=>{
   else if(a==="qfilter"){ plannedFilter=el.dataset.key; render(); }
   else if(a==="printtoday"){ printDaily(); }
   else if(a==="togglefilter"){ showFilter=!showFilter; render(); }
+  else if(a==="togglesearch"){ searchOpen=!searchOpen; if(searchOpen) focusSearch=true; else searchQuery=""; render(); }
+  else if(a==="statnav"){ const tg=el.dataset.target; if(tg==="lists"){ drawerOpen=true; } else if(tg==="overdue"){ view={type:"smart",key:"attention"}; plannedFilter="all"; } else { view={type:"smart",key:"all"}; plannedFilter="all"; } render(); }
   else if(a==="allToday"||a==="allTomorrow"){ const iso=a==="allToday"?todayISO():addDaysISO(1); data.tasks.forEach(t=>{ if(!t.done && (!t.due||isOverdue(t.due))) t.due=iso; }); save(); render(); }
   else if(a==="addstep"){ const si=document.getElementById("stepinput"); addStep(id, si?si.value:""); }
   else if(a==="stepdone"){ const t=data.tasks.find(x=>x.id===openTaskId); if(t&&t.steps){ const s=t.steps.find(x=>x.id===el.dataset.sid); if(s){ s.done=!s.done; save(); render(); } } }
@@ -1220,10 +1272,13 @@ function beginDrag(e, rowSel, onReorder){
 }
 function startDragFrom(li, rowSel, pointerId, startY, onReorder){
   if(!li) return;
-  const ul=li.parentNode;
-  const items=Array.from(ul.children).filter(c=>c.matches(rowSel)).map(el=>{ const r=el.getBoundingClientRect(); return {el,id:el.dataset.id,center:r.top+r.height/2}; });
+  const tl=(rowSel===".task")?li.closest(".tlgroup"):null;
+  let itemsEls;
+  if(tl){ itemsEls=Array.from(document.querySelectorAll(".scroll .task")); }
+  else { const ul=li.parentNode; itemsEls=Array.from(ul.children).filter(c=>c.matches(rowSel)); }
+  const items=itemsEls.map(el=>{ const r=el.getBoundingClientRect(); return {el,id:el.dataset.id,center:r.top+r.height/2}; });
   const index=items.findIndex(it=>it.el===li);
-  dragState={ li, items, index, target:index, startY, height:li.getBoundingClientRect().height, moved:false, pid:pointerId, onReorder };
+  dragState={ li, items, index, target:index, startY, lastY:startY, height:li.getBoundingClientRect().height, moved:false, pid:pointerId, onReorder, cross:!!tl };
   try{ li.setPointerCapture(pointerId); }catch(_){}
   li.classList.add("lift");
   li.addEventListener("pointermove",onGripMove);
@@ -1233,6 +1288,7 @@ function startDragFrom(li, rowSel, pointerId, startY, onReorder){
 function onGripMove(e){
   const d=dragState; if(!d)return;
   e.preventDefault();
+  d.lastY=e.clientY;
   const dy=e.clientY-d.startY;
   if(Math.abs(dy)>4)d.moved=true;
   d.li.classList.add("lift");
@@ -1258,11 +1314,22 @@ function onGripUp(){
   d.li.removeEventListener("pointercancel",onGripUp);
   d.items.forEach(it=>{ it.el.style.transition=""; it.el.style.transform=""; });
   d.li.classList.remove("lift");
-  if(d.moved && d.target!==d.index){
-    const ids=d.items.map(it=>it.id);
-    const[m]=ids.splice(d.index,1);
-    ids.splice(d.target,0,m);
-    d.onReorder(ids);
+  if(d.moved){
+    let handled=false;
+    if(d.cross){
+      const cy=d.items[d.index].center + ((d.lastY||d.startY)-d.startY);
+      let tb=null;
+      document.querySelectorAll(".scroll .tlgroup").forEach(g=>{ const r=g.getBoundingClientRect(); if(cy>=r.top-8 && cy<=r.bottom+8){ const ul=g.querySelector("[data-bucket]"); if(ul) tb=ul.dataset.bucket; } });
+      const t=data.tasks.find(x=>x.id===d.items[d.index].id);
+      const sb=t?dueBucket(t.due):null;
+      if(t && tb && tb!==sb){ const nd=bucketDate(tb); if(nd){ t.due=nd; setLocalTs(Date.now()); saveLocal(); pushToCloud(); handled=true; } }
+    }
+    if(!handled && d.target!==d.index){
+      const ids=d.items.map(it=>it.id);
+      const[m]=ids.splice(d.index,1);
+      ids.splice(d.target,0,m);
+      d.onReorder(ids);
+    }
   }
   suppressClick=true; setTimeout(()=>{ suppressClick=false; },80);
   dragState=null;
