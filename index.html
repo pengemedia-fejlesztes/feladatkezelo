@@ -45,10 +45,12 @@ body{
 .scroll{ flex:1; overflow-y:auto; padding:6px 12px 12px; -webkit-overflow-scrolling:touch; }
 .tasklist{ list-style:none; display:flex; flex-direction:column; gap:8px; }
 
-.task{ display:flex; align-items:center; gap:11px; background:var(--surface); border-radius:15px;
+.task{ -webkit-touch-callout:none; -webkit-user-select:none; user-select:none; display:flex; align-items:center; gap:11px; background:var(--surface); border-radius:15px;
   padding:13px 13px 13px 14px; box-shadow:var(--shadow); animation:tkin .22s ease; }
 @keyframes tkin{ from{ opacity:0; transform:translateY(6px);} }
 .task.done-row{ background:var(--surface-2); box-shadow:none; }
+@keyframes tkdrop{ 0%{ opacity:0; transform:translateY(-16px) scale(.98); } 100%{ opacity:1; transform:none; } }
+.task.justdone{ animation:tkdrop .34s cubic-bezier(.22,.61,.36,1); }
 .check{ flex:none; width:24px; height:24px; border-radius:50%; border:2px solid var(--ink-faint);
   background:transparent; cursor:pointer; display:grid; place-items:center; color:#fff; transition:.18s; }
 .check .ic{ opacity:0; transform:scale(.4); transition:.18s; }
@@ -259,6 +261,53 @@ body{
 .linktext{ flex:1; min-width:0; font-size:15.5px; font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 .linkgo{ flex:none; color:var(--ink-faint); }
 .linkgo .ic{ width:16px; height:16px; }
+.linkgroup{ margin-bottom:12px; }
+.linkname{ display:flex; align-items:center; gap:7px; font-size:14px; font-weight:700; color:var(--ink); margin:14px 0 9px; }
+.linkname .ic{ width:16px; height:16px; color:var(--ink-soft); }
+.linkgroup .linkrow{ margin-bottom:9px; }
+.collhead{ display:flex; align-items:center; justify-content:space-between; gap:10px; padding:11px 2px; cursor:pointer; }
+.collleft{ display:flex; align-items:center; gap:8px; font-size:14.5px; color:var(--ink-soft); font-weight:600; min-width:0; }
+.collleft .ic{ width:17px; height:17px; flex:none; }
+.collleft b{ color:var(--ink); font-weight:600; }
+.collnone{ color:var(--ink-faint); font-weight:500; }
+.collright{ display:flex; align-items:center; gap:7px; flex:none; }
+.miniquick{ font-size:12.5px; font-weight:600; color:var(--brand); background:var(--brand-soft); padding:5px 11px; border-radius:20px; cursor:pointer; }
+.miniquick.on{ background:var(--brand); color:#fff; }
+.miniquick:active{ transform:scale(.94); }
+.collchev{ display:grid; place-items:center; color:var(--ink-faint); transition:transform .2s; }
+.collchev .ic{ width:18px; height:18px; }
+.collchev.open{ transform:rotate(180deg); }
+.duerow.expand{ padding:2px 0 10px; }
+.bulkbar{ display:flex; gap:9px; padding:0 16px 12px; }
+.bulkbtn{ flex:1; display:inline-flex; align-items:center; justify-content:center; gap:6px; height:42px; border-radius:13px; border:1px solid var(--line); background:var(--surface); color:var(--ink); font-family:inherit; font-size:14px; font-weight:600; cursor:pointer; box-shadow:var(--shadow); }
+.bulkbtn .ic{ width:16px; height:16px; color:var(--brand); }
+.bulkbtn:active{ transform:scale(.97); background:var(--surface-2); }
+.hoursel, .minsel{ min-width:74px; text-align:center; }
+.timesep{ font-weight:700; color:var(--ink-soft); font-size:16px; }
+.attlist{ display:flex; flex-direction:column; gap:8px; margin-bottom:8px; }
+.attitem{ display:flex; align-items:center; gap:11px; background:var(--surface); border:1px solid var(--line); border-radius:13px; padding:8px 10px; box-shadow:var(--shadow); }
+.attthumb{ flex:none; width:46px; height:46px; border-radius:10px; overflow:hidden; display:grid; place-items:center; background:var(--surface-2); }
+.attthumb img{ width:100%; height:100%; object-fit:cover; }
+.attthumb.file{ color:var(--brand); }
+.attthumb.file .ic{ width:22px; height:22px; }
+.attname{ flex:1; min-width:0; display:flex; flex-direction:column; text-decoration:none; color:var(--ink); }
+.attname span{ font-size:14px; font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.attname small{ font-size:11.5px; color:var(--ink-faint); margin-top:2px; }
+.attdel{ flex:none; background:none; border:none; color:var(--ink-faint); cursor:pointer; padding:6px; display:grid; place-items:center; }
+.attdel .ic{ width:17px; height:17px; }
+.attadd{ display:inline-flex; align-items:center; gap:7px; background:var(--brand-soft); color:var(--brand); border:none; border-radius:12px; padding:10px 15px; font-family:inherit; font-size:14px; font-weight:600; cursor:pointer; }
+.attadd .ic{ width:17px; height:17px; }
+.attadd:active{ transform:scale(.97); }
+.statsgrid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:11px; padding:8px 0 4px; }
+.statcard{ background:var(--surface); border:1px solid var(--line); border-radius:16px; padding:16px 15px; box-shadow:var(--shadow); }
+.statval{ font-family:'Bricolage Grotesque',sans-serif; font-weight:700; font-size:30px; line-height:1; color:var(--brand); letter-spacing:-.02em; }
+.statlabel{ margin-top:8px; font-size:13px; font-weight:600; color:var(--ink); }
+.statsub{ margin-top:3px; font-size:11.5px; color:var(--ink-faint); }
+.statsince{ margin-top:14px; background:var(--brand); color:#fff; border-radius:16px; padding:18px 18px; }
+.statsincetop{ display:flex; align-items:center; gap:8px; font-size:13px; font-weight:600; opacity:.9; }
+.statsincetop .ic{ width:17px; height:17px; }
+.statsinceval{ font-family:'Bricolage Grotesque',sans-serif; font-weight:700; font-size:22px; margin-top:8px; }
+.statsincesub{ margin-top:4px; font-size:13px; opacity:.9; }
 .duerow .dateinput{ max-width:100%; }
 .toast{ position:fixed; left:50%; bottom:calc(22px + env(safe-area-inset-bottom)); transform:translateX(-50%) translateY(16px); background:var(--ink); color:#fff; padding:12px 18px; border-radius:14px; font-size:14px; font-weight:500; box-shadow:0 8px 26px rgba(0,0,0,.26); opacity:0; pointer-events:none; transition:.25s; z-index:100; max-width:88%; text-align:center; }
 .toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
@@ -285,7 +334,6 @@ body{
    Amíg placeholder van itt, az app offline módban fut (szinkron nélkül).
    ========================================================================= */
 const firebaseConfig = {
-
   apiKey: "AIzaSyCEdlAaHmMAn6MJ45qGF0855CL3PnV4g6s",
   authDomain: "feladatkezelo-68f31.firebaseapp.com",
   projectId: "feladatkezelo-68f31",
@@ -325,7 +373,12 @@ const P = {
   phone:'<path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>',
   bell:'<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>',
   back:'<path d="m15 18-6-6 6-6"/>',
-  ext:'<path d="M7 17 17 7"/><path d="M7 7h10v10"/>'
+  ext:'<path d="M7 17 17 7"/><path d="M7 7h10v10"/>',
+  user:'<path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>',
+  flag:'<path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" x2="4" y1="22" y2="15"/>',
+  paperclip:'<path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"/>',
+  file:'<path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7z"/><path d="M14 2v5h5"/>',
+  bars:'<line x1="12" x2="12" y1="20" y2="10"/><line x1="18" x2="18" y1="20" y2="4"/><line x1="6" x2="6" y1="20" y2="16"/>'
 };
 function icon(n, fill){ return '<svg class="ic" width="24" height="24" viewBox="0 0 24 24" fill="'+(fill||'none')+'" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+P[n]+'</svg>'; }
 const GRIP='<svg class="ic" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.4"/><circle cx="9" cy="12" r="1.4"/><circle cx="9" cy="18" r="1.4"/><circle cx="15" cy="6" r="1.4"/><circle cx="15" cy="12" r="1.4"/><circle cx="15" cy="18" r="1.4"/></svg>';
@@ -361,6 +414,37 @@ function timeOptions(sel){
   for(let h=8;h<=20;h++){ for(let m=0;m<60;m+=15){ if(h===20&&m>0) break; const v=String(h).padStart(2,"0")+":"+String(m).padStart(2,"0"); o+='<option value="'+v+'"'+(v===sel?" selected":"")+'>'+v+'</option>'; } }
   return o;
 }
+function hourOptions(sel){ let o='<option value="">óra</option>'; for(let h=8;h<=20;h++){ const v=String(h).padStart(2,"0"); o+='<option value="'+v+'"'+(v===sel?" selected":"")+'>'+v+'</option>'; } return o; }
+function minuteOptions(sel){ let o='<option value="">perc</option>'; ["00","15","30","45"].forEach(v=>{ o+='<option value="'+v+'"'+(v===sel?" selected":"")+'>'+v+'</option>'; }); return o; }
+function statsHTML(){
+  const total=data.tasks.length;
+  const done=data.tasks.filter(t=>t.done).length;
+  const active=total-done;
+  const rate=total?Math.round(done/total*100):0;
+  const overdue=data.tasks.filter(t=>!t.done&&isOverdue(t.due)).length;
+  const withDue=data.tasks.filter(t=>t.due).length;
+  const createdTotal=(data.createdTotal!=null)?data.createdTotal:total;
+  const first=total?Math.min.apply(null,data.tasks.map(t=>t.createdAt||Date.now())):null;
+  const daysUsing=first?(Math.floor((Date.now()-first)/86400000)+1):0;
+  const firstStr=first?new Date(first).toLocaleDateString("hu-HU",{year:"numeric",month:"long",day:"numeric"}):"—";
+  const createdToday=data.tasks.filter(t=>t.createdAt&&isTodayDue(localISO(new Date(t.createdAt)))).length;
+  const doneToday=data.tasks.filter(t=>t.done&&t.completedAt&&isTodayDue(localISO(new Date(t.completedAt)))).length;
+  const card=(label,val,sub)=>'<div class="statcard"><div class="statval">'+val+'</div><div class="statlabel">'+label+'</div>'+(sub?'<div class="statsub">'+sub+'</div>':'')+'</div>';
+  return '<div class="statsgrid">'
+    +card("Összesen létrehozott",createdTotal)
+    +card("Jelenlegi feladat",total)
+    +card("Aktív",active)
+    +card("Kész",done,rate+"% teljesítve")
+    +card("Késedelmes",overdue)
+    +card("Határidős",withDue)
+    +card("Létrehozva ma",createdToday)
+    +card("Elvégezve ma",doneToday)
+    +card("Listák",data.lists.length)
+    +'</div>'
+    +'<div class="statsince"><div class="statsincetop">'+icon("calendar")+' Az első feladat óta</div>'
+      +'<div class="statsinceval">'+firstStr+'</div>'
+      +'<div class="statsincesub">'+(daysUsing?(daysUsing+" napja használod az appot"):"még nincs feladat")+'</div></div>';
+}
 function greeting(){const h=new Date().getHours();return h<5?"Még fent vagy?":h<10?"Jó reggelt!":h<18?"Szép napot!":h<22?"Jó estét!":"Szép estét!";}
 function esc(s){return(s||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
 
@@ -376,9 +460,59 @@ function defaultData(){
 }
 
 /* ----------------------------- állapot ----------------------------- */
-let data, view={type:"smart",key:"today"}, drawerOpen=false, editLists=false, openTaskId=null, showDone=false, focusAdd=false, focusStep=false;
+let data, view={type:"smart",key:"today"}, drawerOpen=false, editLists=false, openTaskId=null, showDone=true, focusAdd=false, focusStep=false;
+let lastDoneId=null;
 let searchQuery="", searchSel=-1, suggPicking=false, focusSearch=false;
 let plannedFilter="all";
+let dueOpen=false, remindOpen=false;
+function fmtSize(b){ if(b<1024) return b+" B"; if(b<1024*1024) return Math.round(b/1024)+" KB"; return (b/1048576).toFixed(1)+" MB"; }
+function taskAtts(id){ return (data.atts&&data.atts[id])||[]; }
+function readAttachment(file, cb){
+  if(file.type && file.type.indexOf("image/")===0){
+    const url=URL.createObjectURL(file), img=new Image();
+    img.onload=()=>{ URL.revokeObjectURL(url);
+      const max=1400; let w=img.width, h=img.height;
+      if(w>max||h>max){ const s=Math.min(max/w,max/h); w=Math.round(w*s); h=Math.round(h*s); }
+      try{ const c=document.createElement("canvas"); c.width=w; c.height=h; c.getContext("2d").drawImage(img,0,0,w,h);
+        const durl=c.toDataURL("image/jpeg",0.7);
+        cb({name:file.name.replace(/\.(png|heic|heif|webp|jpeg)$/i,".jpg"),type:"image/jpeg",size:Math.round(durl.length*0.75),data:durl});
+      }catch(err){ cb(null); }
+    };
+    img.onerror=()=>{ URL.revokeObjectURL(url); cb(null); };
+    img.src=url;
+  } else {
+    const rd=new FileReader();
+    rd.onload=()=>cb({name:file.name,type:file.type||"",size:file.size,data:rd.result});
+    rd.onerror=()=>cb(null);
+    rd.readAsDataURL(file);
+  }
+}
+function handleFiles(taskId, files){
+  const list=Array.from(files); let i=0;
+  if(!data.atts) data.atts={};
+  const next=()=>{
+    if(i>=list.length){ save(); render(); return; }
+    const f=list[i++];
+    readAttachment(f, item=>{
+      if(item){
+        const arr=data.atts[taskId]||(data.atts[taskId]=[]);
+        arr.push({id:uid(),name:item.name,type:item.type,size:item.size,data:item.data});
+        if(JSON.stringify(data).length>880000){ arr.pop(); showToast('"'+f.name+'" túl nagy a szinkronhoz — próbálj kisebb képet/fájlt.'); }
+      } else { showToast('"'+f.name+'" nem sikerült beolvasni.'); }
+      next();
+    });
+  };
+  next();
+}
+function attRow(a){
+  const isImg=a.type&&a.type.indexOf("image/")===0;
+  return '<div class="attitem">'
+    +'<a class="attthumb'+(isImg?"":" file")+'" href="'+a.data+'" download="'+esc(a.name)+'" target="_blank" rel="noopener">'+(isImg?'<img src="'+a.data+'" alt="">':icon("file"))+'</a>'
+    +'<a class="attname" href="'+a.data+'" download="'+esc(a.name)+'" target="_blank" rel="noopener"><span>'+esc(a.name)+'</span><small>'+fmtSize(a.size)+'</small></a>'
+    +'<button class="attdel" data-action="attdel" data-aid="'+a.id+'" aria-label="Törlés">'+icon("x")+'</button>'
+  +'</div>';
+}
+function formatReminder(r){ if(!r) return ""; return formatDue(r.slice(0,10))+" "+r.slice(11,16); }
 let dragState=null, suppressClick=false;
 
 function ensureOrders(){
@@ -426,13 +560,14 @@ function currentTasks(){
   if(view.type==="smart"){
     if(view.key==="today")return data.tasks.filter(t=>isTodayDue(t.due)||isOverdue(t.due)||(t.done&&t.completedAt&&isTodayDue(localISO(new Date(t.completedAt)))));
     if(view.key==="planned")return data.tasks.filter(t=>t.due);
+    if(view.key==="attention")return data.tasks.filter(t=>!t.done && (!t.due||isOverdue(t.due)));
     if(view.key==="important")return data.tasks.filter(t=>t.important);
     return data.tasks.slice();
   }
   return data.tasks.filter(t=>t.listId===view.key);
 }
 function hasQuickBar(){
-  return true;
+  return !(view.type==="smart"&&(view.key==="stats"));
 }
 function sortTasks(a,b){
   if(a.important!==b.important)return a.important?-1:1;
@@ -446,11 +581,13 @@ function render(){
     today:activeCount(t=>isTodayDue(t.due)||isOverdue(t.due)),
     important:activeCount(t=>t.important),
     planned:activeCount(t=>!!t.due),
+    attention:activeCount(t=>!t.due||isOverdue(t.due)),
     all:activeCount(()=>true),
     lists:Object.fromEntries(data.lists.map(l=>[l.id,activeCount(t=>t.listId===l.id)]))
   };
   const scope=currentTasks();
   const barOn=hasQuickBar();
+  const isStats=view.type==="smart"&&view.key==="stats";
   const tasks=(barOn && plannedFilter!=="all") ? (plannedFilter==="none" ? scope.filter(t=>!t.due) : scope.filter(t=>t.due && dueBucket(t.due)===plannedFilter)) : scope;
   const open=tasks.filter(t=>!t.done).sort((a,b)=>a.order-b.order);
   const done=tasks.filter(t=>t.done).sort((a,b)=>(b.completedAt||0)-(a.completedAt||0));
@@ -460,6 +597,8 @@ function render(){
   if(view.type==="list"){const l=listById(view.key); H={title:esc(l.name),dot:l.color,sub:counts.lists[l.id]===0?"Minden kész":counts.lists[l.id]+" aktív feladat"};}
   else if(view.key==="today") H={title:"Ma",ic:"sun",sub:greeting()+" · "+new Date().toLocaleDateString("hu-HU",{month:"long",day:"numeric",weekday:"long"})};
   else if(view.key==="planned") H={title:"Tervezett",ic:"calendar",sub:counts.planned===0?"Nincs határidős feladat":counts.planned+" határidős feladat"};
+  else if(view.key==="attention") H={title:"Rendezendő",ic:"flag",sub:counts.attention===0?"Nincs rendezendő feladat":counts.attention+" lejárt vagy dátum nélküli"};
+  else if(view.key==="stats") H={title:"Statisztika",ic:"bars",sub:"Áttekintés a feladataidról"};
   else if(view.key==="important") H={title:"Fontos",ic:"star",sub:counts.important===0?"Minden kész":counts.important+" aktív feladat"};
   else H={title:"Minden feladat",ic:"list",sub:counts.all===0?"Minden kész":counts.all+" aktív feladat"};
 
@@ -476,7 +615,7 @@ function render(){
     const overdue=!t.done&&isOverdue(t.due);
     const showList=view.type==="smart";
     const ln=listById(t.listId);
-    return '<li class="task '+(t.done?"done-row":"")+'" data-id="'+t.id+'">'
+    return '<li class="task '+(t.done?"done-row":"")+(t.id===lastDoneId?" justdone":"")+'" data-id="'+t.id+'">'
       +'<button class="check '+(t.done?"on":"")+'" data-action="toggle" data-id="'+t.id+'">'+icon("check")+'</button>'
       +'<button class="taskbody" data-action="open" data-id="'+t.id+'"><span class="tasktitle">'+esc(t.title)+'</span>'
       +'<span class="meta">'
@@ -519,6 +658,11 @@ function render(){
     }).join("")+'</div>';
   }
 
+  let bulkBar="";
+  if(view.type==="smart"&&view.key==="attention"){
+    bulkBar='<div class="bulkbar"><button class="bulkbtn" data-action="allToday">'+icon("sun")+' Mind mára</button><button class="bulkbtn" data-action="allTomorrow">'+icon("calendar")+' Mind holnap</button></div>';
+  }
+
   const detail=openTaskId?data.tasks.find(t=>t.id===openTaskId):null;
 
   let stepsHTML="";
@@ -540,7 +684,7 @@ function render(){
   '<div class="scrim '+(drawerOpen?"on":"")+'" data-action="closedrawer"></div>'
   +'<aside class="drawer '+(drawerOpen?"on":"")+'">'
     +'<div class="brand"><span class="logo">Feladatok</span><button class="iconbtn" data-action="closedrawer">'+icon("x")+'</button></div>'
-    +'<nav class="smart">'+smart("today","sun","Ma",counts.today)+smart("planned","calendar","Tervezett",counts.planned)+smart("important","star","Fontos",counts.important)+smart("all","list","Minden feladat",counts.all)+'</nav>'
+    +'<nav class="smart">'+smart("today","sun","Ma",counts.today)+smart("planned","calendar","Tervezett",counts.planned)+smart("attention","flag","Rendezendő",counts.attention)+smart("important","star","Fontos",counts.important)+smart("all","list","Minden feladat",counts.all)+smart("stats","bars","Statisztika",0)+'</nav>'
     +'<div class="divider"></div>'
     +'<div class="listhead"><span class="lbl">Listáim</span><button class="edittoggle" data-action="editlists">'+(editLists?"Kész":"Szerkesztés")+'</button></div>'
     +'<nav class="lists">'+listRows+'</nav>'
@@ -562,13 +706,17 @@ function render(){
       +'<button class="searchclear" aria-label="Törlés">'+icon("x")+'</button></div>'
       +'<div id="searchdrop" class="searchdrop"></div></div>'
     +plannedBar
+    +bulkBar
     +'<section class="scroll">'
-      +((open.length===0&&done.length===0)?'<div class="empty"><div class="emptyicon">'+icon("inbox")+'</div><p class="emptytitle">'+emptyT+'</p><p class="emptysub">'+emptyS+'</p></div>':'')
-      +'<ul class="tasklist">'+open.map(t=>taskRow(t,true)).join("")+'</ul>'
-      +(done.length>0?'<div class="donewrap"><button class="donehead '+(showDone?"open":"")+'" data-action="toggledone">'+icon("chevron")+'Kész ('+done.length+')</button>'+(showDone?'<ul class="tasklist">'+done.map(t=>taskRow(t,false)).join("")+'</ul>':'')+'</div>':'')
+      +(isStats ? statsHTML() : (
+        ((open.length===0&&done.length===0)?'<div class="empty"><div class="emptyicon">'+icon("inbox")+'</div><p class="emptytitle">'+emptyT+'</p><p class="emptysub">'+emptyS+'</p></div>':'')
+        +'<ul class="tasklist">'+open.map(t=>taskRow(t,true)).join("")+'</ul>'
+        +(done.length>0?'<div class="donewrap"><button class="donehead '+(showDone?"open":"")+'" data-action="toggledone">'+icon("chevron")+'Kész ('+done.length+')</button>'+(showDone?'<ul class="tasklist">'+done.map(t=>taskRow(t,false)).join("")+'</ul>':'')+'</div>':'')
+      ))
     +'</section>'
-    +'<div class="addbar"><button class="addbtn" data-action="add">'+icon("plus")+'</button>'
-      +'<input id="addinput" class="addinput" placeholder="'+(view.type==="list"?"Feladat ide: "+esc(listById(view.key).name):"Feladat hozzáadása…")+'"></div>'
+    +(isStats ? '' : '<div class="addbar">'
+      +'<input id="addinput" class="addinput" placeholder="'+(view.type==="list"?"Feladat ide: "+esc(listById(view.key).name):"Feladat hozzáadása…")+'">'
+      +'<button class="addbtn" data-action="add">'+icon("plus")+'</button></div>')
   +'</main>'
   +(detail?(
     '<div class="fsdetail">'
@@ -581,20 +729,41 @@ function render(){
           +'<textarea class="fstitle" id="dtitle" rows="1" data-id="'+detail.id+'">'+esc(detail.title)+'</textarea>'
           +'<button class="starbtn '+(detail.important?"on":"")+'" data-action="star" data-id="'+detail.id+'">'+icon("star",detail.important?"var(--amber)":"none")+'</button></div>'
         +stepsHTML
-        +'<div class="field"><label class="fieldlabel">'+icon("bell")+' Emlékeztető</label><div class="duerow">'
-          +'<input type="date" class="dateinput" id="dreminddate" data-id="'+detail.id+'" value="'+(detail.reminder?detail.reminder.slice(0,10):"")+'">'
-          +'<select class="dateinput timesel" id="dremindtime" data-id="'+detail.id+'">'+timeOptions(detail.reminder?detail.reminder.slice(11,16):"")+'</select>'
-          +(detail.reminder?'<button class="chip ghost" data-action="remindclear" data-id="'+detail.id+'">Törlés</button>':'')
-        +'</div></div>'
-        +'<div class="field"><label class="fieldlabel">'+icon("calendar")+' Határidő</label><div class="duerow">'
-          +'<input type="date" class="dateinput" id="ddate" data-id="'+detail.id+'" value="'+(detail.due||"")+'">'
-          +'<button class="chip" data-action="duetoday" data-id="'+detail.id+'">Ma</button>'
-          +'<button class="chip" data-action="duetomorrow" data-id="'+detail.id+'">Holnap</button>'
-          +(detail.due?'<button class="chip ghost" data-action="dueclear" data-id="'+detail.id+'">Törlés</button>':'')
-        +'</div></div>'
+        +'<div class="field">'
+          +'<div class="collhead" data-action="togglereminder">'
+            +'<span class="collleft">'+icon("bell")+' Emlékeztető'+(detail.reminder?' <b>'+formatReminder(detail.reminder)+'</b>':' <span class="collnone">nincs</span>')+'</span>'
+            +'<span class="collright"><span class="collchev'+(remindOpen?" open":"")+'">'+icon("chevron")+'</span></span>'
+          +'</div>'
+          +(remindOpen?'<div class="duerow expand">'
+            +'<input type="date" class="dateinput" id="dreminddate" data-id="'+detail.id+'" value="'+(detail.reminder?detail.reminder.slice(0,10):"")+'">'
+            +'<select class="dateinput hoursel" id="dremindhour">'+hourOptions(detail.reminder?detail.reminder.slice(11,13):"")+'</select>'
+            +'<span class="timesep">:</span>'
+            +'<select class="dateinput minsel" id="dremindmin">'+minuteOptions(detail.reminder?detail.reminder.slice(14,16):"")+'</select>'
+            +(detail.reminder?'<button class="chip ghost" data-action="remindclear" data-id="'+detail.id+'">Törlés</button>':'')
+          +'</div>':'')
+        +'</div>'
+        +'<div class="field">'
+          +'<div class="collhead" data-action="toggledue">'
+            +'<span class="collleft">'+icon("calendar")+' Határidő'+(detail.due?' <b>'+formatDue(detail.due)+'</b>':' <span class="collnone">nincs</span>')+'</span>'
+            +'<span class="collright">'
+              +'<span class="miniquick'+(detail.due===todayISO()?" on":"")+'" data-action="duetoday" data-id="'+detail.id+'">Ma</span>'
+              +'<span class="miniquick'+(detail.due===addDaysISO(1)?" on":"")+'" data-action="duetomorrow" data-id="'+detail.id+'">Holnap</span>'
+              +'<span class="collchev'+(dueOpen?" open":"")+'">'+icon("chevron")+'</span>'
+            +'</span>'
+          +'</div>'
+          +(dueOpen?'<div class="duerow expand">'
+            +'<input type="date" class="dateinput" id="ddate" data-id="'+detail.id+'" value="'+(detail.due||"")+'">'
+            +(detail.due?'<button class="chip ghost" data-action="dueclear" data-id="'+detail.id+'">Törlés</button>':'')
+          +'</div>':'')
+        +'</div>'
         +'<div class="field"><label class="fieldlabel">'+icon("pencil")+' Leírás</label>'
           +'<textarea class="note" id="dnote" data-id="'+detail.id+'" placeholder="Írj ide bármilyen megjegyzést, telefonszámot, e-mailt vagy weboldalt…">'+esc(detail.note)+'</textarea>'
           +'<div id="notelinks" class="notelinks">'+linksHTML(detail.note)+'</div>'
+        +'</div>'
+        +'<div class="field"><label class="fieldlabel">'+icon("paperclip")+' Csatolmányok</label>'
+          +'<div class="attlist">'+(taskAtts(detail.id).map(attRow).join(""))+'</div>'
+          +'<input type="file" id="fileinput" multiple style="display:none">'
+          +'<button class="attadd" data-action="pickfile">'+icon("plus")+' Fájl hozzáadása</button>'
         +'</div>'
       +'</div>'
     +'</div>'
@@ -638,34 +807,43 @@ function render(){
   const ddate=document.getElementById("ddate");
   if(ddate) ddate.addEventListener("change",()=>{ const t=data.tasks.find(x=>x.id===ddate.dataset.id); if(t){ t.due=ddate.value; save(); render(); } });
   const drd=document.getElementById("dreminddate");
-  const drt=document.getElementById("dremindtime");
+  const dhh=document.getElementById("dremindhour");
+  const dmm=document.getElementById("dremindmin");
   function combineRemind(){
     const t=data.tasks.find(x=>x.id===openTaskId); if(!t) return;
-    let d=drd?drd.value:"", tm=drt?drt.value:"";
-    if(d && !tm){ tm="09:00"; if(drt) drt.value="09:00"; }
-    if(tm && !d){ d=todayISO(); if(drd) drd.value=d; }
-    t.reminder=(d&&tm)?(d+"T"+tm):"";
+    let d=drd?drd.value:"", hh=dhh?dhh.value:"", mm=dmm?dmm.value:"";
+    const time=(hh||mm)?((hh||"09")+":"+(mm||"00")):"";
+    if(time && !d){ d=todayISO(); if(drd) drd.value=d; }
+    t.reminder=(d&&time)?(d+"T"+time):"";
     t.reminderFired=false; save(); if(t.reminder) requestNotify(); render();
   }
   if(drd) drd.addEventListener("change", combineRemind);
-  if(drt) drt.addEventListener("change", combineRemind);
+  if(dhh) dhh.addEventListener("change", combineRemind);
+  if(dmm) dmm.addEventListener("change", combineRemind);
+  const fi=document.getElementById("fileinput");
+  if(fi) fi.addEventListener("change",()=>{ if(fi.files&&fi.files.length){ handleFiles(openTaskId, fi.files); } });
 
   const si=document.getElementById("stepinput");
   if(si){ si.addEventListener("keydown",e=>{ if(e.key==="Enter") addStep(openTaskId, si.value); }); if(focusStep){ si.focus(); focusStep=false; } }
 
   attachSearch();
   setupDrag();
+  lastDoneId=null;
 }
 
 /* ----------------------------- műveletek ----------------------------- */
 function addTask(val){
   const title=(val||"").trim(); if(!title)return;
-  let listId,important=false,due="";
+  let listId,important=false;
   if(view.type==="list")listId=view.key;
-  else{ listId=data.lists[0].id; if(view.key==="today")due=todayISO(); if(view.key==="important")important=true; }
+  else{ listId=data.lists[0].id; if(view.key==="important")important=true; }
   const minOrder=data.tasks.length?Math.min(...data.tasks.map(t=>typeof t.order==="number"?t.order:0)):0;
-  data.tasks.push({id:uid(),listId,title,done:false,important,note:"",due,createdAt:Date.now(),order:minOrder-1});
-  save(); focusAdd=true; render();
+  const nt={id:uid(),listId,title,done:false,important,note:"",due:todayISO(),createdAt:Date.now(),order:minOrder-1};
+  data.tasks.push(nt);
+  data.createdTotal=(data.createdTotal||0)+1;
+  save();
+  openTaskId=nt.id; dueOpen=false; remindOpen=false;
+  render();
 }
 function addStep(taskId, text){
   text=(text||"").trim(); if(!text)return;
@@ -697,19 +875,24 @@ document.getElementById("app").addEventListener("click",e=>{
   else if(a==="closedrawer"){drawerOpen=false;render();}
   else if(a==="editlists"){editLists=!editLists;render();}
   else if(a==="view"){view={type:el.dataset.vt,key:el.dataset.vk};plannedFilter="all";drawerOpen=false;render();}
-  else if(a==="toggle"){const t=data.tasks.find(x=>x.id===id);t.done=!t.done;t.completedAt=t.done?Date.now():null;save();render();}
+  else if(a==="toggle"){const t=data.tasks.find(x=>x.id===id);t.done=!t.done;t.completedAt=t.done?Date.now():null;if(t.done){lastDoneId=id;data.completedTotal=(data.completedTotal||0)+1;}save();render();}
   else if(a==="star"){const t=data.tasks.find(x=>x.id===id);t.important=!t.important;save();render();}
-  else if(a==="open"){openTaskId=id;render();}
+  else if(a==="open"){openTaskId=id;dueOpen=false;remindOpen=false;render();}
+  else if(a==="toggledue"){ dueOpen=!dueOpen; render(); }
+  else if(a==="togglereminder"){ remindOpen=!remindOpen; render(); }
+  else if(a==="pickfile"){ const fi=document.getElementById("fileinput"); if(fi) fi.click(); }
+  else if(a==="attdel"){ if(!data.atts)data.atts={}; data.atts[openTaskId]=taskAtts(openTaskId).filter(x=>x.id!==el.dataset.aid); save(); render(); }
   else if(a==="closesheet"){openTaskId=null;render();}
   else if(a==="add"){const ai=document.getElementById("addinput");addTask(ai?ai.value:"");}
   else if(a==="dellist"){delList(id);}
-  else if(a==="deltask"){data.tasks=data.tasks.filter(x=>x.id!==id);openTaskId=null;save();render();}
+  else if(a==="deltask"){data.tasks=data.tasks.filter(x=>x.id!==id);if(data.atts)delete data.atts[id];openTaskId=null;save();render();}
   else if(a==="duetoday"){const t=data.tasks.find(x=>x.id===id);t.due=todayISO();save();render();}
   else if(a==="duetomorrow"){const t=data.tasks.find(x=>x.id===id);t.due=localISO(new Date(Date.now()+86400000));save();render();}
   else if(a==="dueclear"){const t=data.tasks.find(x=>x.id===id);t.due="";save();render();}
   else if(a==="remindclear"){const t=data.tasks.find(x=>x.id===id);t.reminder="";t.reminderFired=false;save();render();}
   else if(a==="toggledone"){showDone=!showDone;render();}
   else if(a==="qfilter"){ plannedFilter=el.dataset.key; render(); }
+  else if(a==="allToday"||a==="allTomorrow"){ const iso=a==="allToday"?todayISO():addDaysISO(1); data.tasks.forEach(t=>{ if(!t.done && (!t.due||isOverdue(t.due))) t.due=iso; }); save(); render(); }
   else if(a==="addstep"){ const si=document.getElementById("stepinput"); addStep(id, si?si.value:""); }
   else if(a==="stepdone"){ const t=data.tasks.find(x=>x.id===openTaskId); if(t&&t.steps){ const s=t.steps.find(x=>x.id===el.dataset.sid); if(s){ s.done=!s.done; save(); render(); } } }
   else if(a==="stepdel"){ const t=data.tasks.find(x=>x.id===openTaskId); if(t&&t.steps){ t.steps=t.steps.filter(x=>x.id!==el.dataset.sid); save(); render(); } }
@@ -788,24 +971,47 @@ function openSuggestion(id){
   const t=data.tasks.find(x=>x.id===id); if(!t)return;
   searchQuery=""; suggPicking=false;
   view={type:"list",key:t.listId};
-  openTaskId=id;
+  openTaskId=id; dueOpen=false; remindOpen=false;
   render();
 }
 
 /* ----------------------------- húzásos átrendezés ----------------------------- */
+let lpTimer=null, lpData=null;
 function setupDrag(){
   document.querySelectorAll(".task .grip").forEach(h=>{ h.addEventListener("pointerdown",e=>beginDrag(e,".task",ids=>{ applyVisibleOrder(ids); save(); })); });
   document.querySelectorAll(".step .stepgrip").forEach(h=>{ h.addEventListener("pointerdown",e=>beginDrag(e,".step",ids=>{ applyStepOrder(openTaskId,ids); save(); })); });
+  document.querySelectorAll(".task .taskbody").forEach(b=>{ b.addEventListener("pointerdown",e=>longPressStart(e,".task",ids=>{ applyVisibleOrder(ids); save(); })); });
 }
+function longPressStart(e, rowSel, onReorder){
+  if(!e.isPrimary || dragState) return;
+  const li=e.target.closest(rowSel); if(!li) return;
+  const body=e.currentTarget, pid=e.pointerId, sx=e.clientX, sy=e.clientY;
+  const move=ev=>{ if(Math.abs(ev.clientY-sy)>9 || Math.abs(ev.clientX-sx)>9) cancelLP(); };
+  const end=()=>cancelLP();
+  lpData={body,move,end};
+  body.addEventListener("pointermove",move);
+  body.addEventListener("pointerup",end);
+  body.addEventListener("pointercancel",end);
+  lpTimer=setTimeout(()=>{
+    lpTimer=null; clearLPListeners();
+    startDragFrom(li, rowSel, pid, sy, onReorder);
+  }, 230);
+}
+function clearLPListeners(){ if(lpData){ lpData.body.removeEventListener("pointermove",lpData.move); lpData.body.removeEventListener("pointerup",lpData.end); lpData.body.removeEventListener("pointercancel",lpData.end); lpData=null; } }
+function cancelLP(){ if(lpTimer){ clearTimeout(lpTimer); lpTimer=null; } clearLPListeners(); }
 function beginDrag(e, rowSel, onReorder){
   if(!e.isPrimary)return;
   e.preventDefault();
-  const li=e.target.closest(rowSel);
+  startDragFrom(e.target.closest(rowSel), rowSel, e.pointerId, e.clientY, onReorder);
+}
+function startDragFrom(li, rowSel, pointerId, startY, onReorder){
+  if(!li) return;
   const ul=li.parentNode;
   const items=Array.from(ul.children).filter(c=>c.matches(rowSel)).map(el=>{ const r=el.getBoundingClientRect(); return {el,id:el.dataset.id,center:r.top+r.height/2}; });
   const index=items.findIndex(it=>it.el===li);
-  dragState={ li, items, index, target:index, startY:e.clientY, height:li.getBoundingClientRect().height, moved:false, pid:e.pointerId, onReorder };
-  try{ li.setPointerCapture(e.pointerId); }catch(_){}
+  dragState={ li, items, index, target:index, startY, height:li.getBoundingClientRect().height, moved:false, pid:pointerId, onReorder };
+  try{ li.setPointerCapture(pointerId); }catch(_){}
+  li.classList.add("lift");
   li.addEventListener("pointermove",onGripMove);
   li.addEventListener("pointerup",onGripUp);
   li.addEventListener("pointercancel",onGripUp);
@@ -843,8 +1049,8 @@ function onGripUp(){
     const[m]=ids.splice(d.index,1);
     ids.splice(d.target,0,m);
     d.onReorder(ids);
-    suppressClick=true; setTimeout(()=>{ suppressClick=false; },60);
   }
+  suppressClick=true; setTimeout(()=>{ suppressClick=false; },80);
   dragState=null;
   render();
 }
@@ -896,18 +1102,52 @@ function extractLinks(text){
   work.replace(/\+?\d[\d\s\-\/().]{7,}\d/g,(m)=>{ putPhone(m); return m; });
   return Array.from(map.values());
 }
+function looksLikeName(line){
+  const s=(line||"").trim();
+  if(!s || s.length>40) return false;
+  if(/[@:\/0-9]/.test(s)) return false;
+  if(/https?:|www\./i.test(s)) return false;
+  const words=s.split(/\s+/);
+  if(words.length<1 || words.length>4) return false;
+  return words.every(w=>/^[A-ZÁÉÍÓÖŐÚÜW][\wáéíóöőúüűa-zA-Z.\-]*$/.test(w));
+}
+function contactGroups(text){
+  if(!text) return [];
+  const lines=text.split(/\r?\n/);
+  const groups=[];
+  const nameRe=/^\s*(feladó|felado|név|nev|name|kapcsolattartó|kapcsolattarto|ügyintéző|ugyintezo|kontakt|contact|cég|ceg|partner|ügyfél|ugyfel)\s*[:\-]\s*(.+?)\s*$/i;
+  const ensure=(name)=>{ let g=groups.find(x=>x.name===name); if(!g){ g={name,items:[],seen:new Set()}; groups.push(g); } return g; };
+  let cur=null;
+  for(const line of lines){
+    const nm=line.match(nameRe);
+    if(nm){ cur=ensure(nm[2].trim()); continue; }
+    if(looksLikeName(line)){ cur=ensure(line.trim()); continue; }
+    const links=extractLinks(line);
+    if(links.length){
+      const g=cur||ensure("");
+      links.forEach(l=>{ const k=l.type+"|"+l.href.toLowerCase(); if(!g.seen.has(k)){ g.seen.add(k); g.items.push(l); } });
+    }
+  }
+  return groups.filter(g=>g.items.length);
+}
 function linksHTML(text){
-  const links=extractLinks(text);
-  if(!links.length) return "";
+  const groups=contactGroups(text);
+  if(!groups.length) return "";
   const ic={web:"globe",email:"mail",phone:"phone"};
-  const rows=links.map(l=>{
-    const attrs = l.type==="web" ? ' target="_blank" rel="noopener noreferrer"' : "";
-    return '<a class="linkrow '+l.type+'" href="'+esc(l.href)+'"'+attrs+'>'
-      +'<span class="linkicon">'+icon(ic[l.type])+'</span>'
-      +'<span class="linktext">'+esc(l.label)+'</span>'
-      +'<span class="linkgo">'+icon("ext")+'</span></a>';
-  }).join("");
-  return '<div class="linkshead">Felismert kapcsolatok</div><div class="linkslist">'+rows+'</div>';
+  let html='<div class="linkshead">Felismert kapcsolatok</div>';
+  groups.forEach(g=>{
+    html+='<div class="linkgroup">';
+    if(g.name) html+='<div class="linkname">'+icon("user")+esc(g.name)+'</div>';
+    html+=g.items.map(l=>{
+      const attrs=l.type==="web"?' target="_blank" rel="noopener noreferrer"':"";
+      return '<a class="linkrow '+l.type+'" href="'+esc(l.href)+'"'+attrs+'>'
+        +'<span class="linkicon">'+icon(ic[l.type])+'</span>'
+        +'<span class="linktext">'+esc(l.label)+'</span>'
+        +'<span class="linkgo">'+icon("ext")+'</span></a>';
+    }).join("");
+    html+='</div>';
+  });
+  return html;
 }
 function growNote(el){
   if(!el) return;
@@ -1013,6 +1253,9 @@ function warnNoStorage(){
 data=load();
 if(!data){ data=defaultData(); view={type:"list",key:data.lists[0].id}; save(); }
 ensureOrders();
+if(data.createdTotal==null){ data.createdTotal=data.tasks.length; saveLocal(); }
+if(!data.atts) data.atts={};
+try{ const old=JSON.parse(localStorage.getItem("todo-att-v1")||"null"); if(old){ Object.keys(old).forEach(tid=>{ if(!data.atts[tid]) data.atts[tid]=old[tid]; }); localStorage.removeItem("todo-att-v1"); save(); } }catch(e){}
 render();
 warnNoStorage();
 initFirebase();
