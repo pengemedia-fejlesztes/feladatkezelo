@@ -7,22 +7,22 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Feladatok">
-<meta name="theme-color" content="#0E7A63">
+<meta name="theme-color" content="#127C86">
 <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxODAiIGhlaWdodD0iMTgwIiB2aWV3Qm94PSIwIDAgMTgwIDE4MCI+PHJlY3Qgd2lkdGg9IjE4MCIgaGVpZ2h0PSIxODAiIHJ4PSI0MCIgZmlsbD0iIzBFN0E2MyIvPjxwYXRoIGQ9Ik01NSA5MmwyMiAyMiA0OC00OCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utd2lkdGg9IjE0IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48L3N2Zz4=">
 <title>Feladatok</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700&family=Inter:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700&family=Inter:wght@400;500;600&family=Hanken+Grotesk:wght@400;500;600;700&display=swap');
 *{ box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
 :root{
-  --bg:#F3F3EF; --surface:#FFFFFF; --surface-2:#FAFAF8;
-  --ink:#1A211D; --ink-soft:#5E6862; --ink-faint:#9AA39D;
-  --brand:#0E7A63; --brand-soft:#E3F2EC; --amber:#E0962A; --amber-soft:#FBEFD8;
-  --danger:#C0432B; --line:#E8E8E2;
-  --shadow:0 1px 2px rgba(20,30,25,.06), 0 8px 22px rgba(20,30,25,.06);
+  --bg:#EEF3F4; --surface:#FFFFFF; --surface-2:#F6FAFA;
+  --ink:#152227; --ink-soft:#556065; --ink-faint:#93A1A5;
+  --brand:#127C86; --brand-soft:#DCEFF0; --amber:#E0962A; --amber-soft:#FBEFD8;
+  --danger:#C0432B; --line:#E4EBEC;
+  --shadow:0 1px 2px rgba(18,40,45,.06), 0 8px 22px rgba(18,40,45,.06);
 }
 html,body{ height:100%; }
 body{
-  font-family:'Inter',system-ui,-apple-system,sans-serif;
+  font-family:'Hanken Grotesk',system-ui,-apple-system,sans-serif;
   background:var(--bg); color:var(--ink);
   height:100dvh; overflow:hidden; -webkit-font-smoothing:antialiased;
 }
@@ -36,7 +36,7 @@ body{
   display:grid; place-items:center; box-shadow:var(--shadow); cursor:pointer; transition:transform .12s; }
 .menu:active{ transform:scale(.93); }
 .titlewrap{ padding-top:2px; min-width:0; }
-.title{ font-family:'Bricolage Grotesque',sans-serif; font-weight:700; font-size:30px; line-height:1.05;
+.title{ font-family:'Hanken Grotesk',sans-serif; font-weight:700; font-size:30px; line-height:1.05;
   letter-spacing:-.02em; display:flex; align-items:center; gap:10px; }
 .titleicon{ display:inline-flex; color:var(--brand); }
 .titledot{ width:13px; height:13px; border-radius:50%; }
@@ -85,10 +85,10 @@ body{
 .empty{ text-align:center; padding:54px 24px; color:var(--ink-soft); }
 .emptyicon{ width:62px; height:62px; border-radius:20px; background:var(--surface); box-shadow:var(--shadow);
   display:grid; place-items:center; margin:0 auto 16px; color:var(--brand); }
-.emptytitle{ font-family:'Bricolage Grotesque',sans-serif; font-weight:600; font-size:17px; color:var(--ink); }
+.emptytitle{ font-family:'Hanken Grotesk',sans-serif; font-weight:600; font-size:17px; color:var(--ink); }
 .emptysub{ margin-top:6px; font-size:13.5px; max-width:280px; margin-inline:auto; line-height:1.45; }
 
-.addbar{ display:flex; align-items:center; gap:10px; padding:12px 16px max(14px,env(safe-area-inset-bottom));
+.addbar{ display:flex; align-items:center; gap:10px; padding:10px 16px 10px;
   background:linear-gradient(transparent, var(--bg) 28%); }
 .addbtn{ flex:none; width:48px; height:48px; border-radius:16px; border:none; background:var(--brand); color:#fff;
   display:grid; place-items:center; cursor:pointer; box-shadow:0 6px 16px rgba(14,122,99,.32); transition:transform .12s; }
@@ -97,6 +97,18 @@ body{
   padding:0 16px; font-size:15.5px; font-family:inherit; color:var(--ink); box-shadow:var(--shadow); outline:none; }
 .addinput:focus{ border-color:var(--brand); }
 .addinput::placeholder{ color:var(--ink-faint); }
+.header.nomenu{ padding-left:20px; }
+.tabbar{ display:flex; align-items:stretch; background:var(--surface); border-top:1px solid var(--line); padding-bottom:env(safe-area-inset-bottom); box-shadow:0 -2px 12px rgba(18,40,45,.05); }
+.tab{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; padding:9px 2px 8px; background:none; border:none; cursor:pointer; font-family:inherit; font-size:10.5px; font-weight:600; color:var(--ink-faint); }
+.tab .ic{ width:23px; height:23px; }
+.tab span{ line-height:1; }
+.tab.on{ color:var(--brand); }
+.tab:active{ opacity:.6; }
+.tlgroup{ margin-bottom:16px; }
+.tlhead{ display:flex; align-items:center; gap:8px; font-family:'Hanken Grotesk',sans-serif; font-weight:700; font-size:13px; letter-spacing:.02em; text-transform:uppercase; color:var(--ink-soft); padding:2px 4px 9px; }
+.tlhead span{ font-size:11.5px; font-weight:700; color:var(--ink-faint); background:var(--surface-2); border-radius:20px; padding:1px 8px; }
+.tlhead.late{ color:var(--danger); }
+.tlhead.late span{ color:var(--danger); background:#F6E1DC; }
 
 .scrim{ position:absolute; inset:0; background:rgba(20,28,24,.34); opacity:0; pointer-events:none;
   transition:opacity .25s; z-index:20; -webkit-backdrop-filter:blur(2px); backdrop-filter:blur(2px); }
@@ -106,7 +118,7 @@ body{
   display:flex; flex-direction:column; padding:max(16px,env(safe-area-inset-top)) 14px 14px; box-shadow:6px 0 28px rgba(20,30,25,.14); }
 .drawer.on{ transform:translateX(0); }
 .brand{ display:flex; align-items:center; justify-content:space-between; padding:4px 6px 14px; }
-.logo{ font-family:'Bricolage Grotesque',sans-serif; font-weight:700; font-size:22px; letter-spacing:-.02em; }
+.logo{ font-family:'Hanken Grotesk',sans-serif; font-weight:700; font-size:22px; letter-spacing:-.02em; }
 .iconbtn{ background:none; border:none; color:var(--ink-soft); cursor:pointer; padding:6px; display:grid; place-items:center; }
 .smart{ display:flex; flex-direction:column; gap:3px; }
 .smartitem{ display:flex; align-items:center; gap:11px; padding:11px 12px; border-radius:12px; border:none;
@@ -140,7 +152,7 @@ body{
 @keyframes tkup{ from{ transform:translateY(100%);} }
 .grip{ width:38px; height:4px; border-radius:4px; background:var(--line); margin:2px auto 16px; }
 .sheettop{ display:flex; align-items:flex-start; gap:12px; }
-.detailtitle{ flex:1; border:none; outline:none; resize:none; font-family:'Bricolage Grotesque',sans-serif;
+.detailtitle{ flex:1; border:none; outline:none; resize:none; font-family:'Hanken Grotesk',sans-serif;
   font-weight:600; font-size:19px; line-height:1.3; color:var(--ink); background:none; }
 .field{ margin-top:22px; }
 .fieldlabel{ display:flex; align-items:center; gap:7px; font-size:12.5px; font-weight:600; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.04em; margin-bottom:9px; }
@@ -224,7 +236,7 @@ body{
 .syncdot.on{ background:var(--brand); box-shadow:0 0 0 3px var(--brand-soft); }
 .synclogin{ display:flex; align-items:center; gap:9px; width:100%; text-align:left; background:none; border:none; cursor:pointer; font-family:inherit; font-size:13.5px; color:var(--brand); font-weight:600; padding:10px 8px; }
 .authsheet{ text-align:left; }
-.authtitle{ font-family:'Bricolage Grotesque',sans-serif; font-weight:700; font-size:20px; color:var(--ink); }
+.authtitle{ font-family:'Hanken Grotesk',sans-serif; font-weight:700; font-size:20px; color:var(--ink); }
 .authhint{ margin-top:8px; font-size:13px; color:var(--ink-soft); line-height:1.45; }
 .authinput{ width:100%; height:46px; border:1px solid var(--line); border-radius:12px; padding:0 14px; margin-top:12px; font-family:inherit; font-size:15px; color:var(--ink); background:var(--surface-2); outline:none; }
 .authinput:focus{ border-color:var(--brand); }
@@ -245,7 +257,7 @@ body{
 .fstop .check{ margin-top:5px; }
 .check.big{ width:28px; height:28px; }
 .check.big .ic{ width:17px; height:17px; }
-.fstitle{ flex:1; border:none; outline:none; resize:none; font-family:'Bricolage Grotesque',sans-serif; font-weight:700; font-size:24px; line-height:1.25; color:var(--ink); background:none; overflow:hidden; }
+.fstitle{ flex:1; border:none; outline:none; resize:none; font-family:'Hanken Grotesk',sans-serif; font-weight:700; font-size:24px; line-height:1.25; color:var(--ink); background:none; overflow:hidden; }
 .fstitle::placeholder{ color:var(--ink-faint); }
 .fsbody .note{ resize:none; font-size:15.5px; line-height:1.55; min-height:70px; }
 .notelinks{ margin-top:2px; }
@@ -300,14 +312,59 @@ body{
 .attadd:active{ transform:scale(.97); }
 .statsgrid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:11px; padding:8px 0 4px; }
 .statcard{ background:var(--surface); border:1px solid var(--line); border-radius:16px; padding:16px 15px; box-shadow:var(--shadow); }
-.statval{ font-family:'Bricolage Grotesque',sans-serif; font-weight:700; font-size:30px; line-height:1; color:var(--brand); letter-spacing:-.02em; }
+.statval{ font-family:'Hanken Grotesk',sans-serif; font-weight:700; font-size:30px; line-height:1; color:var(--brand); letter-spacing:-.02em; }
 .statlabel{ margin-top:8px; font-size:13px; font-weight:600; color:var(--ink); }
 .statsub{ margin-top:3px; font-size:11.5px; color:var(--ink-faint); }
 .statsince{ margin-top:14px; background:var(--brand); color:#fff; border-radius:16px; padding:18px 18px; }
 .statsincetop{ display:flex; align-items:center; gap:8px; font-size:13px; font-weight:600; opacity:.9; }
 .statsincetop .ic{ width:17px; height:17px; }
-.statsinceval{ font-family:'Bricolage Grotesque',sans-serif; font-weight:700; font-size:22px; margin-top:8px; }
+.statsinceval{ font-family:'Hanken Grotesk',sans-serif; font-weight:700; font-size:22px; margin-top:8px; }
 .statsincesub{ margin-top:4px; font-size:13px; opacity:.9; }
+/* ---- 1B statisztika oldal ---- */
+.statspage.v1b{ --acc:#127C86; --acc-soft:#DCEFF0; font-family:'Hanken Grotesk','Inter',sans-serif; }
+.statspage.v1b .statval{ color:var(--acc); }
+.statspage.v1b .statsince{ background:linear-gradient(135deg,#127C86,#0E6E8C); }
+.printbtn{ display:flex; align-items:center; justify-content:center; gap:8px; width:100%; height:46px; border-radius:13px; border:none; background:var(--acc); color:#fff; font-family:inherit; font-size:14.5px; font-weight:600; cursor:pointer; margin-bottom:14px; box-shadow:0 6px 16px rgba(18,124,134,.28); }
+.printbtn .ic{ width:17px; height:17px; }
+.printbtn:active{ transform:scale(.98); }
+.chartcard{ background:var(--surface); border:1px solid var(--line); border-radius:16px; padding:15px 16px; box-shadow:var(--shadow); margin-top:12px; }
+.charttitle{ font-family:'Hanken Grotesk',sans-serif; font-weight:700; font-size:14.5px; color:var(--ink); margin-bottom:12px; }
+.chrow{ display:flex; align-items:center; gap:10px; margin-bottom:9px; }
+.chrow:last-child{ margin-bottom:0; }
+.chlabel{ flex:0 0 38%; font-size:12.5px; color:var(--ink-soft); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.chbarwrap{ flex:1; height:12px; background:var(--surface-2); border-radius:8px; overflow:hidden; }
+.chbar{ height:100%; background:var(--acc); border-radius:8px; transition:width .3s; }
+.chval{ flex:none; font-size:12px; font-weight:700; color:var(--ink); min-width:44px; text-align:right; }
+.chempty{ font-size:13px; color:var(--ink-faint); padding:6px 0; }
+.chhint{ font-size:11.5px; color:var(--ink-faint); margin-top:9px; }
+.colchart{ display:flex; align-items:flex-end; gap:3px; height:110px; }
+.colbar{ flex:1; display:flex; flex-direction:column; align-items:center; height:100%; }
+.colwrap{ flex:1; width:100%; display:flex; align-items:flex-end; }
+.colfill{ width:100%; background:var(--acc); border-radius:4px 4px 0 0; min-height:2px; }
+.collab{ font-size:9.5px; color:var(--ink-faint); margin-top:4px; height:12px; }
+.searchrowitem{ display:flex; align-items:center; justify-content:space-between; padding:8px 0; border-bottom:1px solid var(--line); }
+.searchrowitem:last-child{ border-bottom:none; }
+.searchq{ font-size:14px; color:var(--ink); }
+.searchn{ font-size:12.5px; font-weight:700; color:var(--acc); }
+/* ---- nyomtatás ---- */
+#printarea{ display:none; }
+@media print{
+  body{ height:auto; overflow:visible; background:#fff; }
+  #app{ display:none !important; }
+  #printarea{ display:block !important; position:static; padding:0 6mm; color:#000; font-family:'Hanken Grotesk',Arial,sans-serif; }
+  .phead{ border-bottom:2px solid #000; padding-bottom:8px; margin-bottom:14px; }
+  .phead h1{ font-size:22px; }
+  .pdate{ font-size:13px; color:#333; margin-top:2px; }
+  .pitem{ display:flex; gap:10px; padding:9px 0; border-bottom:1px solid #ccc; break-inside:avoid; }
+  .pcheck{ font-size:18px; line-height:1; }
+  .ptitle{ font-size:15px; font-weight:700; }
+  .pmeta{ font-size:11.5px; color:#444; margin-top:2px; }
+  .psteps{ margin-top:5px; }
+  .pstep{ font-size:12.5px; color:#222; margin:2px 0; }
+  .pnote{ font-size:12px; color:#333; margin-top:5px; white-space:pre-wrap; }
+  .pfoot{ margin-top:16px; font-size:11px; color:#666; }
+  .pempty{ font-size:14px; }
+}
 .duerow .dateinput{ max-width:100%; }
 .toast{ position:fixed; left:50%; bottom:calc(22px + env(safe-area-inset-bottom)); transform:translateX(-50%) translateY(16px); background:var(--ink); color:#fff; padding:12px 18px; border-radius:14px; font-size:14px; font-weight:500; box-shadow:0 8px 26px rgba(0,0,0,.26); opacity:0; pointer-events:none; transition:.25s; z-index:100; max-width:88%; text-align:center; }
 .toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
@@ -416,34 +473,101 @@ function timeOptions(sel){
 }
 function hourOptions(sel){ let o='<option value="">óra</option>'; for(let h=8;h<=20;h++){ const v=String(h).padStart(2,"0"); o+='<option value="'+v+'"'+(v===sel?" selected":"")+'>'+v+'</option>'; } return o; }
 function minuteOptions(sel){ let o='<option value="">perc</option>'; ["00","15","30","45"].forEach(v=>{ o+='<option value="'+v+'"'+(v===sel?" selected":"")+'>'+v+'</option>'; }); return o; }
+function daysAgo(ts){ return ts?Math.floor((Date.now()-ts)/86400000):null; }
+function barChart(title, rows, accent){
+  const max=Math.max(1,...rows.map(r=>r.value));
+  const bars=rows.map(r=>'<div class="chrow"><div class="chlabel">'+esc(r.label)+'</div><div class="chbarwrap"><div class="chbar" style="width:'+Math.max(3,Math.round(r.value/max*100))+'%'+(accent?';background:'+accent:'')+'"></div></div><div class="chval">'+esc(r.display!=null?r.display:String(r.value))+'</div></div>').join("");
+  return '<div class="chartcard"><div class="charttitle">'+esc(title)+'</div>'+(rows.length?bars:'<div class="chempty">Még nincs adat</div>')+'</div>';
+}
+function colChart(title, counts, labels, hint){
+  const max=Math.max(1,...counts);
+  const bars=counts.map((c,i)=>'<div class="colbar"><div class="colwrap"><div class="colfill" style="height:'+Math.max(2,Math.round(c/max*100))+'%" title="'+c+'"></div></div><div class="collab">'+(labels[i]!=null?labels[i]:"")+'</div></div>').join("");
+  return '<div class="chartcard"><div class="charttitle">'+esc(title)+'</div><div class="colchart">'+bars+'</div>'+(hint?'<div class="chhint">'+esc(hint)+'</div>':'')+'</div>';
+}
 function statsHTML(){
-  const total=data.tasks.length;
-  const done=data.tasks.filter(t=>t.done).length;
+  const tasks=data.tasks;
+  const total=tasks.length;
+  const done=tasks.filter(t=>t.done).length;
   const active=total-done;
   const rate=total?Math.round(done/total*100):0;
-  const overdue=data.tasks.filter(t=>!t.done&&isOverdue(t.due)).length;
-  const withDue=data.tasks.filter(t=>t.due).length;
+  const overdue=tasks.filter(t=>!t.done&&isOverdue(t.due)).length;
   const createdTotal=(data.createdTotal!=null)?data.createdTotal:total;
-  const first=total?Math.min.apply(null,data.tasks.map(t=>t.createdAt||Date.now())):null;
+  const first=total?Math.min.apply(null,tasks.map(t=>t.createdAt||Date.now())):null;
   const daysUsing=first?(Math.floor((Date.now()-first)/86400000)+1):0;
   const firstStr=first?new Date(first).toLocaleDateString("hu-HU",{year:"numeric",month:"long",day:"numeric"}):"—";
-  const createdToday=data.tasks.filter(t=>t.createdAt&&isTodayDue(localISO(new Date(t.createdAt)))).length;
-  const doneToday=data.tasks.filter(t=>t.done&&t.completedAt&&isTodayDue(localISO(new Date(t.completedAt)))).length;
+  const short=s=>{ s=s||"(névtelen)"; return s.length>26?s.slice(0,25)+"…":s; };
+  const activeTasks=tasks.filter(t=>!t.done);
+
   const card=(label,val,sub)=>'<div class="statcard"><div class="statval">'+val+'</div><div class="statlabel">'+label+'</div>'+(sub?'<div class="statsub">'+sub+'</div>':'')+'</div>';
-  return '<div class="statsgrid">'
-    +card("Összesen létrehozott",createdTotal)
-    +card("Jelenlegi feladat",total)
-    +card("Aktív",active)
-    +card("Kész",done,rate+"% teljesítve")
-    +card("Késedelmes",overdue)
-    +card("Határidős",withDue)
-    +card("Létrehozva ma",createdToday)
-    +card("Elvégezve ma",doneToday)
-    +card("Listák",data.lists.length)
+
+  // legtöbbet megnyitva
+  const mostOpened=tasks.filter(t=>t.openCount).sort((a,b)=>b.openCount-a.openCount).slice(0,6)
+    .map(t=>({label:short(t.title),value:t.openCount,display:t.openCount+"×"}));
+  // legtöbb idő nyitva (perc)
+  const mostTime=tasks.filter(t=>t.totalOpenMs).sort((a,b)=>b.totalOpenMs-a.totalOpenMs).slice(0,6)
+    .map(t=>({label:short(t.title),value:t.totalOpenMs,display:Math.max(1,Math.round(t.totalOpenMs/60000))+" p"}));
+  // legtöbbet szerkesztve
+  const mostEdited=tasks.filter(t=>t.editCount).sort((a,b)=>b.editCount-a.editCount).slice(0,6)
+    .map(t=>({label:short(t.title),value:t.editCount,display:t.editCount+"×"}));
+  // legtöbbet késik (nap)
+  const late=activeTasks.filter(t=>isOverdue(t.due)).map(t=>({t,d:Math.floor((parseISO(todayISO())-parseISO(t.due))/86400000)}))
+    .sort((a,b)=>b.d-a.d).slice(0,6).map(x=>({label:short(x.t.title),value:x.d,display:x.d+" nap"}));
+  // legrégebb óta a rendszerben
+  const oldest=activeTasks.slice().sort((a,b)=>(a.createdAt||0)-(b.createdAt||0)).slice(0,6)
+    .map(t=>({label:short(t.title),value:daysAgo(t.createdAt)||0,display:(daysAgo(t.createdAt)||0)+" nap"}));
+  // elhanyagolt (legrégebben megnyitva / soha)
+  const neglect=activeTasks.slice().sort((a,b)=>(a.lastOpenedAt||0)-(b.lastOpenedAt||0)).slice(0,6)
+    .map(t=>({label:short(t.title),value:(t.lastOpenedAt?daysAgo(t.lastOpenedAt):9999),display:t.lastOpenedAt?(daysAgo(t.lastOpenedAt)+" napja")+"":"soha"}));
+  // használat óra / nap szerint
+  const hours=new Array(24).fill(0), wdays=new Array(7).fill(0);
+  (data.usageLog||[]).forEach(ts=>{ const d=new Date(ts); hours[d.getHours()]++; wdays[(d.getDay()+6)%7]++; });
+  const hourLabels=hours.map((_,h)=>h%6===0?h:"");
+  const wdayLabels=["H","K","Sze","Cs","P","Szo","V"];
+  // keresések
+  const searches=Object.values(data.searches||{}).sort((a,b)=>b.n-a.n).slice(0,12);
+
+  return '<div class="statspage v1b">'
+    +'<button class="printbtn" data-action="printtoday">'+icon("file")+' Napi feladatok nyomtatása</button>'
+    +'<div class="statsgrid">'
+      +card("Összesen létrehozott",createdTotal)
+      +card("Aktív",active)
+      +card("Kész",done,rate+"% teljesítve")
+      +card("Késedelmes",overdue)
     +'</div>'
     +'<div class="statsince"><div class="statsincetop">'+icon("calendar")+' Az első feladat óta</div>'
       +'<div class="statsinceval">'+firstStr+'</div>'
-      +'<div class="statsincesub">'+(daysUsing?(daysUsing+" napja használod az appot"):"még nincs feladat")+'</div></div>';
+      +'<div class="statsincesub">'+(daysUsing?(daysUsing+" napja használod az appot"):"még nincs feladat")+'</div></div>'
+    +barChart("Legtöbbet megnyitott feladatok",mostOpened)
+    +barChart("Legtöbb időt nyitva tartott (perc)",mostTime)
+    +barChart("Legtöbbet szerkesztett feladatok",mostEdited)
+    +barChart("Legtöbbet késő feladatok",late,"#C0432B")
+    +barChart("Legrégebb óta a rendszerben",oldest)
+    +barChart("Legrégebben megnyitott (elhanyagolt)",neglect,"#E0962A")
+    +colChart("Mikor használod — óra szerint",hours,hourLabels,"A nap mely óráiban nyitod meg a feladatokat")
+    +colChart("Mikor használod — nap szerint",wdays,wdayLabels)
+    +'<div class="chartcard"><div class="charttitle">Keresett kifejezések</div>'
+      +(searches.length?searches.map(s=>'<div class="searchrowitem"><span class="searchq">'+esc(s.q)+'</span><span class="searchn">'+s.n+'×</span></div>').join(""):'<div class="chempty">Még nincs keresés</div>')
+    +'</div>'
+    +'</div>';
+}
+function printDaily(){
+  const today=todayISO();
+  const list=data.tasks.filter(t=>!t.done && (t.due===today || isOverdue(t.due))).sort((a,b)=>(a.due||"")<(b.due||"")?-1:1);
+  let pa=document.getElementById("printarea"); if(!pa){ pa=document.createElement("div"); pa.id="printarea"; document.body.appendChild(pa); }
+  const dateStr=new Date().toLocaleDateString("hu-HU",{year:"numeric",month:"long",day:"numeric",weekday:"long"});
+  const body=list.length?list.map(t=>{
+    const ln=listById(t.listId);
+    const steps=(t.steps||[]).map(s=>'<div class="pstep">'+(s.done?"☑":"☐")+' '+esc(s.text)+'</div>').join("");
+    const meta=[ln?esc(ln.name):"", t.due?(isOverdue(t.due)?"KÉSÉSBEN ("+formatDue(t.due)+")":"Határidő: "+formatDue(t.due)):"", t.reminder?"Emlék.: "+t.reminder.slice(11,16):""].filter(Boolean).join("  ·  ");
+    return '<div class="pitem"><div class="pcheck">☐</div><div class="pbody"><div class="ptitle">'+esc(t.title)+'</div>'
+      +(meta?'<div class="pmeta">'+meta+'</div>':'')
+      +(steps?'<div class="psteps">'+steps+'</div>':'')
+      +(t.note?'<div class="pnote">'+esc(t.note)+'</div>':'')
+      +'</div></div>';
+  }).join(""):'<p class="pempty">Ma nincs esedékes feladat.</p>';
+  pa.innerHTML='<div class="phead"><h1>Napi feladatok</h1><div class="pdate">'+dateStr+'</div></div>'+body
+    +'<div class="pfoot">Mai esedékes és késésben lévő feladatok · '+list.length+' tétel</div>';
+  setTimeout(()=>{ try{ window.print(); }catch(e){ showToast("Ezen az eszközön a böngésző nyomtatás/megosztás menüjét használd."); } }, 60);
 }
 function greeting(){const h=new Date().getHours();return h<5?"Még fent vagy?":h<10?"Jó reggelt!":h<18?"Szép napot!":h<22?"Jó estét!":"Szép estét!";}
 function esc(s){return(s||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
@@ -552,6 +676,34 @@ function pushToCloud(){
   }, 700);
 }
 function save(){ saveLocal(); pushToCloud(); }
+let openStartId=null, openStartTs=0, openStartSnap="";
+function trackOpen(id){
+  trackClose();
+  const t=data.tasks.find(x=>x.id===id); if(!t) return;
+  t.openCount=(t.openCount||0)+1;
+  t.lastOpenedAt=Date.now();
+  openStartId=id; openStartTs=Date.now(); openStartSnap=JSON.stringify(t);
+  if(!data.usageLog) data.usageLog=[];
+  data.usageLog.push(Date.now());
+  if(data.usageLog.length>1500) data.usageLog=data.usageLog.slice(-1500);
+  save();
+}
+function trackClose(){
+  if(!openStartId) return;
+  const t=data.tasks.find(x=>x.id===openStartId);
+  if(t){
+    if(JSON.stringify(t)!==openStartSnap) t.editCount=(t.editCount||0)+1;
+    t.totalOpenMs=(t.totalOpenMs||0)+Math.max(0,Date.now()-openStartTs);
+  }
+  openStartId=null; openStartTs=0; openStartSnap="";
+  save();
+}
+function logSearch(q){
+  q=(q||"").trim(); if(q.length<2) return;
+  if(!data.searches) data.searches={};
+  const k=q.toLowerCase(); const e=data.searches[k]||(data.searches[k]={q:q,n:0,last:0});
+  e.n++; e.last=Date.now(); e.q=q; save();
+}
 
 const listById=id=>data.lists.find(l=>l.id===id);
 const activeCount=p=>data.tasks.filter(t=>!t.done&&p(t)).length;
@@ -568,6 +720,9 @@ function currentTasks(){
 }
 function hasQuickBar(){
   return !(view.type==="smart"&&(view.key==="stats"));
+}
+function tabBtn(label,ic,vk,active){
+  return '<button class="tab'+(active?" on":"")+'" data-action="view" data-vt="smart" data-vk="'+vk+'">'+icon(ic)+'<span>'+label+'</span></button>';
 }
 function sortTasks(a,b){
   if(a.important!==b.important)return a.important?-1:1;
@@ -588,6 +743,7 @@ function render(){
   const scope=currentTasks();
   const barOn=hasQuickBar();
   const isStats=view.type==="smart"&&view.key==="stats";
+  const grouped=view.type==="smart"&&view.key==="planned"&&plannedFilter==="all";
   const tasks=(barOn && plannedFilter!=="all") ? (plannedFilter==="none" ? scope.filter(t=>!t.due) : scope.filter(t=>t.due && dueBucket(t.due)===plannedFilter)) : scope;
   const open=tasks.filter(t=>!t.done).sort((a,b)=>a.order-b.order);
   const done=tasks.filter(t=>t.done).sort((a,b)=>(b.completedAt||0)-(a.completedAt||0));
@@ -611,7 +767,7 @@ function render(){
     return '<div class="listrow"><button class="listbtn '+(view.type==="list"&&view.key===l.id?"active":"")+'" data-action="view" data-vt="list" data-vk="'+l.id+'"><span class="dot" style="background:'+l.color+'"></span><span class="listname">'+esc(l.name)+'</span>'+(counts.lists[l.id]>0?'<span class="badge">'+counts.lists[l.id]+'</span>':'')+'</button></div>';
   }).join("");
 
-  const taskRow=(t,draggable)=>{
+  const taskRow=(t,draggable,hideDue)=>{
     const overdue=!t.done&&isOverdue(t.due);
     const showList=view.type==="smart";
     const ln=listById(t.listId);
@@ -620,13 +776,22 @@ function render(){
       +'<button class="taskbody" data-action="open" data-id="'+t.id+'"><span class="tasktitle">'+esc(t.title)+'</span>'
       +'<span class="meta">'
       +((showList&&ln)?'<span class="metalist"><span class="dot sm" style="background:'+ln.color+'"></span>'+esc(ln.name)+'</span>':'')
-      +(t.due?'<span class="due '+(overdue?"late":isTodayDue(t.due)?"today":"")+'">'+icon("calendar")+formatDue(t.due)+'</span>':'')
+      +((t.due&&!hideDue)?'<span class="due '+(overdue?"late":isTodayDue(t.due)?"today":"")+'">'+icon("calendar")+formatDue(t.due)+'</span>':'')
       +((t.steps&&t.steps.length)?'<span class="stepchip">'+icon("check")+(t.steps.filter(s=>s.done).length)+'/'+t.steps.length+'</span>':'')
       +(t.note?'<span class="hasnote">'+icon("pencil")+'</span>':'')
       +'</span></button>'
       +'<button class="starbtn '+(t.important?"on":"")+'" data-action="star" data-id="'+t.id+'">'+icon("star",t.important?"var(--amber)":"none")+'</button>'
       +(draggable?'<button class="grip" aria-label="Húzás átrendezéshez">'+GRIP+'</button>':'')
       +'</li>';
+  };
+  const timelineHTML=(list)=>{
+    const order=[["overdue","Késett"],["today","Ma"],["tomorrow","Holnap"],["week","E héten"],["later","Később"]];
+    const groups={};
+    list.forEach(t=>{ const b=dueBucket(t.due)||"later"; (groups[b]||(groups[b]=[])).push(t); });
+    return order.filter(x=>groups[x[0]]&&groups[x[0]].length).map(x=>
+      '<div class="tlgroup"><div class="tlhead'+(x[0]==="overdue"?" late":"")+'">'+x[1]+'<span>'+groups[x[0]].length+'</span></div>'
+      +'<ul class="tasklist">'+groups[x[0]].map(t=>taskRow(t,true,true)).join("")+'</ul></div>'
+    ).join("");
   };
 
   let emptyT="",emptyS="";
@@ -698,7 +863,7 @@ function render(){
       +'<button class="reset" data-action="reset">'+icon("settings")+' Adatok visszaállítása</button></div>'
   +'</aside>'
   +'<main class="main">'
-    +'<header class="header"><button class="menu" data-action="opendrawer">'+icon("menu")+'</button>'
+    +'<header class="header nomenu">'
       +'<div class="titlewrap"><h1 class="title">'+(H.dot?'<span class="titledot" style="background:'+H.dot+'"></span>':'')+(H.ic?'<span class="titleicon">'+icon(H.ic)+'</span>':'')+H.title+'</h1><p class="sub">'+H.sub+'</p></div>'
     +'</header>'
     +'<div class="searchrow"><div class="searchwrap"><span class="searchicon">'+icon("search")+'</span>'
@@ -710,13 +875,20 @@ function render(){
     +'<section class="scroll">'
       +(isStats ? statsHTML() : (
         ((open.length===0&&done.length===0)?'<div class="empty"><div class="emptyicon">'+icon("inbox")+'</div><p class="emptytitle">'+emptyT+'</p><p class="emptysub">'+emptyS+'</p></div>':'')
-        +'<ul class="tasklist">'+open.map(t=>taskRow(t,true)).join("")+'</ul>'
+        +(grouped ? timelineHTML(open) : '<ul class="tasklist">'+open.map(t=>taskRow(t,true)).join("")+'</ul>')
         +(done.length>0?'<div class="donewrap"><button class="donehead '+(showDone?"open":"")+'" data-action="toggledone">'+icon("chevron")+'Kész ('+done.length+')</button>'+(showDone?'<ul class="tasklist">'+done.map(t=>taskRow(t,false)).join("")+'</ul>':'')+'</div>':'')
       ))
     +'</section>'
     +(isStats ? '' : '<div class="addbar">'
       +'<input id="addinput" class="addinput" placeholder="'+(view.type==="list"?"Feladat ide: "+esc(listById(view.key).name):"Feladat hozzáadása…")+'">'
       +'<button class="addbtn" data-action="add">'+icon("plus")+'</button></div>')
+    +'<nav class="tabbar">'
+      +tabBtn("Ma","sun","today", view.type==="smart"&&view.key==="today")
+      +tabBtn("Tervezett","calendar","planned", view.type==="smart"&&view.key==="planned")
+      +tabBtn("Rendezendő","flag","attention", view.type==="smart"&&view.key==="attention")
+      +'<button class="tab'+((view.type==="list"||(view.type==="smart"&&(view.key==="all"||view.key==="important")))?" on":"")+'" data-action="opendrawer">'+icon("list")+'<span>Listák</span></button>'
+      +tabBtn("Stat.","bars","stats", view.type==="smart"&&view.key==="stats")
+    +'</nav>'
   +'</main>'
   +(detail?(
     '<div class="fsdetail">'
@@ -877,12 +1049,12 @@ document.getElementById("app").addEventListener("click",e=>{
   else if(a==="view"){view={type:el.dataset.vt,key:el.dataset.vk};plannedFilter="all";drawerOpen=false;render();}
   else if(a==="toggle"){const t=data.tasks.find(x=>x.id===id);t.done=!t.done;t.completedAt=t.done?Date.now():null;if(t.done){lastDoneId=id;data.completedTotal=(data.completedTotal||0)+1;}save();render();}
   else if(a==="star"){const t=data.tasks.find(x=>x.id===id);t.important=!t.important;save();render();}
-  else if(a==="open"){openTaskId=id;dueOpen=false;remindOpen=false;render();}
+  else if(a==="open"){trackOpen(id);openTaskId=id;dueOpen=false;remindOpen=false;render();}
   else if(a==="toggledue"){ dueOpen=!dueOpen; render(); }
   else if(a==="togglereminder"){ remindOpen=!remindOpen; render(); }
   else if(a==="pickfile"){ const fi=document.getElementById("fileinput"); if(fi) fi.click(); }
   else if(a==="attdel"){ if(!data.atts)data.atts={}; data.atts[openTaskId]=taskAtts(openTaskId).filter(x=>x.id!==el.dataset.aid); save(); render(); }
-  else if(a==="closesheet"){openTaskId=null;render();}
+  else if(a==="closesheet"){trackClose();openTaskId=null;render();}
   else if(a==="add"){const ai=document.getElementById("addinput");addTask(ai?ai.value:"");}
   else if(a==="dellist"){delList(id);}
   else if(a==="deltask"){data.tasks=data.tasks.filter(x=>x.id!==id);if(data.atts)delete data.atts[id];openTaskId=null;save();render();}
@@ -892,6 +1064,7 @@ document.getElementById("app").addEventListener("click",e=>{
   else if(a==="remindclear"){const t=data.tasks.find(x=>x.id===id);t.reminder="";t.reminderFired=false;save();render();}
   else if(a==="toggledone"){showDone=!showDone;render();}
   else if(a==="qfilter"){ plannedFilter=el.dataset.key; render(); }
+  else if(a==="printtoday"){ printDaily(); }
   else if(a==="allToday"||a==="allTomorrow"){ const iso=a==="allToday"?todayISO():addDaysISO(1); data.tasks.forEach(t=>{ if(!t.done && (!t.due||isOverdue(t.due))) t.due=iso; }); save(); render(); }
   else if(a==="addstep"){ const si=document.getElementById("stepinput"); addStep(id, si?si.value:""); }
   else if(a==="stepdone"){ const t=data.tasks.find(x=>x.id===openTaskId); if(t&&t.steps){ const s=t.steps.find(x=>x.id===el.dataset.sid); if(s){ s.done=!s.done; save(); render(); } } }
@@ -969,9 +1142,10 @@ function onSearchKey(e){
 function paintSel(items){ items.forEach((el,i)=>el.classList.toggle("active",i===searchSel)); if(items[searchSel]) items[searchSel].scrollIntoView({block:"nearest"}); }
 function openSuggestion(id){
   const t=data.tasks.find(x=>x.id===id); if(!t)return;
+  logSearch(searchQuery);
   searchQuery=""; suggPicking=false;
   view={type:"list",key:t.listId};
-  openTaskId=id; dueOpen=false; remindOpen=false;
+  trackOpen(id); openTaskId=id; dueOpen=false; remindOpen=false;
   render();
 }
 
@@ -1261,6 +1435,8 @@ warnNoStorage();
 initFirebase();
 checkReminders();
 setInterval(checkReminders, 30000);
+window.addEventListener("pagehide", trackClose);
+document.addEventListener("visibilitychange", ()=>{ if(document.visibilityState==="hidden") trackClose(); });
 </script>
 </body>
 </html>
