@@ -1,0 +1,2 @@
+# feladatkezelo
+Laci DEMO feladatkezelo
