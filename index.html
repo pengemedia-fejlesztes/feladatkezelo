@@ -47,7 +47,7 @@ body{
 .tasklist{ list-style:none; background:var(--surface); border:1px solid var(--line); border-radius:16px; overflow:hidden; box-shadow:var(--shadow); margin-bottom:12px; }
 
 .task{ -webkit-touch-callout:none; -webkit-user-select:none; user-select:none; display:flex; align-items:center; gap:12px;
-  padding:14px 14px 14px 15px; border-bottom:1px solid var(--hair); position:relative; animation:tkin .22s ease; }
+  padding:14px 14px 14px 15px; border-bottom:1px solid var(--hair); position:relative; }
 .task::before{ content:""; position:absolute; left:0; top:0; bottom:0; width:4px; background:var(--strip,transparent); }
 .task:last-child{ border-bottom:none; }
 @keyframes tkin{ from{ opacity:0; transform:translateY(6px);} }
@@ -321,6 +321,51 @@ body{
 .bigbtn.ghost{ color:var(--ink-soft); }
 .bigbtn.ghost.on{ background:var(--ink-soft); border-color:var(--ink-soft); color:#fff; }
 .bigbtn:active{ transform:scale(.97); }
+.schedrow{ display:flex; gap:9px; }
+.schedchip{ flex:1; min-width:0; display:flex; align-items:center; gap:7px; min-height:46px; padding:0 12px; border:1.5px solid var(--line); border-radius:13px; background:var(--surface); color:var(--ink-soft); font-family:inherit; font-size:14px; font-weight:600; cursor:pointer; }
+.schedchip .ic{ width:17px; height:17px; flex:none; }
+.schedchip span{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.schedchip.set{ color:var(--ink); border-color:var(--brand-soft); background:var(--brand-soft); }
+.schedchip.set .ic{ color:var(--brand); }
+.schedchip.open{ border-color:var(--brand); box-shadow:0 0 0 3px var(--brand-soft); }
+.schedchip:active{ transform:scale(.98); }
+.pickpanel{ margin-top:10px; background:var(--surface); border:1px solid var(--line); border-radius:15px; padding:7px; box-shadow:var(--shadow); animation:tkin .18s ease; }
+.dpk{ display:flex; align-items:center; justify-content:space-between; gap:10px; width:100%; min-height:48px; padding:6px 12px; border:none; border-radius:11px; background:none; cursor:pointer; font-family:inherit; text-align:left; }
+.dpk:active{ background:var(--surface-2); }
+.dpkt{ font-size:15px; font-weight:600; color:var(--ink); }
+.dpks{ font-size:12.5px; color:var(--ink-faint); font-weight:500; }
+.dpk.on{ background:var(--brand-soft); }
+.dpk.on .dpkt{ color:var(--brand); font-weight:700; }
+.dpk.clr .dpkt{ color:var(--ink-soft); }
+.dpkcustom{ display:flex; align-items:center; justify-content:space-between; gap:10px; padding:5px 12px; min-height:48px; border-top:1px solid var(--hair); margin-top:2px; }
+.dpkcustom .dpkt{ font-size:15px; }
+.dpkcustom .dateinput{ max-width:54%; height:38px; }
+.tphead{ display:flex; align-items:center; gap:7px; font-size:14px; color:var(--ink-soft); padding:6px 6px 12px; }
+.tphead .ic{ width:16px; height:16px; color:var(--brand); flex:none; }
+.tphead b{ color:var(--ink); font-weight:700; }
+.tpgrids{ display:flex; gap:12px; padding:0 2px 4px; }
+.tpcol:first-child{ flex:2; } .tpcol:last-child{ flex:1; }
+.tplab{ font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.05em; color:var(--ink-faint); margin-bottom:7px; text-align:center; }
+.hgrid{ display:grid; grid-template-columns:repeat(4,1fr); gap:5px; }
+.mgrid{ display:grid; grid-template-columns:repeat(2,1fr); gap:5px; }
+.tcell{ height:38px; border:none; border-radius:10px; background:var(--surface-2); color:var(--ink); font-family:inherit; font-size:14.5px; font-weight:600; cursor:pointer; }
+.tcell:active{ transform:scale(.9); }
+.tcell.on{ background:var(--brand); color:#fff; }
+.timepanel .dpk.clr{ border-top:1px solid var(--hair); margin-top:4px; }
+.schedscrim{ position:fixed; inset:0; background:rgba(20,32,44,.42); z-index:80; animation:fadein .2s ease; }
+@keyframes fadein{ from{ opacity:0; } }
+.schedsheet{ position:fixed; left:0; right:0; bottom:0; z-index:81; background:var(--bg); border-radius:24px 24px 0 0; padding:8px 16px max(16px,env(safe-area-inset-bottom)); box-shadow:0 -10px 34px rgba(20,32,44,.24); animation:sheetup .32s cubic-bezier(.22,.61,.36,1); max-height:88vh; display:flex; flex-direction:column; }
+@keyframes sheetup{ from{ transform:translateY(100%); } }
+.sheetgrip{ width:42px; height:4px; border-radius:2px; background:var(--line); margin:6px auto 8px; }
+.sheethead{ display:flex; align-items:center; justify-content:space-between; padding:2px 2px 6px; }
+.sheettitle{ font-family:'Hanken Grotesk',sans-serif; font-weight:800; font-size:19px; color:var(--ink); }
+.sheetdone{ background:var(--brand); color:#fff; border:none; border-radius:12px; padding:9px 22px; font-family:inherit; font-size:15px; font-weight:700; cursor:pointer; box-shadow:0 4px 12px rgba(46,111,176,.28); }
+.sheetdone:active{ transform:scale(.96); }
+.sheetscroll{ overflow-y:auto; -webkit-overflow-scrolling:touch; padding-bottom:6px; }
+.sheetlabel{ display:flex; align-items:center; gap:7px; font-family:'Hanken Grotesk',sans-serif; font-size:12.5px; font-weight:800; text-transform:uppercase; letter-spacing:.05em; color:var(--ink-soft); margin:14px 2px 7px; }
+.sheetlabel:first-child{ margin-top:4px; }
+.sheetlabel .ic{ width:15px; height:15px; }
+.schedsheet .pickpanel{ margin-top:0; }
 .bulkbar{ display:flex; gap:9px; padding:0 16px 12px; }
 .bulkbtn{ flex:1; display:inline-flex; align-items:center; justify-content:center; gap:6px; height:42px; border-radius:13px; border:1px solid var(--line); background:var(--surface); color:var(--ink); font-family:inherit; font-size:14px; font-weight:600; cursor:pointer; box-shadow:var(--shadow); }
 .bulkbtn .ic{ width:16px; height:16px; color:var(--brand); }
@@ -562,6 +607,37 @@ function bucketDate(b){
 function nextWeekdayISO(target){ const cur=new Date().getDay(); let add=(target-cur+7)%7; if(add===0)add=7; return addDaysISO(add); }
 function weekendISO(){ const cur=new Date().getDay(); if(cur===6) return todayISO(); if(cur===0) return addDaysISO(6); return addDaysISO(6-cur); }
 function nextMondayISO(){ return nextWeekdayISO(1); }
+function fridayISO(){ const cur=new Date().getDay(); return addDaysISO((5-cur+7)%7); }
+function monthEndISO(){ const d=new Date(); return localISO(new Date(d.getFullYear(), d.getMonth()+1, 0)); }
+function formatDayLong(iso){ if(!iso) return ""; return parseISO(iso).toLocaleDateString("hu-HU",{weekday:"short",month:"short",day:"numeric"}); }
+function datePickerHTML(t){
+  const du=t.due;
+  const opt=(w,title,iso)=>'<button class="dpk'+(du===iso?" on":"")+'" data-action="duequick" data-when="'+w+'" data-id="'+t.id+'"><span class="dpkt">'+title+'</span><span class="dpks">'+formatDayLong(iso)+'</span></button>';
+  return '<div class="pickpanel">'
+    +opt("today","Ma",todayISO())
+    +opt("tomorrow","Holnap",addDaysISO(1))
+    +opt("friday","A hét vége",fridayISO())
+    +opt("week","Egy hét múlva",addDaysISO(7))
+    +opt("monthend","Hónap vége",monthEndISO())
+    +'<div class="dpkcustom"><span class="dpkt">Más dátum</span><input type="date" class="dateinput" id="ddate" data-id="'+t.id+'" value="'+(du||"")+'"></div>'
+    +'<button class="dpk clr'+(!du?" on":"")+'" data-action="dueclear" data-id="'+t.id+'"><span class="dpkt">Nincs határidő</span></button>'
+  +'</div>';
+}
+function timePickerHTML(t){
+  const cur=t.reminder?t.reminder.slice(11,16):"";
+  const ch=cur.slice(0,2), cm=cur.slice(3,5);
+  const dateStr=t.reminder?t.reminder.slice(0,10):(t.due||todayISO());
+  let hg=""; for(let h=0;h<24;h++){ const v=String(h).padStart(2,"0"); hg+='<button class="tcell'+(v===ch?" on":"")+'" data-action="remindhour" data-hour="'+v+'" data-id="'+t.id+'">'+v+'</button>'; }
+  let mg=""; for(let m=0;m<60;m+=5){ const v=String(m).padStart(2,"0"); mg+='<button class="tcell'+(v===cm?" on":"")+'" data-action="remindmin" data-min="'+v+'" data-id="'+t.id+'">'+v+'</button>'; }
+  return '<div class="pickpanel timepanel">'
+    +'<div class="tphead">'+icon("bell")+formatDayLong(dateStr)+' · <b>'+(cur||"—:—")+'</b></div>'
+    +'<div class="tpgrids">'
+      +'<div class="tpcol"><div class="tplab">Óra</div><div class="hgrid">'+hg+'</div></div>'
+      +'<div class="tpcol"><div class="tplab">Perc</div><div class="mgrid">'+mg+'</div></div>'
+    +'</div>'
+    +'<button class="dpk clr'+(!t.reminder?" on":"")+'" data-action="remindclear" data-id="'+t.id+'"><span class="dpkt">Nincs értesítés</span></button>'
+  +'</div>';
+}
 function timeOptions(sel){
   let o='<option value="">– óra:perc –</option>';
   for(let h=8;h<=20;h++){ for(let m=0;m<60;m+=15){ if(h===20&&m>0) break; const v=String(h).padStart(2,"0")+":"+String(m).padStart(2,"0"); o+='<option value="'+v+'"'+(v===sel?" selected":"")+'>'+v+'</option>'; } }
@@ -730,6 +806,18 @@ let printNotes=false;
 let searchQuery="", searchSel=-1, suggPicking=false, focusSearch=false;
 let plannedFilter="all";
 let dueOpen=false, remindOpen=false;
+let schedOpen=false;
+function schedSheetHTML(t){
+  return '<div class="schedscrim" data-action="closesched"></div>'
+    +'<div class="schedsheet">'
+      +'<div class="sheetgrip"></div>'
+      +'<div class="sheethead"><span class="sheettitle">Ütemezés</span><button class="sheetdone" data-action="closesched">Kész</button></div>'
+      +'<div class="sheetscroll">'
+        +'<div class="sheetlabel">'+icon("calendar")+' Határidő</div>'+datePickerHTML(t)
+        +'<div class="sheetlabel">'+icon("bell")+' Emlékeztető</div>'+timePickerHTML(t)
+      +'</div>'
+    +'</div>';
+}
 function fmtSize(b){ if(b<1024) return b+" B"; if(b<1024*1024) return Math.round(b/1024)+" KB"; return (b/1048576).toFixed(1)+" MB"; }
 function taskAtts(id){ return (data.atts&&data.atts[id])||[]; }
 function readAttachment(file, cb){
@@ -819,7 +907,12 @@ function pushToCloud(){
   }, 700);
 }
 function save(){ setLocalTs(Date.now()); saveLocal(); pushToCloud(); }
-const TASK_EDIT_ACTIONS={toggle:1,star:1,duetoday:1,duetomorrow:1,dueclear:1,remindclear:1,addstep:1,stepdone:1,stepdel:1,attdel:1,duequick:1,remindquick:1};
+function flushPush(){
+  if(!fbUser||!fbDb) return;
+  clearTimeout(pushTimer);
+  try{ const blob=JSON.stringify(data); lastSyncedBlob=blob; fbDb.collection("appdata").doc(fbUser.uid).set({ blob, ts:getLocalTs()||Date.now() }); }catch(e){}
+}
+const TASK_EDIT_ACTIONS={toggle:1,star:1,duetoday:1,duetomorrow:1,dueclear:1,remindclear:1,addstep:1,stepdone:1,stepdel:1,attdel:1,duequick:1,remindquick:1,remindhour:1,remindmin:1};
 function idMap(arr){ const m={}; (arr||[]).forEach(x=>{ if(x&&x.id) m[x.id]=x; }); return m; }
 function mergeById(localArr, remoteArr, delMap){
   const l=idMap(localArr), r=idMap(remoteArr);
@@ -827,13 +920,27 @@ function mergeById(localArr, remoteArr, delMap){
   const out=[];
   Object.keys(ids).forEach(id=>{
     const li=l[id], ri=r[id];
-    const chosen = (li&&ri) ? (((ri.mod||0)>(li.mod||0))?ri:li) : (li||ri);
+    let chosen;
+    if(li&&ri){
+      const lm=li.mod||0, rm=ri.mod||0;
+      if(rm>lm) chosen=ri; else if(lm>rm) chosen=li;
+      else chosen=(JSON.stringify(ri)>JSON.stringify(li))?ri:li; // döntetlennél stabil, mindkét eszközön azonos
+    } else chosen=li||ri;
     if(!chosen) return;
     const delTs=delMap[id]||0;
-    if(delTs && delTs>=(chosen.mod||chosen.createdAt||0)) return; // törölve az utolsó módosítás után
+    if(delTs && delTs>=(chosen.mod||chosen.createdAt||0)) return;
     out.push(chosen);
   });
   return out;
+}
+function stableStr(v){
+  if(Array.isArray(v)) return "["+v.map(stableStr).join(",")+"]";
+  if(v && typeof v==="object"){ return "{"+Object.keys(v).sort().map(k=>JSON.stringify(k)+":"+stableStr(v[k])).join(",")+"}"; }
+  return JSON.stringify(v);
+}
+function canonicalBlob(d){
+  const byId=(a)=>(a||[]).slice().sort((x,y)=>x.id<y.id?-1:(x.id>y.id?1:0));
+  return stableStr({ lists:byId(d.lists), tasks:byId(d.tasks), deleted:d.deleted||{}, createdTotal:d.createdTotal||0, atts:d.atts||{} });
 }
 function mergeUsage(a,b){
   const s={}; (a||[]).concat(b||[]).forEach(t=>{ s[t]=1; });
@@ -1098,35 +1205,12 @@ function render(){
           +'<textarea class="fstitle" id="dtitle" rows="1" data-id="'+detail.id+'">'+esc(detail.title)+'</textarea>'
           +'<button class="starbtn '+(detail.important?"on":"")+'" data-action="star" data-id="'+detail.id+'">'+icon("star",detail.important?"var(--amber)":"none")+'</button></div>'
         +stepsHTML
-        +(function(){
-          const du=detail.due, rt=detail.reminder?detail.reminder.slice(11,16):"";
-          const db=(w,label,iso)=>'<button class="bigbtn'+(du===iso?" on":"")+'" data-action="duequick" data-when="'+w+'" data-id="'+detail.id+'">'+label+'</button>';
-          const rb=(label,time)=>'<button class="bigbtn'+(rt===time?" on":"")+'" data-action="remindquick" data-time="'+time+'" data-id="'+detail.id+'"><span>'+label+'</span><small>'+time+'</small></button>';
-          return '<div class="field"><label class="fieldlabel">'+icon("calendar")+' Határidő</label>'
-            +'<div class="bigbtns">'
-              +db("today","Ma",todayISO())
-              +db("tomorrow","Holnap",addDaysISO(1))
-              +db("weekend","Hétvégén",weekendISO())
-              +db("nextweek","Jövő hét",nextMondayISO())
-              +'<button class="bigbtn alt'+(dueOpen?" on":"")+'" data-action="toggledue">Más nap…</button>'
-              +'<button class="bigbtn ghost'+(!du?" on":"")+'" data-action="dueclear" data-id="'+detail.id+'">Nincs</button>'
-            +'</div>'
-            +(dueOpen?'<div class="duerow expand"><input type="date" class="dateinput" id="ddate" data-id="'+detail.id+'" value="'+(du||"")+'"></div>':'')
+        +'<div class="field"><label class="fieldlabel">'+icon("calendar")+' Ütemezés</label>'
+          +'<div class="schedrow">'
+            +'<button class="schedchip'+(detail.due?" set":"")+'" data-action="opensched">'+icon("calendar")+'<span>'+(detail.due?formatDue(detail.due):"Nincs határidő")+'</span></button>'
+            +'<button class="schedchip'+(detail.reminder?" set":"")+'" data-action="opensched">'+icon("bell")+'<span>'+(detail.reminder?formatReminder(detail.reminder):"Nincs értesítés")+'</span></button>'
           +'</div>'
-          +'<div class="field"><label class="fieldlabel">'+icon("bell")+' Emlékeztető</label>'
-            +'<div class="bigbtns">'
-              +rb("Reggel","08:00")+rb("Dél","12:00")+rb("Délután","15:00")+rb("Este","18:00")
-              +'<button class="bigbtn alt'+(remindOpen?" on":"")+'" data-action="togglereminder">Egyéni…</button>'
-              +'<button class="bigbtn ghost'+(!detail.reminder?" on":"")+'" data-action="remindclear" data-id="'+detail.id+'">Nincs</button>'
-            +'</div>'
-            +(remindOpen?'<div class="duerow expand">'
-              +'<input type="date" class="dateinput" id="dreminddate" data-id="'+detail.id+'" value="'+(detail.reminder?detail.reminder.slice(0,10):"")+'">'
-              +'<select class="dateinput hoursel" id="dremindhour">'+hourOptions(detail.reminder?detail.reminder.slice(11,13):"")+'</select>'
-              +'<span class="timesep">:</span>'
-              +'<select class="dateinput minsel" id="dremindmin">'+minuteOptions(detail.reminder?detail.reminder.slice(14,16):"")+'</select>'
-            +'</div>':'')
-          +'</div>';
-        })()
+        +'</div>'
         +'<div class="field"><label class="fieldlabel">'+icon("pencil")+' Leírás</label>'
           +'<textarea class="note" id="dnote" data-id="'+detail.id+'" placeholder="Írj ide bármilyen megjegyzést, telefonszámot, e-mailt vagy weboldalt…">'+esc(detail.note)+'</textarea>'
           +'<div id="notelinks" class="notelinks">'+linksHTML(detail.note)+'</div>'
@@ -1137,6 +1221,7 @@ function render(){
           +'<button class="attadd" data-action="pickfile">'+icon("plus")+' Fájl hozzáadása</button>'
         +'</div>'
       +'</div>'
+      +(schedOpen?schedSheetHTML(detail):"")
     +'</div>'
   ):'')
   +(authOpen?(
@@ -1176,7 +1261,7 @@ function render(){
     dtitle.addEventListener("input",()=>{ const t=data.tasks.find(x=>x.id===dtitle.dataset.id); if(t){ t.title=dtitle.value; t.mod=Date.now(); save(); } growNote(dtitle); });
   }
   const ddate=document.getElementById("ddate");
-  if(ddate) ddate.addEventListener("change",()=>{ const t=data.tasks.find(x=>x.id===ddate.dataset.id); if(t){ t.due=ddate.value; save(); render(); } });
+  if(ddate) ddate.addEventListener("change",()=>{ const t=data.tasks.find(x=>x.id===ddate.dataset.id); if(t){ t.due=ddate.value; t.mod=Date.now(); save(); render(); } });
   const drd=document.getElementById("dreminddate");
   const dhh=document.getElementById("dremindhour");
   const dmm=document.getElementById("dremindmin");
@@ -1256,9 +1341,11 @@ document.getElementById("app").addEventListener("click",e=>{
   else if(a==="view"){view={type:el.dataset.vt,key:el.dataset.vk};plannedFilter="all";drawerOpen=false;render();}
   else if(a==="toggle"){const t=data.tasks.find(x=>x.id===id);t.done=!t.done;t.completedAt=t.done?Date.now():null;if(t.done){lastDoneId=id;data.completedTotal=(data.completedTotal||0)+1;}save();render();}
   else if(a==="star"){const t=data.tasks.find(x=>x.id===id);t.important=!t.important;if(t.important){const mn=data.tasks.length?Math.min(...data.tasks.map(x=>typeof x.order==="number"?x.order:0)):0;t.order=mn-1;}save();render();}
-  else if(a==="open"){trackOpen(id);openTaskId=id;dueOpen=false;remindOpen=false;render();}
+  else if(a==="open"){trackOpen(id);openTaskId=id;dueOpen=false;remindOpen=false;schedOpen=false;render();}
   else if(a==="toggledue"){ dueOpen=!dueOpen; render(); }
   else if(a==="togglereminder"){ remindOpen=!remindOpen; render(); }
+  else if(a==="opensched"){ schedOpen=true; render(); }
+  else if(a==="closesched"){ schedOpen=false; render(); }
   else if(a==="pickfile"){ const fi=document.getElementById("fileinput"); if(fi) fi.click(); }
   else if(a==="attdel"){ if(!data.atts)data.atts={}; data.atts[openTaskId]=taskAtts(openTaskId).filter(x=>x.id!==el.dataset.aid); save(); render(); }
   else if(a==="closesheet"){trackClose();openTaskId=null;render();}
@@ -1266,8 +1353,10 @@ document.getElementById("app").addEventListener("click",e=>{
   else if(a==="dellist"){delList(id);}
   else if(a==="deltask"){if(!data.deleted)data.deleted={};data.deleted[id]=Date.now();data.tasks=data.tasks.filter(x=>x.id!==id);if(data.atts)delete data.atts[id];openTaskId=null;save();render();}
   else if(a==="duetoday"){const t=data.tasks.find(x=>x.id===id);t.due=todayISO();save();render();}
-  else if(a==="duequick"){const t=data.tasks.find(x=>x.id===id);const w=el.dataset.when;t.due=w==="today"?todayISO():w==="tomorrow"?addDaysISO(1):w==="weekend"?weekendISO():w==="nextweek"?nextMondayISO():t.due;save();render();}
+  else if(a==="duequick"){const t=data.tasks.find(x=>x.id===id);const w=el.dataset.when;t.due=w==="today"?todayISO():w==="tomorrow"?addDaysISO(1):w==="weekend"?weekendISO():w==="friday"?fridayISO():w==="nextweek"?nextMondayISO():w==="week"?addDaysISO(7):w==="monthend"?monthEndISO():t.due;save();render();}
   else if(a==="remindquick"){const t=data.tasks.find(x=>x.id===id);const base=(t.due||todayISO());t.reminder=base+"T"+el.dataset.time;t.reminderFired=false;requestNotify();save();render();}
+  else if(a==="remindhour"){const t=data.tasks.find(x=>x.id===id);const date=(t.reminder?t.reminder.slice(0,10):(t.due||todayISO()));const mm=(t.reminder&&t.reminder.slice(14,16))||"00";t.reminder=date+"T"+el.dataset.hour+":"+mm;t.reminderFired=false;requestNotify();save();render();}
+  else if(a==="remindmin"){const t=data.tasks.find(x=>x.id===id);const date=(t.reminder?t.reminder.slice(0,10):(t.due||todayISO()));const hh=(t.reminder&&t.reminder.slice(11,13))||"09";t.reminder=date+"T"+hh+":"+el.dataset.min;t.reminderFired=false;requestNotify();save();render();}
   else if(a==="duetomorrow"){const t=data.tasks.find(x=>x.id===id);t.due=localISO(new Date(Date.now()+86400000));save();render();}
   else if(a==="dueclear"){const t=data.tasks.find(x=>x.id===id);t.due="";save();render();}
   else if(a==="remindclear"){const t=data.tasks.find(x=>x.id===id);t.reminder="";t.reminderFired=false;save();render();}
@@ -1357,7 +1446,7 @@ function openSuggestion(id){
   logSearch(searchQuery);
   searchQuery=""; suggPicking=false;
   view={type:"list",key:t.listId};
-  trackOpen(id); openTaskId=id; dueOpen=false; remindOpen=false;
+  trackOpen(id); openTaskId=id; dueOpen=false; remindOpen=false; schedOpen=false;
   render();
 }
 
@@ -1464,7 +1553,7 @@ function normPhone(raw){
   if(s.startsWith("00")) s="+"+s.slice(2);
   if(s.startsWith("+")){
     const dg=s.slice(1).replace(/\D/g,"");
-    return (dg.length>=8&&dg.length<=15)?("+"+dg):null;
+    return (dg.length>=9&&dg.length<=15)?("+"+dg):null;
   }
   let n=s.replace(/\D/g,"");
   if(n.startsWith("06")) n="36"+n.slice(2);
@@ -1500,7 +1589,7 @@ function extractLinks(text){
   work=work.replace(/<([^>\s]+)>/g,(m,tg)=>{ classify(tg.trim(),tg.trim()); return " "; });
   work=work.replace(/[\w.+-]+@[\w-]+\.[\w.-]+/g,(m)=>{ putEmail(m); return " "; });
   work=work.replace(/(?:https?:\/\/|www\.)[^\s<>()]+/gi,(m)=>{ classify(m,m); return " "; });
-  work.replace(/\+?\d[\d\s\-\/().]{7,}\d/g,(m)=>{ putPhone(m); return m; });
+  work.replace(/\+?\d[\d\s\-().]{7,}\d/g,(m)=>{ if(/\d[\/.]\d{2,}[\/.]/.test(m)) return m; putPhone(m); return m; });
   return Array.from(map.values());
 }
 function looksLikeName(line){
@@ -1510,7 +1599,16 @@ function looksLikeName(line){
   if(/https?:|www\./i.test(s)) return false;
   const words=s.split(/\s+/);
   if(words.length<1 || words.length>4) return false;
-  return words.every(w=>/^[A-ZÁÉÍÓÖŐÚÜW][\wáéíóöőúüűa-zA-Z.\-]*$/.test(w));
+  return words.every(w=>/^[A-ZÁÉÍÓÖŐÚÜŰ][\wáéíóöőúüűa-zA-Z.\-]*$/.test(w));
+}
+function isNameHeader(line){
+  const m=(line||"").match(/^\s*(.{2,48}?)\s*:\s*$/);
+  if(!m) return null;
+  const c=m[1].trim();
+  if(!/[A-Za-zÁÉÍÓÖŐÚÜŰáéíóöőúüű]/.test(c)) return null;
+  if(/@|https?:|www\./i.test(c)) return null;
+  if(extractLinks(c).length) return null;
+  return c.replace(/\s*[-–—]\s*$/,"");
 }
 function contactGroups(text){
   if(!text) return [];
@@ -1522,6 +1620,8 @@ function contactGroups(text){
   for(const line of lines){
     const nm=line.match(nameRe);
     if(nm){ cur=ensure(nm[2].trim()); continue; }
+    const hdr=isNameHeader(line);
+    if(hdr){ cur=ensure(hdr); continue; }
     if(looksLikeName(line)){ cur=ensure(line.trim()); continue; }
     const links=extractLinks(line);
     if(links.length){
@@ -1581,12 +1681,18 @@ function onAuthChange(user){
       try{
         const remote=JSON.parse(d.blob);
         if(remote && remote.lists){
+          const before=canonicalBlob(data);
           const merged=mergeData(data, remote);
-          const mblob=JSON.stringify(merged);
           data=merged;
-          ensureOrders(); if(!data.atts) data.atts={};
-          setLocalTs(Date.now()); saveLocal(); render();
-          if(mblob!==d.blob) pushToCloud(); else lastSyncedBlob=d.blob;
+          if(!data.atts) data.atts={};
+          const after=canonicalBlob(data);
+          const remoteCanon=canonicalBlob(remote);
+          if(after!==before){
+            ensureOrders(); setLocalTs(Date.now()); saveLocal();
+            const typing=/^(INPUT|TEXTAREA|SELECT)$/.test(((document.activeElement||{}).tagName)||"");
+            if(!typing) render();
+          } else { saveLocal(); }
+          if(after!==remoteCanon) pushToCloud(); else lastSyncedBlob=d.blob;
         }
       }catch(e){ console.error("Felhő adat hiba",e); }
     }, err=>console.error("Szinkron hiba",err));
@@ -1666,8 +1772,9 @@ warnNoStorage();
 initFirebase();
 checkReminders();
 setInterval(checkReminders, 30000);
-window.addEventListener("pagehide", trackClose);
-document.addEventListener("visibilitychange", ()=>{ if(document.visibilityState==="hidden") trackClose(); });
+window.addEventListener("pagehide", ()=>{ trackClose(); flushPush(); });
+window.addEventListener("blur", flushPush);
+document.addEventListener("visibilitychange", ()=>{ if(document.visibilityState==="hidden"){ trackClose(); flushPush(); } });
 </script>
 </body>
 </html>
