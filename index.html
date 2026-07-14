@@ -570,6 +570,34 @@ const P = {
 };
 function icon(n, fill){ return '<svg class="ic" width="24" height="24" viewBox="0 0 24 24" fill="'+(fill||'none')+'" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+P[n]+'</svg>'; }
 function applyTheme(){ document.body.classList.toggle("dark", darkMode); const m=document.querySelector('meta[name="theme-color"]'); if(m) m.setAttribute("content", darkMode?"#0F1621":"#2E6FB0"); }
+function verList(){ try{ return JSON.parse(localStorage.getItem(VERS_KEY)||"[]"); }catch(e){ return []; } }
+function snapshotVersion(){
+  try{
+    if(!data||!data.tasks) return;
+    const blob=JSON.stringify({lists:data.lists,tasks:data.tasks,atts:data.atts||{}});
+    const arr=verList();
+    if(arr.length && arr[0].blob===blob) return;
+    arr.unshift({ts:Date.now(), n:data.tasks.length, blob});
+    while(arr.length>MAX_VERS) arr.pop();
+    try{ localStorage.setItem(VERS_KEY, JSON.stringify(arr)); }catch(e){}
+  }catch(e){}
+}
+function closeVersions(){ const el=document.getElementById("verscrim"); if(el) el.remove(); }
+function restoreVersion(i){
+  const arr=verList(); const v=arr[i]; if(!v) return;
+  snapshotVersion();
+  try{ const sn=JSON.parse(v.blob); data.lists=sn.lists||data.lists; data.tasks=sn.tasks||[]; if(sn.atts) data.atts=sn.atts; ensureOrders(); setLocalTs(Date.now()); saveLocal(); pushToCloud(); closeVersions(); render(); showToast("Verzió visszaállítva"); }catch(e){}
+}
+function openVersions(){
+  drawerOpen=false; closeVersions();
+  const arr=verList();
+  const fmt=t=>new Date(t).toLocaleString("hu-HU",{month:"short",day:"numeric",hour:"2-digit",minute:"2-digit"});
+  const rows=arr.length? arr.map((v,i)=>'<button class="dpk'+(i===0?" on":"")+'" data-verrestore="'+i+'"><span class="dpkt">'+(i===0?"Jelenlegi / legutóbbi":"Verzió "+(i+1))+'</span><span class="dpks">'+v.n+' feladat · '+fmt(v.ts)+'</span></button>').join("") : '<div class="empty" style="padding:22px 8px">Még nincs mentett verzió. Egy feladat szerkesztése (majd kilépés a mezőből) után jelenik meg itt.</div>';
+  const scrim=document.createElement("div"); scrim.id="verscrim"; scrim.className="schedscrim";
+  scrim.innerHTML='<div class="schedsheet"><div class="sheetgrip"></div><div class="sheethead"><span class="sheettitle">Verziók · visszavonás</span><button class="sheetdone" data-verclose="1">Kész</button></div><div class="sheetscroll"><div class="tphead">'+icon("flag")+'<span>Koppints egy korábbi verzióra a visszaállításhoz — a jelenlegi állapot előbb automatikusan elmentődik. Max. 10 verzió.</span></div><div class="pickpanel">'+rows+'</div></div></div>';
+  document.body.appendChild(scrim);
+  scrim.addEventListener("click",e=>{ if(e.target===scrim||e.target.closest("[data-verclose]")){ closeVersions(); return; } const r=e.target.closest("[data-verrestore]"); if(r) restoreVersion(parseInt(r.getAttribute("data-verrestore"),10)); });
+}
 const GRIP='<svg class="ic" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.4"/><circle cx="9" cy="12" r="1.4"/><circle cx="9" cy="18" r="1.4"/><circle cx="15" cy="6" r="1.4"/><circle cx="15" cy="12" r="1.4"/><circle cx="15" cy="18" r="1.4"/></svg>';
 
 /* ----------------------------- segéd ----------------------------- */
@@ -578,6 +606,7 @@ const STORE="todo-data-v1";
 const DATA_VERSION="2026-07-14-import-1";
 const DATA_URL="data/tasks.json";
 let justSeeded=false;
+const VERS_KEY="todo-versions", MAX_VERS=10;
 const uid=()=>Math.random().toString(36).slice(2,10)+Date.now().toString(36).slice(-4);
 const NAMEDAYS={"01-01":"Fruzsina","01-02":"Ábel","01-03":"Genovéva, Benjámin","01-04":"Titusz, Leona","01-05":"Simon","01-06":"Boldizsár","01-07":"Attila, Ramóna","01-08":"Gyöngyvér","01-09":"Marcell","01-10":"Melánia","01-11":"Ágota","01-12":"Ernő","01-13":"Veronika","01-14":"Bódog","01-15":"Lóránt, Loránd","01-16":"Gusztáv","01-17":"Antal, Antónia","01-18":"Piroska","01-19":"Sára, Márió","01-20":"Fábián, Sebestyén","01-21":"Ágnes","01-22":"Vince, Artúr","01-23":"Zelma, Rajmund","01-24":"Timót","01-25":"Pál","01-26":"Vanda, Paula","01-27":"Angelika","01-28":"Károly, Karola","01-29":"Adél","01-30":"Martina, Gerda","01-31":"Marcella",
 "02-01":"Ignác","02-02":"Karolina, Aida","02-03":"Balázs","02-04":"Ráhel, Csenge","02-05":"Ágota, Ingrid","02-06":"Dorottya, Dóra","02-07":"Tódor, Rómeó","02-08":"Aranka","02-09":"Abigél, Alex","02-10":"Elvira","02-11":"Bertold, Marietta","02-12":"Lívia, Lídia","02-13":"Ella, Linda","02-14":"Bálint, Valentin","02-15":"Kolos, Georgina","02-16":"Julianna, Lilla","02-17":"Donát","02-18":"Bernadett","02-19":"Zsuzsanna","02-20":"Aladár, Álmos","02-21":"Eleonóra","02-22":"Gerzson","02-23":"Alfréd","02-24":"Mátyás","02-25":"Géza","02-26":"Edina","02-27":"Ákos, Bátor","02-28":"Elemér","02-29":"Antónia",
@@ -1180,6 +1209,7 @@ function render(){
             : '<button class="synclogin" data-action="openauth"><span class="syncdot"></span>Bejelentkezés a szinkronhoz</button>')
         : '<div class="syncinfo muted"><span class="syncdot"></span>Szinkron: nincs beállítva</div>')
       +'<button class="themetoggle" data-action="toggletheme">'+icon(darkMode?"sun":"moon")+(darkMode?" Világos mód":" Sötét mód")+'</button>'
+      +'<button class="themetoggle" data-action="openversions">'+icon("calendar")+' Verziók · visszavonás</button>'
       +'<button class="reset" data-action="reset">'+icon("settings")+' Adatok visszaállítása</button></div>'
   +'</aside>'
   +'<main class="main">'
@@ -1390,6 +1420,7 @@ document.getElementById("app").addEventListener("click",e=>{
   else if(a==="stepdone"){ const t=data.tasks.find(x=>x.id===openTaskId); if(t&&t.steps){ const s=t.steps.find(x=>x.id===el.dataset.sid); if(s){ s.done=!s.done; save(); render(); } } }
   else if(a==="stepdel"){ const t=data.tasks.find(x=>x.id===openTaskId); if(t&&t.steps){ t.steps=t.steps.filter(x=>x.id!==el.dataset.sid); save(); render(); } }
   else if(a==="toggletheme"){ darkMode=!darkMode; try{ localStorage.setItem("todo-theme", darkMode?"dark":"light"); }catch(e){} applyTheme(); render(); }
+  else if(a==="openversions"){ openVersions(); }
   else if(a==="reset"){ if(confirm("Biztosan törölsz minden listát és feladatot? Ez nem vonható vissza.")){ data=defaultData(); view={type:"list",key:data.lists[0].id}; drawerOpen=false; save(); render(); } }
   else if(a==="openauth"){ authOpen=true; openTaskId=null; drawerOpen=false; authError=""; render(); }
   else if(a==="closeauth"){ authOpen=false; render(); }
@@ -1806,14 +1837,16 @@ async function bootstrap(){
   try{ darkMode = localStorage.getItem("todo-theme")==="dark"; }catch(e){}
   applyTheme();
   render();
+  snapshotVersion();
   warnNoStorage();
   initFirebase();
   checkReminders();
   setInterval(checkReminders, 30000);
 }
 bootstrap();
-window.addEventListener("pagehide", ()=>{ trackClose(); flushPush(); });
+window.addEventListener("pagehide", ()=>{ trackClose(); snapshotVersion(); flushPush(); });
 window.addEventListener("blur", flushPush);
+document.addEventListener("focusout", e=>{ const tg=(e.target&&e.target.tagName)||""; if(/^(INPUT|TEXTAREA)$/.test(tg)) snapshotVersion(); }, true);
 document.addEventListener("visibilitychange", ()=>{ if(document.visibilityState==="hidden"){ trackClose(); flushPush(); } });
 </script>
 </body>
