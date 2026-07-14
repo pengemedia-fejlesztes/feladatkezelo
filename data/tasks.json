@@ -1,0 +1,1580 @@
+{
+  "lists": [
+    {
+      "id": "da1sv0eh19q9",
+      "name": "Feladatok",
+      "color": "#2E6FB0"
+    },
+    {
+      "id": "jst6yj1uw2wz",
+      "name": "1 - Heti célok - Magán",
+      "color": "#2C8C8C"
+    },
+    {
+      "id": "oy4wipetqrtr",
+      "name": "1 - Projekt - Heti célok",
+      "color": "#C77A16"
+    },
+    {
+      "id": "arv65q7zpb04",
+      "name": "2 - Következő lépések - Magán",
+      "color": "#8A5BB8"
+    },
+    {
+      "id": "m79n559koi1s",
+      "name": "3 - Választ várok - Magán",
+      "color": "#C0392B"
+    },
+    {
+      "id": "cc4q1sd1sby1",
+      "name": "Befektetés",
+      "color": "#3B6FB0"
+    },
+    {
+      "id": "9fhb3gxksj4y",
+      "name": "Meeting - kapcsolatfelvétel",
+      "color": "#C9518A"
+    },
+    {
+      "id": "yxko8ej3tj0b",
+      "name": "Személyes fejlődés",
+      "color": "#2E6FB0"
+    },
+    {
+      "id": "8xtqzzds2m7x",
+      "name": "Közös",
+      "color": "#2C8C8C"
+    }
+  ],
+  "tasks": [
+    {
+      "id": "wf81b1bl9d6v",
+      "listId": "da1sv0eh19q9",
+      "title": "cloude",
+      "done": false,
+      "important": false,
+      "note": "cd ~ && zip -rq ~/Desktop/claude-sessions.zip .claude && echo \"Kesz: $(du -h ~/Desktop/claude-sessions.zip | cut -f1)\"",
+      "due": "2026-07-13",
+      "createdAt": 1784052000000,
+      "mod": 1784052000000,
+      "order": 0
+    },
+    {
+      "id": "yly86ad31klg",
+      "listId": "da1sv0eh19q9",
+      "title": "Ügyfél - Sales - Hívni",
+      "done": false,
+      "important": false,
+      "note": "Schőn András - Komédiás Kávéház +36 20 934 2873 Megkeresés célja: a teljes körű marketing igény gyors kvalifikálása és 15-20 perces igényfelmérő egyeztetés fixálása. Lehetséges szolgáltatási típusok: teljes körű marketing, social, PPC, SEO, vendéglátó kommunikáció. Mészáros Gábor - Mészáros Cukrászda +36 20 956 5400 Megkeresés célja: bemutatkozó egyeztetés időpontját egyeztetni, mert délelőtti időpontokat jelzett, szerda kivételével. Lehetséges szolgáltatási típusok: teljes körű vendéglátó marketing, social, stratégia, PPC, helyi SEO, márkaépítés. Szőke Szabolcs / Szabó András - Orczy +36 30 995 2020 Megkeresés célja: az ajánlat utáni döntési státusz és a következő döntési pont tisztázása. Lehetséges szolgáltatási típusok: performance marketing, PPC, SEO, kosárérték maximalizálás, e-commerce stratégia.",
+      "due": "2026-07-13",
+      "createdAt": 1784051999999,
+      "mod": 1784051999999,
+      "order": 1
+    },
+    {
+      "id": "5dums6v3ian5",
+      "listId": "da1sv0eh19q9",
+      "title": "Julcsi orvos érdeklődés",
+      "done": false,
+      "important": false,
+      "note": "Dr. Juhász-Keglovits Klára (2. számú körzet) gyermekorvos rendelési ideje a pomázi Gyermek háziorvosok rendelési ideje (link) oldalon található hivatalos beosztás szerint a következő: Helyszín: 2013 Pomáz, Jankovich Gyula utca 2. Dr. Keglovits Klára (link) Telefonszám: +36 26 325 060 vagy +36 20 384 1811 Rendelési idők: Hétfő: 14:00 – 17:00 Kedd: 11:00 – 14:00 Szerda: 08:00 – 11:00 Csütörtök: 14:00 – 17:00 Péntek: 11:00 – 14:00 ORVOS kérdések: Mi volt a pontos diagnózis, és kell-e utánkövetés, kontroll? Írt-e fel gyógyszert vagy kezelést? Az elmúlt hónapokban mikor és milyen panaszokkal járt Önnél Julcsi? Összességében hogyan látja a fejlődését — súly, mozgás, beszéd? A bal kezét mintha kicsit másképp tartaná — észlelt-e ilyet? Érdemes-e szakemberrel (gyógytornász, neurológus) megnézetni? Szeretném kérni a vizsgálati dokumentáció másolatát is.",
+      "due": "2026-07-14",
+      "createdAt": 1784051999998,
+      "mod": 1784051999998,
+      "order": 2
+    },
+    {
+      "id": "yqna8u21jxia",
+      "listId": "da1sv0eh19q9",
+      "title": "eladni",
+      "done": false,
+      "important": false,
+      "note": "",
+      "due": "2026-07-14",
+      "createdAt": 1784051999997,
+      "mod": 1784051999997,
+      "order": 3
+    },
+    {
+      "id": "vt2iuqlhybvc",
+      "listId": "da1sv0eh19q9",
+      "title": "Sales lead követés: Mészáros Gábor cukrászda",
+      "done": false,
+      "important": true,
+      "note": "Gmail piszkozat készült: r-1436210235894221104. Csatolva 360 bemutatkozó. Következő lépés: átnézés és küldés, majd B24 lead/task ha elérhető.",
+      "due": "2026-07-13",
+      "createdAt": 1784051999996,
+      "mod": 1784051999996,
+      "order": 4
+    },
+    {
+      "id": "y18fgi2dhlud",
+      "listId": "da1sv0eh19q9",
+      "title": "Sürgős válasz: Viktória Kormos jelentkezői visszajelzés",
+      "done": false,
+      "important": true,
+      "note": "Gmail: 19f5adee93edfa1f. Reputációs kockázat, emberi hangú válasz kell. Következő lépés: státusz tisztázása, elnézés a késésért, konkrét határidő vagy döntés.",
+      "due": "2026-07-13",
+      "createdAt": 1784051999995,
+      "mod": 1784051999995,
+      "order": 5
+    },
+    {
+      "id": "silmrf7y2vav",
+      "listId": "da1sv0eh19q9",
+      "title": "Dani call (15 perc)",
+      "done": false,
+      "important": false,
+      "note": "Jövő hét hétfői rövid egyeztetés. Naptárban is szerepel.",
+      "due": "2026-07-19",
+      "createdAt": 1784051999994,
+      "mod": 1784051999994,
+      "order": 6
+    },
+    {
+      "id": "fvqr0wmd95oy",
+      "listId": "da1sv0eh19q9",
+      "title": "Ügyfélszolgálat hívás - nyitvatartás szerint (15 perc)",
+      "done": false,
+      "important": true,
+      "note": "Holnap elintézendő. Időtartam: 15 perc. Ütemezés: naptárban is szerepeljen munkaidőben.",
+      "due": "2026-07-13",
+      "createdAt": 1784051999993,
+      "mod": 1784051999993,
+      "order": 7
+    },
+    {
+      "id": "eckv9wjvbzbq",
+      "listId": "da1sv0eh19q9",
+      "title": "hirdetesek feladasa",
+      "done": false,
+      "important": false,
+      "note": "pomázról el kell hozni a philips légtisztítót, air firairt és a szarvasi kávéfőzőt is (link)",
+      "due": "2026-07-14",
+      "createdAt": 1784051999992,
+      "mod": 1784051999992,
+      "order": 8
+    },
+    {
+      "id": "f2ljuu1hvn2h",
+      "listId": "da1sv0eh19q9",
+      "title": "Masszázs bejelentkezés",
+      "done": false,
+      "important": false,
+      "note": "+36/70-625-8110 Lamay Cím: Budapest XIII.kerület, Dráva utca 12. Nyitvatartás: naponta 10:00 - 20:30 06 1 798 9711: 06 30 240 1715",
+      "due": "2026-07-11",
+      "createdAt": 1784051999991,
+      "mod": 1784051999991,
+      "order": 9
+    },
+    {
+      "id": "8f596lmdgipd",
+      "listId": "da1sv0eh19q9",
+      "title": "Auto vásárlás",
+      "done": false,
+      "important": false,
+      "note": "",
+      "due": "2026-07-19",
+      "createdAt": 1784051999990,
+      "mod": 1784051999990,
+      "order": 10
+    },
+    {
+      "id": "iquazeen2ai1",
+      "listId": "da1sv0eh19q9",
+      "title": "Auto eladás",
+      "done": false,
+      "important": false,
+      "note": "",
+      "due": "2026-07-14",
+      "createdAt": 1784051999989,
+      "mod": 1784051999989,
+      "order": 11,
+      "steps": [
+        {
+          "id": "33exz5i826jj",
+          "text": "Fotózás",
+          "done": false,
+          "order": 0
+        },
+        {
+          "id": "zdfq0bh7lbdh",
+          "text": "Hirdetés készítés",
+          "done": false,
+          "order": 1
+        }
+      ]
+    },
+    {
+      "id": "lkd2f4424l15",
+      "listId": "da1sv0eh19q9",
+      "title": "Penge ügyfelek lehetnek",
+      "done": false,
+      "important": true,
+      "note": "Sanitech Hajdu Attila +36 30 977 8799 Globus Human Services Honti Réka +36 70 858 5192 Energotherm Palakovics Ferenc +36 20 299 8392 Orczy Szőke Szabolcs +36 30 995 2020 Lizzie Bistro / Laterex Kittinger / Kettinger Henriett +36 30 179 8821 Apát Panzió Oroszlán Kinga +36 30 577 8267 Naturtex Rakitta Milla / Nagy Edina +36 30 779 1515 QXWorld Zsolt Geri Gerstenbrein +36 30 297 2122 Porsche Hungaria Nagy László +36 20 226 89 40 Kibernet Péter - 08 hóban keresni. SMTP szolgáltatás mint értékesítés a kitörési pont. ----- Esbr Balázs Máj Szabolcs Tst Nehoda Peti Szilvási Tibor Tóth Gábor Török Dianna Vinkó Ágnes Jófalat Kálmán - nem volt együttműködő. Valkó Richárd - nemzetközi marketinget visz. Nincs képben. Tajti Ildikó - nem volt együttműködő Nagy Eszter - nem nagyon volt segítőkész",
+      "due": "2026-07-13",
+      "createdAt": 1784051999988,
+      "mod": 1784051999988,
+      "order": 12,
+      "steps": [
+        {
+          "id": "vn0o6kz8pnqc",
+          "text": "BMM",
+          "done": false,
+          "order": 0
+        }
+      ]
+    },
+    {
+      "id": "h644hoq6ec7f",
+      "listId": "da1sv0eh19q9",
+      "title": "Emberi kapcsolatok",
+      "done": false,
+      "important": false,
+      "note": "Sqash Billiard Falmaszas Hétvégi kerékpározás Sörözés Lukovics Dancs Tóth Laci Pájer Havas Piuk Kun Balázs Huba Kránicz Dani Hutás István Zilahi Ferenc Koronics Krisztián Béres Zsolt Balogh Benjamin - befektetés Balogh Szilvia - befektetés",
+      "due": "2026-07-10",
+      "createdAt": 1784051999987,
+      "mod": 1784051999987,
+      "order": 13
+    },
+    {
+      "id": "ybyflrzh6jop",
+      "listId": "da1sv0eh19q9",
+      "title": "szőnyeg a teraszajtóhoz",
+      "done": false,
+      "important": false,
+      "note": "",
+      "due": "2026-07-10",
+      "createdAt": 1784051999986,
+      "mod": 1784051999986,
+      "order": 14
+    },
+    {
+      "id": "gmq2tczgdu4n",
+      "listId": "da1sv0eh19q9",
+      "title": "Virágtartó",
+      "done": false,
+      "important": false,
+      "note": "",
+      "due": "2026-07-11",
+      "createdAt": 1784051999985,
+      "mod": 1784051999985,
+      "order": 15
+    },
+    {
+      "id": "8b8ivf7pujc7",
+      "listId": "da1sv0eh19q9",
+      "title": "Ügyvéd",
+      "done": false,
+      "important": false,
+      "note": "Dr. Havas-Sághy Gábor és társai ügyvédi iroda +3617866607 +36703812222 Vidaakovics: +36303572124 Dr. Grad András 06302801846 Lévai Imre: +36703242010 Úgy látja, hogy a láthatás 1/3-ban tudom max elhozni Julcsit 1.2M a díj + tárgyalásonként 150e Lenthár Lilla - aszisztens ------- +36 (30) 357-2124 Székely Edit, dr. Székely Edit 70/3111395 06209594955 Dr. Wéber Ágnes Olivér volt barátnője Molnár Andrea Dr. Regász Mária Tel: +36303818350",
+      "due": "2026-07-10",
+      "createdAt": 1784051999984,
+      "mod": 1784051999984,
+      "order": 16
+    },
+    {
+      "id": "yrjzgmapkv3r",
+      "listId": "da1sv0eh19q9",
+      "title": "Raktár találás",
+      "done": false,
+      "important": false,
+      "note": "Bydeskuthy András; 1 emeleten nagyobb van. Földszinten kicsi (link)",
+      "due": "2026-07-15",
+      "createdAt": 1784051999983,
+      "mod": 1784051999983,
+      "order": 17
+    },
+    {
+      "id": "tbj3y2gs0bgb",
+      "listId": "da1sv0eh19q9",
+      "title": "Szemész orvos",
+      "done": false,
+      "important": false,
+      "note": "gonioscopia vizsgálat",
+      "due": "2026-07-10",
+      "createdAt": 1784051999982,
+      "mod": 1784051999982,
+      "order": 18
+    },
+    {
+      "id": "mki7zxqxle5m",
+      "listId": "da1sv0eh19q9",
+      "title": "Fürdőszoba szekrény",
+      "done": false,
+      "important": false,
+      "note": "(link)",
+      "due": "2026-07-11",
+      "createdAt": 1784051999981,
+      "mod": 1784051999981,
+      "order": 19
+    },
+    {
+      "id": "d7kzaw3akvv6",
+      "listId": "da1sv0eh19q9",
+      "title": "Rita 3",
+      "done": false,
+      "important": true,
+      "note": "[Affirmációk / mantra - személyes fejlődés lista, mentális/fizikai/anyagi egészség, párkapcsolati célok. Hosszú személyes jegyzet.]",
+      "due": "2026-07-14",
+      "createdAt": 1784051999980,
+      "mod": 1784051999980,
+      "order": 20
+    },
+    {
+      "id": "1fhde56gdk7t",
+      "listId": "da1sv0eh19q9",
+      "title": "Végrehajtó - lehmann és Rácz József",
+      "done": false,
+      "important": true,
+      "note": "Minden hónap 15. 51x250e Dr. Nagy Nándor 06305486823 175.V.1870/2024/118 Balázs András János - végrehajtást kérő 0105-9..vh.464/2026 Telefonos félfogadás: Hétfőtől-Péntekig: 08:00-12:00 1869/2024 E papír. Korábban kiállított díjjegyzék megküldése és az eljárás folytatása. Végrehajtás az ingatlanra. ------ dr. Makovics János - Lehmann: 204.V.0048/2025/34 Személyes félfogadás: Kedd: 10:00-12:00 Szerda, Csütörtök: 08:00-12:00 +36-1-260-3127",
+      "due": "2026-07-14",
+      "createdAt": 1784051999979,
+      "mod": 1784051999979,
+      "order": 21
+    },
+    {
+      "id": "a0rx5p2csiel",
+      "listId": "da1sv0eh19q9",
+      "title": "Végrehajtás - Kontra Judit",
+      "done": false,
+      "important": true,
+      "note": "Érlak Andrea 06301170485 Dr. Kiss Kurucz Csaba +36 30 225 1547 (email)",
+      "due": "2026-07-14",
+      "createdAt": 1784051999978,
+      "mod": 1784051999978,
+      "order": 22
+    },
+    {
+      "id": "8j5xo7t81apc",
+      "listId": "da1sv0eh19q9",
+      "title": "Erna",
+      "done": false,
+      "important": false,
+      "note": "Milyen eszközöket használnak a vállalkozások - statisztika. Mi jelenti most a legnagyobb kihívást - statisztika és kérdés az ügyfél fele. Feladat kivitelező cég legyen vagy aki holisztikusan nézi és érti a feladatot. 360m design készítés Hírlevél küldés digitális körkép automatizálása",
+      "due": "2026-07-12",
+      "createdAt": 1784051999977,
+      "mod": 1784051999977,
+      "order": 23,
+      "steps": [
+        {
+          "id": "ie63rvxoha74",
+          "text": "Kamagra",
+          "done": true,
+          "order": 0
+        },
+        {
+          "id": "6qj95qa5wtw2",
+          "text": "Tartalom feltöltés",
+          "done": true,
+          "order": 1
+        },
+        {
+          "id": "mggrdci9oixf",
+          "text": "360m hírlevél küldés - spam csökkentés",
+          "done": false,
+          "order": 2
+        },
+        {
+          "id": "pzrspwjw4rji",
+          "text": "Digitális körkép automatizalas",
+          "done": false,
+          "order": 3
+        },
+        {
+          "id": "p9drl6ga9kgx",
+          "text": "design system",
+          "done": false,
+          "order": 4
+        },
+        {
+          "id": "87n09tow96fy",
+          "text": "panorama fotok gmb fiokot toroljuk",
+          "done": false,
+          "order": 5
+        }
+      ]
+    },
+    {
+      "id": "d55ociel8vnn",
+      "listId": "da1sv0eh19q9",
+      "title": "Dani - HUN utca",
+      "done": false,
+      "important": false,
+      "note": "Hálószoba ajtó Csempe a teraszon Terasz - fóliát lehet már feltenni Gyors kis festés Tárolók egyeztetése",
+      "due": "2026-07-19",
+      "createdAt": 1784051999976,
+      "mod": 1784051999976,
+      "order": 24,
+      "steps": [
+        {
+          "id": "u99rx718ohls",
+          "text": "Ajtó",
+          "done": false,
+          "order": 0
+        },
+        {
+          "id": "pmumuxll5mfq",
+          "text": "Csempe a teraszon",
+          "done": false,
+          "order": 1
+        },
+        {
+          "id": "myam907hyl4c",
+          "text": "Termosztát",
+          "done": false,
+          "order": 2
+        }
+      ]
+    },
+    {
+      "id": "qlhaptjafd8n",
+      "listId": "da1sv0eh19q9",
+      "title": "Picur és én - Új élet",
+      "done": false,
+      "important": false,
+      "note": "[Személyes affirmációk Julcsiról és önmagáról - kizárólagos szülői felügyelet célja, egészség, kötődés.]",
+      "due": "2026-07-14",
+      "createdAt": 1784051999975,
+      "mod": 1784051999975,
+      "order": 25
+    },
+    {
+      "id": "5dearuopuqqe",
+      "listId": "da1sv0eh19q9",
+      "title": "Szemüveg készítés",
+      "done": false,
+      "important": false,
+      "note": "(link)",
+      "due": "2026-07-10",
+      "createdAt": 1784051999974,
+      "mod": 1784051999974,
+      "order": 26
+    },
+    {
+      "id": "4ei2rw5j854j",
+      "listId": "da1sv0eh19q9",
+      "title": "Feng shui",
+      "done": false,
+      "important": false,
+      "note": "Ritara hivatkozni",
+      "due": "2026-07-10",
+      "createdAt": 1784051999973,
+      "mod": 1784051999973,
+      "order": 27
+    },
+    {
+      "id": "c6ti53wl67mu",
+      "listId": "da1sv0eh19q9",
+      "title": "TikTok",
+      "done": false,
+      "important": false,
+      "note": "(link)",
+      "due": "2026-07-10",
+      "createdAt": 1784051999972,
+      "mod": 1784051999972,
+      "order": 28,
+      "steps": [
+        {
+          "id": "5iy8at3hae9d",
+          "text": "300",
+          "done": false,
+          "order": 0
+        }
+      ]
+    },
+    {
+      "id": "laauvmzek919",
+      "listId": "da1sv0eh19q9",
+      "title": "Tünde egyeztetés",
+      "done": false,
+      "important": false,
+      "note": "Viselkedés julcsi jelenlétében. Julcsi rutinok. Napi kérdések - milyen volt ma Julcsi napja. Szülői felügyelet: kizárólagos. Folyamatos kapcsolattartás részletes korosztályos beosztással (3 éves korig, 3-4, 4-5, 5-iskolás kor, 6 éves kortól). Átadás-átvétel helye az oktatási intézmény vagy a lakóhely. Pótlás jogszabály szerint. [Részletes felügyeleti és kapcsolattartási rend korosztályonként, ünnepek, szünidő, átadások, kommunikáció.]",
+      "due": "2025-06-03",
+      "createdAt": 1784051999971,
+      "mod": 1784051999971,
+      "order": 29
+    },
+    {
+      "id": "bz0mwk1fxeel",
+      "listId": "da1sv0eh19q9",
+      "title": "Apu kérdések",
+      "done": false,
+      "important": false,
+      "note": "1) Minőség és értékek: Mi az a 3 dolog amit szeretnél 5 év múlva is? Mitől lenne jó napod? Mi hiányzik a régi életedből? 2) Fájdalom és félelem: Mi fáj pontosan, mikor rosszabb? Mitől tartasz jobban: hogy fáj vagy hogy kiderül valami komoly? 3) Autonómia: mi a legkisebb változtatás amit bevállalnál 2 hétig? Miben kérsz segítséget és miben ne szóljak bele? 4) Identitás és cél: Miben vagy még nagyon jó? Mit adnál át? Van régi dolog amit kipróbálnál? 5) Konkrét egészség-célok: legjobb eredmény 3 hónap múlva? 0-10 skálán mennyire fontos, és miért nem 0? -------- Milyen volt az apátság első napja? Mikor voltál a legbüszkébb rám? Mi a legboldogabb emléked rólunk? Mit kívánsz a gyerekeidnek?",
+      "due": "2026-07-10",
+      "createdAt": 1784051999970,
+      "mod": 1784051999970,
+      "order": 30
+    },
+    {
+      "id": "k50sezxqwdnl",
+      "listId": "da1sv0eh19q9",
+      "title": "Háziorvos",
+      "done": false,
+      "important": true,
+      "note": "HMM - levelet kell írni, hogy a háziorvos felírhassa a krémeket. Ultrahang és Gasztroenterológia. Vérvétel - Nagylabor. Széklet vizsgálat. Belgyógyászat - tükrözés. ----- Tükrözés: (link) +36-1-999-0640 +36 70 563 2188 ----- Mozgás bérletre feliratni a háziorvossal. Bártfai Erika 06-30-186-9955 061349-9390 H: 15-19 K: 8-12 Sz 15-19 Cs: 8-12 P: 8-12",
+      "due": "2026-07-10",
+      "createdAt": 1784051999969,
+      "mod": 1784051999969,
+      "order": 31,
+      "steps": [
+        {
+          "id": "xmhbekuqx6y0",
+          "text": "Hmm",
+          "done": true,
+          "order": 0
+        },
+        {
+          "id": "cl2z0jphor6p",
+          "text": "Szemészet",
+          "done": false,
+          "order": 1
+        },
+        {
+          "id": "3o1ezvhfm084",
+          "text": "Belgyógyászat",
+          "done": false,
+          "order": 2
+        },
+        {
+          "id": "7qb6y4rmcku0",
+          "text": "Ultrahang",
+          "done": false,
+          "order": 3
+        },
+        {
+          "id": "l59okj8ifreb",
+          "text": "Röntgen",
+          "done": false,
+          "order": 4
+        }
+      ]
+    },
+    {
+      "id": "nctowgihk2mg",
+      "listId": "da1sv0eh19q9",
+      "title": "Befeketések - korábbi tartozások behajtása",
+      "done": false,
+      "important": true,
+      "note": "Kontra Judit: 27M, 03.24-re ígérte h összeszedi mennyivel tartozik. Tőke 23,2m Ügyeleti kamat: 1,02m Késedelmi kamat: 3,025m Végrehajtás eddig: 83e. 11079/K/815/2024/2 közjegyzői okiratba foglalt kölcsönszerződés, 11079/K/746/2025/2 felmondás. Bozsoki Zsolt 31,2M, 06.03 két banknál is beadva a hitelkérelem, 2-3 hét a válasz. Havi 1m fizetést ígért. Lehmann - 04.31-re ígért pénzt. Deutch market - 10.400 Ft. Gyarmati Zsuzsa - 11.25",
+      "due": "2026-07-09",
+      "createdAt": 1784051999968,
+      "mod": 1784051999968,
+      "order": 32,
+      "steps": [
+        {
+          "id": "mskwcdjnoagp",
+          "text": "Deutch Market végrehajtás",
+          "done": false,
+          "order": 0
+        },
+        {
+          "id": "lesuue4nrpqr",
+          "text": "Lehmann végrehajtás 28 - 1837",
+          "done": false,
+          "order": 1
+        },
+        {
+          "id": "1vv4jdmk2qm7",
+          "text": "Kontra Judit - 04.11 oc hívás",
+          "done": false,
+          "order": 2
+        },
+        {
+          "id": "eyhrr30b1vn3",
+          "text": "Bozsokiné Anna / Zsolt 08",
+          "done": false,
+          "order": 3
+        },
+        {
+          "id": "iqemfyz35yl0",
+          "text": "Gyarmati Zsuzsanna",
+          "done": false,
+          "order": 4
+        }
+      ]
+    },
+    {
+      "id": "aqgtmgi7jokd",
+      "listId": "da1sv0eh19q9",
+      "title": "Rita 2",
+      "done": false,
+      "important": true,
+      "note": "[Személyes affirmációs jegyzet - az \"ideális László\" és párkapcsolati célok. Hosszú személyes lista.]",
+      "due": "",
+      "createdAt": 1784051999967,
+      "mod": 1784051999967,
+      "order": 33
+    },
+    {
+      "id": "6y4ljfxf3ql6",
+      "listId": "jst6yj1uw2wz",
+      "title": "Befektetések - Folyamatban lévő",
+      "done": false,
+      "important": true,
+      "note": "Lakatos Krisztián (email) Típus: Hitelt kereső Telefonszám: 06303669947 Pájer: Lehmann-nal mi van? Üzletviteli tanácsadás, Ingatlan értékelés, Műszaki tanácsadás, Követelés behajtás. Kovács Ádám Szalay Huba Piuk Zoltán Szabó Gábor Szabó Péterné Ancsa Kránicz Dániel Jován Anikó Belinszky István Tóth László Camry vevő Béres Zsolt Kun Zsolt",
+      "due": "2026-07-13",
+      "createdAt": 1784051999966,
+      "mod": 1784051999966,
+      "order": 34,
+      "steps": [
+        {
+          "id": "ikr4k3dwxdgw",
+          "text": "Árvai - 50m",
+          "done": true,
+          "order": 0
+        },
+        {
+          "id": "u3lc40p5e83s",
+          "text": "Fót - 5m-0,75j",
+          "done": true,
+          "order": 1
+        },
+        {
+          "id": "nj45utrorcc6",
+          "text": "Vári Attila borászat - 30M/24h/730ehavonta/2,5m j",
+          "done": true,
+          "order": 2
+        },
+        {
+          "id": "1isvae91h477",
+          "text": "László Anna Csilla - 10m/12h/1,5j",
+          "done": false,
+          "order": 3
+        },
+        {
+          "id": "99fs8c76x07m",
+          "text": "Lakatos Krisztián-60m/nyh/2,5m-j",
+          "done": false,
+          "order": 4
+        },
+        {
+          "id": "eko4esrplhiq",
+          "text": "Balatonszárszó 150m/12h/4m-j",
+          "done": false,
+          "order": 5
+        },
+        {
+          "id": "7oqcdz6n63d9",
+          "text": "Varga Zsotl - Miskolc 5M/12h/0,5j",
+          "done": true,
+          "order": 6
+        },
+        {
+          "id": "y99aj8u3e6eo",
+          "text": "Rába-Kiss Gabriella, Pécs - 7M/12hó/0,5j",
+          "done": true,
+          "order": 7
+        },
+        {
+          "id": "ufoa6681yzmd",
+          "text": "Szegedi Gergő - 500m/12h/500eho",
+          "done": true,
+          "order": 8
+        },
+        {
+          "id": "ayg1d7wu91pr",
+          "text": "Tiszalök / Miklós van rajta. / 22m kell neki",
+          "done": false,
+          "order": 9
+        }
+      ]
+    },
+    {
+      "id": "5spsxc0eb6g6",
+      "listId": "jst6yj1uw2wz",
+      "title": "Hipnotizor",
+      "done": false,
+      "important": false,
+      "note": "(link) 06204524982 TIKTOK-os: +36709434882",
+      "due": "2026-07-30",
+      "createdAt": 1784051999965,
+      "mod": 1784051999965,
+      "order": 35
+    },
+    {
+      "id": "pm8f7o57mpc8",
+      "listId": "jst6yj1uw2wz",
+      "title": "Edzés",
+      "done": false,
+      "important": true,
+      "note": "Hegymászó gyakorlat - 3X30mp Páros lábemelés - 4x10 4 ütemű fekvőtámasz 4x10 Bicikli hasprés 4x12 Terpeszugrás 5x30mp Bokaérintés 3x15 Otthoni edzés 20p (link) 06204044280 Akarom123Gymtronic",
+      "due": "2026-07-10",
+      "createdAt": 1784051999964,
+      "mod": 1784051999964,
+      "order": 36
+    },
+    {
+      "id": "df7enp8r9rwq",
+      "listId": "jst6yj1uw2wz",
+      "title": "Rita fejlődés",
+      "done": false,
+      "important": false,
+      "note": "[Affirmációs lista - mentális egészség magánélet és munka, párkapcsolat. Hosszú személyes jegyzet.]",
+      "due": "2026-07-17",
+      "createdAt": 1784051999963,
+      "mod": 1784051999963,
+      "order": 37
+    },
+    {
+      "id": "nbqmpjaipybk",
+      "listId": "jst6yj1uw2wz",
+      "title": "Kts",
+      "done": false,
+      "important": false,
+      "note": "[Kiadás-nyilvántartás dátumokkal 2024-2026: fodrász, pedikűr, ügyvéd, gyógytorna, kukás, stb. Részletes költséglista.]",
+      "due": "2026-07-10",
+      "createdAt": 1784051999962,
+      "mod": 1784051999962,
+      "order": 38
+    },
+    {
+      "id": "80bl17nmuala",
+      "listId": "jst6yj1uw2wz",
+      "title": "Befektetés",
+      "done": false,
+      "important": true,
+      "note": "Krisztina: ingatlan befektetés 06305212780 Pannon Set Kft. 1117 Budapest, Fehérvári út 24. IV/1 Telefon: +36 1/789 0575 Mobil: +36 20 9364149 Kelemen Veronika Hajdú Csaba Befektetés Nagy Zsófia 06202555274 Zilahi Dávid - 06705507015 Kész ház projekt. Hirdetés szövegek: CÉGEKNEK, VÁLLALKOZÁSOKNAK ingatlan fedezetre gyors kölcsön, végrehajtások/hitelek kiváltása. Áthidaló gyorskölcsön ingatlanfedezetre. Befektetési lehetőséget keresek 20-50M tőkével aktív cégeknek. Mirkó Ágnes +36308944071",
+      "due": "2026-07-19",
+      "createdAt": 1784051999961,
+      "mod": 1784051999961,
+      "order": 39
+    },
+    {
+      "id": "8zrngg3t7b6u",
+      "listId": "jst6yj1uw2wz",
+      "title": "Eladni",
+      "done": false,
+      "important": true,
+      "note": "Lenovo thinkpad pro dock 40A1 M2B02RRH 9G17 E177793 MSIP-REI-LVK-40A1 Logitech billentyűzet és egér Router",
+      "due": "2026-07-18",
+      "createdAt": 1784051999960,
+      "mod": 1784051999960,
+      "order": 40,
+      "steps": [
+        {
+          "id": "0gyqbkmsbajd",
+          "text": "Iphone telefonok",
+          "done": false,
+          "order": 0
+        },
+        {
+          "id": "5akcc4gdi3iw",
+          "text": "Lenovo dokkoló",
+          "done": false,
+          "order": 1
+        },
+        {
+          "id": "se3mu6080v75",
+          "text": "Lenovo töltő",
+          "done": false,
+          "order": 2
+        },
+        {
+          "id": "rucl907ufhmb",
+          "text": "Nyomtató",
+          "done": true,
+          "order": 3
+        },
+        {
+          "id": "n25hkbvm73wr",
+          "text": "Tv LG nano 763qa",
+          "done": false,
+          "order": 4
+        },
+        {
+          "id": "uk6mtde9kvol",
+          "text": "Járóka",
+          "done": true,
+          "order": 5
+        },
+        {
+          "id": "e84bwomztsnh",
+          "text": "Babakocsi",
+          "done": false,
+          "order": 6
+        },
+        {
+          "id": "6c07bjczrq3i",
+          "text": "Hinta",
+          "done": true,
+          "order": 7
+        },
+        {
+          "id": "ofbhqpjg1o2y",
+          "text": "About you",
+          "done": false,
+          "order": 8
+        },
+        {
+          "id": "h223lh895n3h",
+          "text": "Baba ruhák",
+          "done": false,
+          "order": 9
+        },
+        {
+          "id": "i2mggodtbhzf",
+          "text": "Kiságy?",
+          "done": false,
+          "order": 10
+        },
+        {
+          "id": "tqkbqn2nl2ny",
+          "text": "Leesésgátló",
+          "done": false,
+          "order": 11
+        },
+        {
+          "id": "qop5jkvt0gdv",
+          "text": "Babahordozó",
+          "done": false,
+          "order": 12
+        },
+        {
+          "id": "4jr33qzhze29",
+          "text": "Tapo",
+          "done": false,
+          "order": 13
+        },
+        {
+          "id": "rsx29uf70r3i",
+          "text": "iPhone telefonok",
+          "done": false,
+          "order": 14
+        },
+        {
+          "id": "6ufy70mba6mh",
+          "text": "Julcsi kaják",
+          "done": false,
+          "order": 15
+        }
+      ]
+    },
+    {
+      "id": "jj8hsy9noyb6",
+      "listId": "jst6yj1uw2wz",
+      "title": "Orvosok",
+      "done": false,
+      "important": true,
+      "note": "Fogorvos: Biofilm terápia 0617707060 Szegedi út 54. Konzultáció fluoridálás kapcsán, fog elszíneződés csökkentése, depurálás/biofilm terápia szükségessége. Vese és urológia: DR. KÁLLAI LÁSZLÓ 1147 Budapest, Csömöri út 18. +36 30 512 1375 Lábizzadásra: Antiszudorika. Post covid. Belgyógyász megkeresés: Szentkereszti Balázs Honvéd kórház. Góckutatás, beutaló belgyógyászatra. Uzsoki tüdőgondozó: 1145 Budapest, Amerikai út 59. Dr. Tóth Éva 0612519759. Szemvizsgálat: Swiss clinic 29e, medicover 27e, doktor24 24e, Medoc 27e, Miheller Pál doktor 06208259017. Panaszok: puffadás, szelelés, véres széklet, energiaszint, rossz alvás. Vérvétel Nagy labor: ferritin, transzferrin szaturáció, kortizol, D-vitamin, pajzsmirigy ft3 ft4 reverzt3 a-tpo anti-tg",
+      "due": "",
+      "createdAt": 1784051999959,
+      "mod": 1784051999959,
+      "order": 41,
+      "steps": [
+        {
+          "id": "5w81szky3miu",
+          "text": "Urológus",
+          "done": true,
+          "order": 0
+        },
+        {
+          "id": "fe3uhpa8tfy9",
+          "text": "Szem vizsgálat",
+          "done": true,
+          "order": 1
+        },
+        {
+          "id": "y06wv6oeks9f",
+          "text": "Belgyógyászat",
+          "done": true,
+          "order": 2
+        },
+        {
+          "id": "tky33yb5974j",
+          "text": "Fül orr gégészet",
+          "done": true,
+          "order": 3
+        },
+        {
+          "id": "mpmkzu7g1j94",
+          "text": "Tüdőgondozó",
+          "done": true,
+          "order": 4
+        },
+        {
+          "id": "zgntpgp6zdoh",
+          "text": "Ultrahang",
+          "done": true,
+          "order": 5
+        },
+        {
+          "id": "kq4nk3br8j5x",
+          "text": "Fogászat - panoráma röntgen",
+          "done": false,
+          "order": 6
+        },
+        {
+          "id": "zebjqo6hfcpg",
+          "text": "Májvizsgálat",
+          "done": false,
+          "order": 7
+        },
+        {
+          "id": "9f3kns4k6vrd",
+          "text": "Humáncell",
+          "done": true,
+          "order": 8
+        },
+        {
+          "id": "hm7jpxkzc2l3",
+          "text": "Szemészet - Zöldhályog",
+          "done": false,
+          "order": 9
+        }
+      ]
+    },
+    {
+      "id": "fet8ova1b6at",
+      "listId": "jst6yj1uw2wz",
+      "title": "Belgyógyász",
+      "done": false,
+      "important": true,
+      "note": "[WC vérzés napló - dátumozott bejegyzések 2021-2023, erősség jelöléssel. Orvosi megfigyelés.]",
+      "due": "",
+      "createdAt": 1784051999958,
+      "mod": 1784051999958,
+      "order": 42
+    },
+    {
+      "id": "uud7ick14avi",
+      "listId": "jst6yj1uw2wz",
+      "title": "Pulmanologus",
+      "done": false,
+      "important": false,
+      "note": "Dr. Alseyadi Murad Tüdőgondozó, tüdőgyógyász szakorvos +36-1349-8370 Dr. Szabó Gyöngyi. 13-14 között zárva van a tüdőgondozó. Telefon: +3613498370 Atimos. Dr. Popa Nikolett - mentve a száma (link)",
+      "due": "2026-07-19",
+      "createdAt": 1784051999957,
+      "mod": 1784051999957,
+      "order": 43
+    },
+    {
+      "id": "yt7t1wkxmcr4",
+      "listId": "jst6yj1uw2wz",
+      "title": "Kutya",
+      "done": false,
+      "important": false,
+      "note": "(link) (link) (link)",
+      "due": "2026-08-20",
+      "createdAt": 1784051999956,
+      "mod": 1784051999956,
+      "order": 44
+    },
+    {
+      "id": "i9uitotg3gy4",
+      "listId": "jst6yj1uw2wz",
+      "title": "Beüllni",
+      "done": false,
+      "important": false,
+      "note": "Garden cafe - Szigetszentmiklós Jade beach - Dunavarsány Suttogó Kis pipacs Pavilon de Paris Opus JAZZ klub Vintage Garden La Bodeguita Del Medio Caffe Gian Mario - pizzéria Udvarház étterem: 1037 Budapest, Hármashatárhegyi út 2. Népsziget: Perem, Kabin, Wasser. Mi a kavics - dunakeszi",
+      "due": "2026-07-17",
+      "createdAt": 1784051999955,
+      "mod": 1784051999955,
+      "order": 45
+    },
+    {
+      "id": "kua8cm1jn1qe",
+      "listId": "jst6yj1uw2wz",
+      "title": "Nyelvtanulás",
+      "done": false,
+      "important": false,
+      "note": "Polyglot klub. Módszerek: Rosetta Stone. Program: Gaal Otto metódus, villám német, pimsleur (link)",
+      "due": "",
+      "createdAt": 1784051999954,
+      "mod": 1784051999954,
+      "order": 46
+    },
+    {
+      "id": "47svp3conl0x",
+      "listId": "jst6yj1uw2wz",
+      "title": "Filmek",
+      "done": false,
+      "important": false,
+      "note": "[Film- és sorozatlista - sok cím. Nézni való gyűjtemény.]",
+      "due": "2026-07-10",
+      "createdAt": 1784051999953,
+      "mod": 1784051999953,
+      "order": 47
+    },
+    {
+      "id": "pbu16f7d1f4f",
+      "listId": "oy4wipetqrtr",
+      "title": "Aranka",
+      "done": false,
+      "important": false,
+      "note": "Vissza kell állni óradíjas elszámolásba. Számlákat Erna töltse le. Olivér szerződés módosítása - 60napos határidő",
+      "due": "2026-07-09",
+      "createdAt": 1784051999952,
+      "mod": 1784051999952,
+      "order": 48,
+      "steps": [
+        {
+          "id": "g96l4fc7jvzo",
+          "text": "Cf frissítés",
+          "done": false,
+          "order": 0
+        },
+        {
+          "id": "22tb21s62p94",
+          "text": "Hunor szerződés küldés",
+          "done": false,
+          "order": 1
+        },
+        {
+          "id": "b8tpzqsa3jbz",
+          "text": "Eladó cuccok atbeszelese - Tapo is - Fb és vinted feltöltés",
+          "done": false,
+          "order": 2
+        },
+        {
+          "id": "1zri84vtfx80",
+          "text": "Hogy legyenek a céges iratok",
+          "done": false,
+          "order": 3
+        },
+        {
+          "id": "gds84aar8hry",
+          "text": "Tagi kölcsön",
+          "done": true,
+          "order": 4
+        },
+        {
+          "id": "xt9cq5ip67n4",
+          "text": "tárgyi eszköz lista frissítés",
+          "done": true,
+          "order": 5
+        },
+        {
+          "id": "qagd9gtx9d5k",
+          "text": "elektronikusan kiküldött szerződések",
+          "done": true,
+          "order": 6
+        },
+        {
+          "id": "0q8unsbx9fah",
+          "text": "Közjegyző keresés",
+          "done": true,
+          "order": 7
+        },
+        {
+          "id": "z6ungsh3zsk0",
+          "text": "IKEA elszámolás",
+          "done": true,
+          "order": 8
+        },
+        {
+          "id": "0wci074olv67",
+          "text": "Számlák atkuldese Beanak",
+          "done": true,
+          "order": 9
+        },
+        {
+          "id": "qwbor88j350g",
+          "text": "Casco számítás",
+          "done": true,
+          "order": 10
+        },
+        {
+          "id": "sjk17gb2wm39",
+          "text": "Szerződés sablon átbeszélése",
+          "done": true,
+          "order": 11
+        },
+        {
+          "id": "lqnewz3m53tl",
+          "text": "Ügyvéd keresés",
+          "done": true,
+          "order": 12
+        },
+        {
+          "id": "j8c5s5ffwnev",
+          "text": "Autó szerviz bejelentés",
+          "done": true,
+          "order": 13
+        },
+        {
+          "id": "87cbcr6n6hh9",
+          "text": "NAS - GDrive szinkronizálás - ügyfelek",
+          "done": false,
+          "order": 14
+        },
+        {
+          "id": "yxcirie2pc8q",
+          "text": "Auto biztosítás és ügyintézés",
+          "done": false,
+          "order": 15
+        }
+      ]
+    },
+    {
+      "id": "yhpgujtbgxld",
+      "listId": "oy4wipetqrtr",
+      "title": "Ötletek - Megvalósítás",
+      "done": false,
+      "important": false,
+      "note": "hogyan telik egy napom, egy hetem. Integráció: Naptár, E-mail. Adatok alapján vezetni a céget. Mi az analitika. Szerződések auditálása - szerzői jog, hűségidő automatikus folytatása egy évvel, szerződésszegés rész. Starup szemlélet - mit tehetünk meg gyorsan? Nem gyorsan akarok meggazdagodni hanem nagyon. Reklámokban legyen megszólítva a ppc és seo munkatárs is. Legyen riport az elégedett ügyfelekkel, videóban.",
+      "due": "2026-07-11",
+      "createdAt": 1784051999951,
+      "mod": 1784051999951,
+      "order": 49
+    },
+    {
+      "id": "6zidfgmfj7c0",
+      "listId": "oy4wipetqrtr",
+      "title": "Penge nyerességesség",
+      "done": false,
+      "important": true,
+      "note": "[Havi terv/tény pénzügyi nyilvántartás 2022-2026, számlaegyenlegek. Részletes pénzügyi kimutatás.]",
+      "due": "2026-07-16",
+      "createdAt": 1784051999950,
+      "mod": 1784051999950,
+      "order": 50
+    },
+    {
+      "id": "3fi8pwbk04sv",
+      "listId": "oy4wipetqrtr",
+      "title": "Penge feladatok",
+      "done": false,
+      "important": true,
+      "note": "[Cégvezetési jegyzet - vezető keresés, sales folyamat, szervezeti felépítés, KPI-k, vízió, interjúk, SAAS áttérés, kontrollpontok. Hosszú stratégiai jegyzet.]",
+      "due": "",
+      "createdAt": 1784051999949,
+      "mod": 1784051999949,
+      "order": 51,
+      "steps": [
+        {
+          "id": "54dgu8k1mk0d",
+          "text": "Szervezeti felépítés",
+          "done": false,
+          "order": 0
+        },
+        {
+          "id": "2047jc0wgfev",
+          "text": "Process",
+          "done": false,
+          "order": 1
+        },
+        {
+          "id": "6qe958lawrem",
+          "text": "Skálázható sales folyamat",
+          "done": false,
+          "order": 2
+        },
+        {
+          "id": "3jiy3yy6w7tb",
+          "text": "Interjúk",
+          "done": false,
+          "order": 3
+        },
+        {
+          "id": "3dy8c35ghxpq",
+          "text": "Angol - először képzés - egy nap végig - folyamatos",
+          "done": false,
+          "order": 4
+        }
+      ]
+    },
+    {
+      "id": "t604t23hhcwh",
+      "listId": "arv65q7zpb04",
+      "title": "Apu kérdések",
+      "done": false,
+      "important": true,
+      "note": "",
+      "due": "2026-07-16",
+      "createdAt": 1784051999948,
+      "mod": 1784051999948,
+      "order": 52
+    },
+    {
+      "id": "o6xzcdjjxzg3",
+      "listId": "m79n559koi1s",
+      "title": "Jós",
+      "done": false,
+      "important": true,
+      "note": "1177343200259091 Mászáros Mária +36-20/327-4494 (email) (link) Dr. Németh Renáta +36 20 448 7958. Kérdéseket összeírni: \"Erre születtem\" dokumentumban Norbi neve szerepel - elírás vagy rólam szól? Hol lakom (példák: Kisvárda, Debrecen, Sopron, Budapest, Ausztria, Németország, Olaszország, Spanyolország, Thaiföld, Grúzia; Bécs, Vancouver, Barcelona, Miami, Sydney, Limassol, Szombathely, Tata, Győr, Nyíregyháza, Bécsújhely). Mit dolgozom (Cégtulajdonos, Alkalmazott, Vállalkozó, Virágkereskedő, Fuvarszervező, Tanácsadó, Kommunikációs szakember).",
+      "due": "2026-09-17",
+      "createdAt": 1784051999947,
+      "mod": 1784051999947,
+      "order": 53
+    },
+    {
+      "id": "x51vqvhcagr2",
+      "listId": "cc4q1sd1sby1",
+      "title": "Befektetés task (15 perc)",
+      "done": false,
+      "important": false,
+      "note": "Jövő hét hétfői befektetés feladat. Naptárban is szerepel.",
+      "due": "2026-07-19",
+      "createdAt": 1784051999946,
+      "mod": 1784051999946,
+      "order": 54
+    },
+    {
+      "id": "01xz199j1ya7",
+      "listId": "9fhb3gxksj4y",
+      "title": "Meeting policy",
+      "done": false,
+      "important": true,
+      "note": "A találkozó célja. Ezekről a pontokról fogunk beszélni. Ennyi idő van rá. Ezekkel az eredményekkel fogjuk befejezni. Ezzel fogjuk folytatni.",
+      "due": "",
+      "createdAt": 1784051999945,
+      "mod": 1784051999945,
+      "order": 55
+    },
+    {
+      "id": "lfg061q0g6ot",
+      "listId": "9fhb3gxksj4y",
+      "title": "Naptár meghívó / aláírás",
+      "done": false,
+      "important": true,
+      "note": "G. Nagy László + 36 20 40 44 280 (email) Papp Szilvia +36 30 597 7355 (email) Kedves Tamás, Várunk hétfőn az irodánkban. A lépcsőház bejárata az Otthon Centrum mellett van. Az iroda a 9. emeleten van. Üdvözlettel: G. Nagy László +36-20-40-44-280",
+      "due": "",
+      "createdAt": 1784051999944,
+      "mod": 1784051999944,
+      "order": 56
+    },
+    {
+      "id": "9uyojlcjmi2y",
+      "listId": "9fhb3gxksj4y",
+      "title": "Gyors kapcsolatfelvétel",
+      "done": false,
+      "important": true,
+      "note": "LinkedIn kapcsolatfelvételi sablonok: köszönet a megkeresésért, csatlakozás; SEO/Shoprenter/marketing ajánlat sablonok; blog cikkek egyeztetés; personal brand kitalálása.",
+      "due": "",
+      "createdAt": 1784051999943,
+      "mod": 1784051999943,
+      "order": 57
+    },
+    {
+      "id": "odhxvtotthho",
+      "listId": "yxko8ej3tj0b",
+      "title": "Fókusz TikTok mantra",
+      "done": false,
+      "important": true,
+      "note": "",
+      "due": "2026-07-16",
+      "createdAt": 1784051999942,
+      "mod": 1784051999942,
+      "order": 58
+    },
+    {
+      "id": "h1mt8t55ajgo",
+      "listId": "yxko8ej3tj0b",
+      "title": "Fókusz - a Titok",
+      "done": false,
+      "important": false,
+      "note": "[15 idő-menedzsment \"titok\" - MIT feladat, naptárból dolgozás, halogatás legyőzése, jegyzetfüzet, e-mail kontroll, 80/20, reggeli rituálé, energia és fókusz.]",
+      "due": "2026-07-16",
+      "createdAt": 1784051999941,
+      "mod": 1784051999941,
+      "order": 59
+    },
+    {
+      "id": "c1vd5wbdg10p",
+      "listId": "yxko8ej3tj0b",
+      "title": "Jellemezz 3 szóval",
+      "done": false,
+      "important": false,
+      "note": "[Visszajelzések másoktól 3 szóval 2024-2025 (Aranka, Erna, Tünde, Olivér, kollégák), és \"mi a közös bennünk\" válaszok.]",
+      "due": "2026-08-27",
+      "createdAt": 1784051999940,
+      "mod": 1784051999940,
+      "order": 60
+    },
+    {
+      "id": "5a15chvz6a92",
+      "listId": "yxko8ej3tj0b",
+      "title": "VHK",
+      "done": false,
+      "important": false,
+      "note": "[Vállalkozói alapelvek 1-22: profit vs forgalom, teljesítmény képlet, 5 pillér, adatbázis építés, upsell, mérés, cégvezetői szemlélet, stb.]",
+      "due": "2026-07-14",
+      "createdAt": 1784051999939,
+      "mod": 1784051999939,
+      "order": 61
+    },
+    {
+      "id": "j81iwomia22u",
+      "listId": "yxko8ej3tj0b",
+      "title": "Könyvek",
+      "done": false,
+      "important": false,
+      "note": "[Olvasmánylista - sok könyvcím (Schwarzenegger, Cashvertising, Dianetika, Fekete hattyú, VHK, Seth Godin, stb.).]",
+      "due": "2026-07-23",
+      "createdAt": 1784051999938,
+      "mod": 1784051999938,
+      "order": 62,
+      "steps": [
+        {
+          "id": "haatmb9mhla5",
+          "text": "Voxa lemondása",
+          "done": false,
+          "order": 0
+        }
+      ]
+    },
+    {
+      "id": "s8l1gdfbw5mh",
+      "listId": "8xtqzzds2m7x",
+      "title": "Lakás Dekor",
+      "done": false,
+      "important": false,
+      "note": "",
+      "due": "",
+      "createdAt": 1784051999937,
+      "mod": 1784051999937,
+      "order": 63,
+      "steps": [
+        {
+          "id": "dmveicccszsf",
+          "text": "Julcsi kép felfúrás",
+          "done": false,
+          "order": 0
+        },
+        {
+          "id": "qn0pzj7awy7x",
+          "text": "Julcsi fali Dekor felszögelés",
+          "done": false,
+          "order": 1
+        }
+      ]
+    },
+    {
+      "id": "myjvxfmdhe9u",
+      "listId": "8xtqzzds2m7x",
+      "title": "Lakásban javítások",
+      "done": false,
+      "important": false,
+      "note": "Velux: Legény Oliver +36 30 510 9771",
+      "due": "",
+      "createdAt": 1784051999936,
+      "mod": 1784051999936,
+      "order": 64,
+      "steps": [
+        {
+          "id": "xwifnro3el5m",
+          "text": "Alíz velux sötétítő javítás",
+          "done": false,
+          "order": 0
+        },
+        {
+          "id": "iemvq7s95qc9",
+          "text": "Fenti fürdőszoba ajtó",
+          "done": false,
+          "order": 1
+        },
+        {
+          "id": "zyn53zax7i4b",
+          "text": "Julcsi kiságy",
+          "done": false,
+          "order": 2
+        }
+      ]
+    },
+    {
+      "id": "nceh187x6e4r",
+      "listId": "8xtqzzds2m7x",
+      "title": "Baba kelengye",
+      "done": false,
+      "important": false,
+      "note": "Mellszívó, babaágy és komód, baba ágynemű, textilpelus, babakocsi, utazóágy, egyéb - vásárlási linkekkel.",
+      "due": "",
+      "createdAt": 1784051999935,
+      "mod": 1784051999935,
+      "order": 65,
+      "steps": [
+        {
+          "id": "mqngphvzz0zw",
+          "text": "Babakocsi",
+          "done": true,
+          "order": 0
+        },
+        {
+          "id": "g5skc1ijbgts",
+          "text": "Autósülés",
+          "done": true,
+          "order": 1
+        },
+        {
+          "id": "7qcxh6u4khgt",
+          "text": "Babaágy - babaöböl",
+          "done": true,
+          "order": 2
+        },
+        {
+          "id": "p3mydldqw31h",
+          "text": "Textil pelusok",
+          "done": true,
+          "order": 3
+        },
+        {
+          "id": "u3c4phv6399k",
+          "text": "Babatakaró 2-3db",
+          "done": true,
+          "order": 4
+        },
+        {
+          "id": "rja6z68rs93x",
+          "text": "Pelenkázó alátét",
+          "done": true,
+          "order": 5
+        },
+        {
+          "id": "xiireyqfcrte",
+          "text": "Légzés figyelő",
+          "done": true,
+          "order": 6
+        },
+        {
+          "id": "o9alc1cqoc7d",
+          "text": "Bundazsak babakocsiba",
+          "done": false,
+          "order": 7
+        },
+        {
+          "id": "4ir5ufr44250",
+          "text": "Mellszívó",
+          "done": true,
+          "order": 8
+        },
+        {
+          "id": "5cymh3336m0o",
+          "text": "Szoptató a melltartó",
+          "done": true,
+          "order": 9
+        },
+        {
+          "id": "vocl3dql99a0",
+          "text": "Babaágynemű",
+          "done": true,
+          "order": 10
+        },
+        {
+          "id": "9ano2g80vmg6",
+          "text": "Pelenkázó Komód",
+          "done": true,
+          "order": 11
+        },
+        {
+          "id": "d02ym0epxihk",
+          "text": "Cumisüveg",
+          "done": true,
+          "order": 12
+        }
+      ]
+    },
+    {
+      "id": "xzjky9br76u6",
+      "listId": "8xtqzzds2m7x",
+      "title": "Alszamla nyitások",
+      "done": false,
+      "important": false,
+      "note": "Alszámla rendszer: 1. Anyagi Függetlenség Számla - jövedelem 10%-a, csak befektetni. 2. Anyagi Függetlenség doboz otthon, napi pénz. 3. Szórakozás Számla 10%. További számlák: 10% hosszú távú megtakarítás, 10% képzés, 50% létfenntartás, 10% adakozás.",
+      "due": "",
+      "createdAt": 1784051999934,
+      "mod": 1784051999934,
+      "order": 66,
+      "steps": [
+        {
+          "id": "c8vlxmh83n5k",
+          "text": "10% anyagi függetlenség",
+          "done": false,
+          "order": 0
+        },
+        {
+          "id": "g4ysrdk3s5hz",
+          "text": "10% jótékonyság",
+          "done": false,
+          "order": 1
+        },
+        {
+          "id": "vpkcefh7q1md",
+          "text": "40% megélhetés",
+          "done": false,
+          "order": 2
+        },
+        {
+          "id": "ah4ihvh7st77",
+          "text": "5% képzés",
+          "done": false,
+          "order": 3
+        },
+        {
+          "id": "rtc76udtmjwc",
+          "text": "10% hosszú távú megtakarítás",
+          "done": false,
+          "order": 4
+        },
+        {
+          "id": "v1n1wjmyec12",
+          "text": "5% szórakozás",
+          "done": false,
+          "order": 5
+        }
+      ]
+    },
+    {
+      "id": "cmnvfeirov1w",
+      "listId": "8xtqzzds2m7x",
+      "title": "Gyerekekkel",
+      "done": false,
+      "important": false,
+      "note": "Montenegro Gurma étterem - Törökbálint max city",
+      "due": "",
+      "createdAt": 1784051999933,
+      "mod": 1784051999933,
+      "order": 67,
+      "steps": [
+        {
+          "id": "km9krl8bqelh",
+          "text": "Harry Potter étterem ((link)",
+          "done": false,
+          "order": 0
+        }
+      ]
+    },
+    {
+      "id": "hdeyangjrpx8",
+      "listId": "8xtqzzds2m7x",
+      "title": "Kirándulás ötletek",
+      "done": false,
+      "important": false,
+      "note": "Tavak: (link) Gyadai tanösvény (link)",
+      "due": "",
+      "createdAt": 1784051999932,
+      "mod": 1784051999932,
+      "order": 68
+    },
+    {
+      "id": "0eq8u641mk38",
+      "listId": "8xtqzzds2m7x",
+      "title": "Tünde - Lakás",
+      "done": false,
+      "important": false,
+      "note": "Javítás: Dolgozószoba beázás, tetőjavítás. Előszoba beázás. Garázs tárolás: kerti és hintaágy párna, hólapát, palackprés, műanyag kuka. Mosókonyha: érintésvédelem, szűrőcsere. Konyha: csaptelep csere. Hálószoba: szőnyeg. Nappali: TV szekrény, fali polc. Dolgozószoba: szőnyeg (Szonyegkatalogus.hu, kupon: termek10). Fürdő: csaptelep csere. Nobival: csempe csere garázs/konyha/terasz. Emelet: beázás megszüntetése, Xbox játék Ricsinek. Alsó fürdőszoba - zuhanytálca beállítás. Kert: nád, tuják kiszedése. Klíma: kb 3 kg/összes, 33.000 Ft/kg. Lukács József klímaszerelő: +36 20 591 6588",
+      "due": "",
+      "createdAt": 1784051999931,
+      "mod": 1784051999931,
+      "order": 69,
+      "steps": [
+        {
+          "id": "8p8ubcnvuc5s",
+          "text": "Dolgozószoba",
+          "done": false,
+          "order": 0
+        },
+        {
+          "id": "er2u11lm64lz",
+          "text": "Előszoba",
+          "done": false,
+          "order": 1
+        }
+      ]
+    }
+  ],
+  "deleted": {},
+  "createdTotal": 70,
+  "atts": {}
+}
