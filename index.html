@@ -141,6 +141,10 @@ body{
 .tlcount{ font-size:12px; font-weight:700; color:var(--ink-faint); background:var(--hair); border-radius:20px; padding:1px 9px; }
 .tlhead.today .tllabel{ color:var(--brand); } .tlhead.today .tlrule{ background:#D9E3EF; } .tlhead.today .tlcount{ color:var(--brand); background:var(--brand-soft); }
 .tlhead.late .tllabel{ color:var(--danger); } .tlhead.late .tlrule{ background:#EAD9D5; } .tlhead.late .tlcount{ color:var(--danger); background:var(--danger-soft); }
+.tlhead{ cursor:pointer; }
+.tlhead .tlchev{ display:inline-flex; color:var(--ink-faint); transition:transform .2s; }
+.tlhead .tlchev .ic{ width:16px; height:16px; }
+.tlhead.coll .tlchev{ transform:rotate(-90deg); }
 
 .scrim{ position:absolute; inset:0; background:rgba(20,28,24,.34); opacity:0; pointer-events:none;
   transition:opacity .25s; z-index:20; -webkit-backdrop-filter:blur(2px); backdrop-filter:blur(2px); }
@@ -572,6 +576,7 @@ const P = {
 function icon(n, fill){ return '<svg class="ic" width="24" height="24" viewBox="0 0 24 24" fill="'+(fill||'none')+'" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+P[n]+'</svg>'; }
 function applyTheme(){ document.body.classList.toggle("dark", darkMode); const m=document.querySelector('meta[name="theme-color"]'); if(m) m.setAttribute("content", darkMode?"#0F1621":"#2E6FB0"); }
 function verList(){ try{ return JSON.parse(localStorage.getItem(VERS_KEY)||"[]"); }catch(e){ return []; } }
+function noteHeights(){ try{ return JSON.parse(localStorage.getItem("todo-note-heights")||"{}"); }catch(e){ return {}; } }
 function snapshotVersion(){
   try{
     if(!data||!data.tasks) return;
@@ -855,6 +860,7 @@ let searchQuery="", searchSel=-1, suggPicking=false, focusSearch=false;
 let plannedFilter="all";
 let dueOpen=false, remindOpen=false;
 let schedOpen=false;
+let bucketCollapsed={};
 function schedSheetHTML(t){
   return '<div class="schedscrim" data-action="closesched"></div>'
     +'<div class="schedsheet">'
@@ -1049,7 +1055,7 @@ const activeCount=p=>data.tasks.filter(t=>!t.done&&p(t)).length;
 
 function currentTasks(){
   if(view.type==="smart"){
-    if(view.key==="today")return data.tasks.filter(t=>isTodayDue(t.due)||isOverdue(t.due)||(t.done&&t.completedAt&&isTodayDue(localISO(new Date(t.completedAt)))));
+    if(view.key==="today")return data.tasks.filter(t=>isTodayDue(t.due)||isOverdue(t.due)||dueBucket(t.due)==="tomorrow"||(t.done&&t.completedAt&&isTodayDue(localISO(new Date(t.completedAt)))));
     if(view.key==="planned")return data.tasks.filter(t=>t.due);
     if(view.key==="attention")return data.tasks.filter(t=>!t.done && (!t.due||isOverdue(t.due)));
     if(view.key==="important")return data.tasks.filter(t=>t.important);
@@ -1134,13 +1140,15 @@ function render(){
       +'</li>';
   };
   const timelineHTML=(list)=>{
-    const order=[["overdue","Késett","late"],["today","Ma","today"],["tomorrow","Holnap",""],["week","E héten",""],["later","Később",""]];
+    const order=[["today","Ma","today"],["tomorrow","Holnap",""],["week","E héten",""],["later","Később",""],["overdue","Késett","late"]];
     const groups={};
     list.forEach(t=>{ const b=dueBucket(t.due)||"later"; (groups[b]||(groups[b]=[])).push(t); });
-    return order.filter(x=>groups[x[0]]&&groups[x[0]].length).map(x=>
-      '<div class="tlgroup"><div class="tlhead '+x[2]+'"><span class="tllabel">'+x[1]+'</span><span class="tlrule"></span><span class="tlcount">'+groups[x[0]].length+'</span></div>'
-      +'<ul class="tasklist" data-bucket="'+x[0]+'">'+groups[x[0]].map(t=>taskRow(t,true,true)).join("")+'</ul></div>'
-    ).join("");
+    return order.filter(x=>groups[x[0]]&&groups[x[0]].length).map(x=>{
+      const ex=bucketCollapsed[x[0]];
+      const coll=(ex===undefined)?(x[0]==="overdue"&&view.type==="smart"&&view.key==="today"):ex;
+      return '<div class="tlgroup"><div class="tlhead '+x[2]+(coll?" coll":"")+'" data-action="togglebucket" data-bucket="'+x[0]+'"><span class="tlchev">'+icon("chevron")+'</span><span class="tllabel">'+x[1]+'</span><span class="tlrule"></span><span class="tlcount">'+groups[x[0]].length+'</span></div>'
+      +(coll?'':'<ul class="tasklist" data-bucket="'+x[0]+'">'+groups[x[0]].map(t=>taskRow(t,true,true)).join("")+'</ul>')+'</div>';
+    }).join("");
   };
 
   let emptyT="",emptyS="";
@@ -1275,6 +1283,7 @@ function render(){
         +'<div class="field"><label class="fieldlabel">'+icon("list")+' Lista / csoport</label>'
           +'<select class="dateinput" id="dlist" data-id="'+detail.id+'" style="width:100%;height:46px;">'+data.lists.map(l=>'<option value="'+l.id+'"'+(l.id===detail.listId?" selected":"")+'>'+esc(l.name)+'</option>').join("")+'</select>'
         +'</div>'
+        +'<div style="text-align:center;color:var(--ink-faint);font-size:12px;padding:8px 0 2px;">Utoljára módosítva: '+(detail.mod?new Date(detail.mod).toLocaleString("hu-HU"):"—")+'</div>'
       +'</div>'
       +(schedOpen?schedSheetHTML(detail):"")
     +'</div>'
@@ -1301,14 +1310,16 @@ function render(){
   });
   const dnote=document.getElementById("dnote");
   if(dnote){
-    growNote(dnote);
+    const savedH=noteHeights()[dnote.dataset.id];
+    if(savedH){ dnote.style.height=savedH+"px"; } else { growNote(dnote); }
     dnote.addEventListener("input",()=>{
       const t=data.tasks.find(x=>x.id===dnote.dataset.id);
       if(t){ t.note=dnote.value; t.mod=Date.now(); save(); }
-      growNote(dnote);
+      if(!noteHeights()[dnote.dataset.id]) growNote(dnote);
       const nl2=document.getElementById("notelinks");
       if(nl2){ const lh=linksHTML(dnote.value); nl2.innerHTML=lh; const cf=document.getElementById("contactsfield"); if(cf) cf.style.display=lh?"":"none"; }
     });
+    dnote.addEventListener("mouseup",()=>{ const h=dnote.offsetHeight; if(h>40){ const m=noteHeights(); m[dnote.dataset.id]=h; try{ localStorage.setItem("todo-note-heights",JSON.stringify(m)); }catch(e){} } });
   }
   const dlist=document.getElementById("dlist");
   if(dlist) dlist.addEventListener("change",()=>{ const t=data.tasks.find(x=>x.id===dlist.dataset.id); if(t){ t.listId=dlist.value; t.mod=Date.now(); save(); render(); } });
@@ -1429,6 +1440,7 @@ document.getElementById("app").addEventListener("click",e=>{
   else if(a==="stepdel"){ const t=data.tasks.find(x=>x.id===openTaskId); if(t&&t.steps){ t.steps=t.steps.filter(x=>x.id!==el.dataset.sid); save(); render(); } }
   else if(a==="toggletheme"){ darkMode=!darkMode; try{ localStorage.setItem("todo-theme", darkMode?"dark":"light"); }catch(e){} applyTheme(); render(); }
   else if(a==="openversions"){ openVersions(); }
+  else if(a==="togglebucket"){ const b=el.dataset.bucket; bucketCollapsed[b]=!bucketCollapsed[b]; render(); }
   else if(a==="reset"){ if(confirm("Biztosan törölsz minden listát és feladatot? Ez nem vonható vissza.")){ data=defaultData(); view={type:"list",key:data.lists[0].id}; drawerOpen=false; save(); render(); } }
   else if(a==="openauth"){ authOpen=true; openTaskId=null; drawerOpen=false; authError=""; render(); }
   else if(a==="closeauth"){ authOpen=false; render(); }
