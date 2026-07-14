@@ -1088,7 +1088,7 @@ function render(){
   const scope=currentTasks();
   const barOn=hasQuickBar();
   const isStats=view.type==="smart"&&view.key==="stats";
-  const grouped=view.type==="smart"&&view.key==="planned"&&plannedFilter==="all";
+  const grouped=view.type==="smart"&&((view.key==="planned"&&plannedFilter==="all")||view.key==="today");
   const nameDayCard=(view.type==="smart"&&view.key==="today")
     ? '<div class="ndcard"><span class="ndicon">'+icon("user")+'</span><div class="ndtext"><div><b>Ma:</b> '+(esc(nameDay(new Date()))||"—")+'</div><div class="ndtom"><b>Holnap:</b> '+(esc(nameDay(new Date(Date.now()+86400000)))||"—")+'</div></div></div>'
     : '';
