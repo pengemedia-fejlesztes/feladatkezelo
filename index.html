@@ -575,6 +575,9 @@ const GRIP='<svg class="ic" width="20" height="20" viewBox="0 0 24 24" fill="cur
 /* ----------------------------- segéd ----------------------------- */
 const LIST_COLORS=["#2E6FB0","#2C8C8C","#C77A16","#8A5BB8","#C0392B","#3B6FB0","#C9518A"];
 const STORE="todo-data-v1";
+const DATA_VERSION="2026-07-14-import-1";
+const DATA_URL="data/tasks.json";
+let justSeeded=false;
 const uid=()=>Math.random().toString(36).slice(2,10)+Date.now().toString(36).slice(-4);
 const NAMEDAYS={"01-01":"Fruzsina","01-02":"Ábel","01-03":"Genovéva, Benjámin","01-04":"Titusz, Leona","01-05":"Simon","01-06":"Boldizsár","01-07":"Attila, Ramóna","01-08":"Gyöngyvér","01-09":"Marcell","01-10":"Melánia","01-11":"Ágota","01-12":"Ernő","01-13":"Veronika","01-14":"Bódog","01-15":"Lóránt, Loránd","01-16":"Gusztáv","01-17":"Antal, Antónia","01-18":"Piroska","01-19":"Sára, Márió","01-20":"Fábián, Sebestyén","01-21":"Ágnes","01-22":"Vince, Artúr","01-23":"Zelma, Rajmund","01-24":"Timót","01-25":"Pál","01-26":"Vanda, Paula","01-27":"Angelika","01-28":"Károly, Karola","01-29":"Adél","01-30":"Martina, Gerda","01-31":"Marcella",
 "02-01":"Ignác","02-02":"Karolina, Aida","02-03":"Balázs","02-04":"Ráhel, Csenge","02-05":"Ágota, Ingrid","02-06":"Dorottya, Dóra","02-07":"Tódor, Rómeó","02-08":"Aranka","02-09":"Abigél, Alex","02-10":"Elvira","02-11":"Bertold, Marietta","02-12":"Lívia, Lídia","02-13":"Ella, Linda","02-14":"Bálint, Valentin","02-15":"Kolos, Georgina","02-16":"Julianna, Lilla","02-17":"Donát","02-18":"Bernadett","02-19":"Zsuzsanna","02-20":"Aladár, Álmos","02-21":"Eleonóra","02-22":"Gerzson","02-23":"Alfréd","02-24":"Mátyás","02-25":"Géza","02-26":"Edina","02-27":"Ákos, Bátor","02-28":"Elemér","02-29":"Antónia",
@@ -1693,6 +1696,7 @@ function onAuthChange(user){
     const ref=fbDb.collection("appdata").doc(user.uid);
     fbUnsub=ref.onSnapshot(snap=>{
       const d=snap.data();
+      if(justSeeded){ justSeeded=false; setLocalTs(Date.now()); lastSyncedBlob=null; pushToCloud(); return; }
       if(!snap.exists || !d || !d.blob){ pushToCloud(); return; }
       if(d.blob===lastSyncedBlob) return;
       try{
@@ -1778,19 +1782,36 @@ function warnNoStorage(){
 }
 
 /* ----------------------------- indítás ----------------------------- */
-data=load();
-if(!data){ data=defaultData(); view={type:"list",key:data.lists[0].id}; saveLocal(); setLocalTs(0); }
-ensureOrders();
-if(data.createdTotal==null){ data.createdTotal=data.tasks.length; saveLocal(); }
-if(!data.atts) data.atts={};
-try{ const old=JSON.parse(localStorage.getItem("todo-att-v1")||"null"); if(old){ Object.keys(old).forEach(tid=>{ if(!data.atts[tid]) data.atts[tid]=old[tid]; }); localStorage.removeItem("todo-att-v1"); saveLocal(); } }catch(e){}
-try{ darkMode = localStorage.getItem("todo-theme")==="dark"; }catch(e){}
-applyTheme();
-render();
-warnNoStorage();
-initFirebase();
-checkReminders();
-setInterval(checkReminders, 30000);
+async function bootstrap(){
+  data=load();
+  let ver=null; try{ ver=localStorage.getItem("todo-data-version"); }catch(e){}
+  if(!data || ver!==DATA_VERSION){
+    try{
+      const res=await fetch(DATA_URL+"?ts="+Date.now(), {cache:"no-store"});
+      if(res.ok){
+        const seed=await res.json();
+        if(seed && seed.lists && seed.lists.length && seed.tasks){
+          data=seed; justSeeded=true;
+          try{ localStorage.setItem("todo-data-version", DATA_VERSION); }catch(e){}
+        }
+      }
+    }catch(e){ console.error("GitHub adat betöltés hiba", e); }
+  }
+  if(!data){ data=defaultData(); view={type:"list",key:data.lists[0].id}; saveLocal(); setLocalTs(0); }
+  if(justSeeded){ view={type:"smart",key:"all"}; setLocalTs(Date.now()); saveLocal(); }
+  ensureOrders();
+  if(data.createdTotal==null){ data.createdTotal=data.tasks.length; saveLocal(); }
+  if(!data.atts) data.atts={};
+  try{ const old=JSON.parse(localStorage.getItem("todo-att-v1")||"null"); if(old){ Object.keys(old).forEach(tid=>{ if(!data.atts[tid]) data.atts[tid]=old[tid]; }); localStorage.removeItem("todo-att-v1"); saveLocal(); } }catch(e){}
+  try{ darkMode = localStorage.getItem("todo-theme")==="dark"; }catch(e){}
+  applyTheme();
+  render();
+  warnNoStorage();
+  initFirebase();
+  checkReminders();
+  setInterval(checkReminders, 30000);
+}
+bootstrap();
 window.addEventListener("pagehide", ()=>{ trackClose(); flushPush(); });
 window.addEventListener("blur", flushPush);
 document.addEventListener("visibilitychange", ()=>{ if(document.visibilityState==="hidden"){ trackClose(); flushPush(); } });
