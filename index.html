@@ -1261,14 +1261,19 @@ function render(){
             +'<button class="schedchip'+(detail.reminder?" set":"")+'" data-action="opensched">'+icon("bell")+'<span>'+(detail.reminder?formatReminder(detail.reminder):"Nincs értesítés")+'</span></button>'
           +'</div>'
         +'</div>'
+        +'<div class="field" id="contactsfield"'+(linksHTML(detail.note)?"":' style="display:none"')+'><label class="fieldlabel">'+icon("user")+' Felismert kapcsolatok</label>'
+          +'<div id="notelinks" class="notelinks">'+linksHTML(detail.note)+'</div>'
+        +'</div>'
         +'<div class="field"><label class="fieldlabel">'+icon("pencil")+' Leírás</label>'
           +'<textarea class="note" id="dnote" data-id="'+detail.id+'" placeholder="Írj ide bármilyen megjegyzést, telefonszámot, e-mailt vagy weboldalt…">'+esc(detail.note)+'</textarea>'
-          +'<div id="notelinks" class="notelinks">'+linksHTML(detail.note)+'</div>'
         +'</div>'
         +'<div class="field"><label class="fieldlabel">'+icon("paperclip")+' Csatolmányok</label>'
           +'<div class="attlist">'+(taskAtts(detail.id).map(attRow).join(""))+'</div>'
           +'<input type="file" id="fileinput" multiple style="display:none">'
           +'<button class="attadd" data-action="pickfile">'+icon("plus")+' Fájl hozzáadása</button>'
+        +'</div>'
+        +'<div class="field"><label class="fieldlabel">'+icon("list")+' Lista / csoport</label>'
+          +'<select class="dateinput" id="dlist" data-id="'+detail.id+'" style="width:100%;height:46px;">'+data.lists.map(l=>'<option value="'+l.id+'"'+(l.id===detail.listId?" selected":"")+'>'+esc(l.name)+'</option>').join("")+'</select>'
         +'</div>'
       +'</div>'
       +(schedOpen?schedSheetHTML(detail):"")
@@ -1302,9 +1307,11 @@ function render(){
       if(t){ t.note=dnote.value; t.mod=Date.now(); save(); }
       growNote(dnote);
       const nl2=document.getElementById("notelinks");
-      if(nl2) nl2.innerHTML=linksHTML(dnote.value);
+      if(nl2){ const lh=linksHTML(dnote.value); nl2.innerHTML=lh; const cf=document.getElementById("contactsfield"); if(cf) cf.style.display=lh?"":"none"; }
     });
   }
+  const dlist=document.getElementById("dlist");
+  if(dlist) dlist.addEventListener("change",()=>{ const t=data.tasks.find(x=>x.id===dlist.dataset.id); if(t){ t.listId=dlist.value; t.mod=Date.now(); save(); render(); } });
   const dtitle=document.getElementById("dtitle");
   if(dtitle){
     growNote(dtitle);
