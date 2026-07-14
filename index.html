@@ -670,6 +670,7 @@ function datePickerHTML(t){
     +opt("tomorrow","Holnap",addDaysISO(1))
     +opt("friday","A hét vége",fridayISO())
     +opt("week","Egy hét múlva",addDaysISO(7))
+    +opt("nextmonday","Jövő hét hétfő",nextMondayISO())
     +opt("monthend","Hónap vége",monthEndISO())
     +'<div class="dpkcustom"><span class="dpkt">Más dátum</span><input type="date" class="dateinput" id="ddate" data-id="'+t.id+'" value="'+(du||"")+'"></div>'
     +'<button class="dpk clr'+(!du?" on":"")+'" data-action="dueclear" data-id="'+t.id+'"><span class="dpkt">Nincs határidő</span></button>'
@@ -1077,6 +1078,7 @@ function sortTasks(a,b){
 
 /* ----------------------------- render ----------------------------- */
 function render(){
+  const _scTop=(document.querySelector(".scroll")||{}).scrollTop||0;
   const counts={
     today:activeCount(t=>isTodayDue(t.due)||isOverdue(t.due)),
     important:activeCount(t=>t.important),
@@ -1301,6 +1303,7 @@ function render(){
   ):'');
 
   // input figyelők (újrarajzolás nélkül a gépeléshez)
+  const _sc=document.querySelector(".scroll"); if(_sc) _sc.scrollTop=_scTop;
   const ai=document.getElementById("addinput");
   if(ai){ ai.addEventListener("keydown",e=>{ if(e.key==="Enter"){ addTask(ai.value); } }); if(focusAdd){ ai.focus(); focusAdd=false; } }
   const nl=document.getElementById("newlist");
@@ -1421,7 +1424,7 @@ document.getElementById("app").addEventListener("click",e=>{
   else if(a==="dellist"){delList(id);}
   else if(a==="deltask"){if(!data.deleted)data.deleted={};data.deleted[id]=Date.now();data.tasks=data.tasks.filter(x=>x.id!==id);if(data.atts)delete data.atts[id];openTaskId=null;save();render();}
   else if(a==="duetoday"){const t=data.tasks.find(x=>x.id===id);t.due=todayISO();save();render();}
-  else if(a==="duequick"){const t=data.tasks.find(x=>x.id===id);const w=el.dataset.when;t.due=w==="today"?todayISO():w==="tomorrow"?addDaysISO(1):w==="weekend"?weekendISO():w==="friday"?fridayISO():w==="nextweek"?nextMondayISO():w==="week"?addDaysISO(7):w==="monthend"?monthEndISO():t.due;save();if(window.innerWidth>700){schedOpen=false;dueOpen=false;}render();}
+  else if(a==="duequick"){const t=data.tasks.find(x=>x.id===id);const w=el.dataset.when;t.due=w==="today"?todayISO():w==="tomorrow"?addDaysISO(1):w==="weekend"?weekendISO():w==="friday"?fridayISO():(w==="nextweek"||w==="nextmonday")?nextMondayISO():w==="week"?addDaysISO(7):w==="monthend"?monthEndISO():t.due;save();schedOpen=false;dueOpen=false;render();}
   else if(a==="remindquick"){const t=data.tasks.find(x=>x.id===id);const base=(t.due||todayISO());t.reminder=base+"T"+el.dataset.time;t.reminderFired=false;requestNotify();save();render();}
   else if(a==="remindhour"){const t=data.tasks.find(x=>x.id===id);const date=(t.reminder?t.reminder.slice(0,10):(t.due||todayISO()));const mm=(t.reminder&&t.reminder.slice(14,16))||"00";t.reminder=date+"T"+el.dataset.hour+":"+mm;t.reminderFired=false;requestNotify();save();render();}
   else if(a==="remindmin"){const t=data.tasks.find(x=>x.id===id);const date=(t.reminder?t.reminder.slice(0,10):(t.due||todayISO()));const hh=(t.reminder&&t.reminder.slice(11,13))||"09";t.reminder=date+"T"+hh+":"+el.dataset.min;t.reminderFired=false;requestNotify();save();render();}
