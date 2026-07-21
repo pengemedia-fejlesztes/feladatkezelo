@@ -205,7 +205,8 @@ body{
 .stepcheck .ic{ width:13px; height:13px; opacity:0; transform:scale(.4); transition:.18s; }
 .stepcheck.on{ background:var(--brand); border-color:var(--brand); }
 .stepcheck.on .ic{ opacity:1; transform:scale(1); }
-.steptext{ flex:1; font-size:14.5px; color:var(--ink); line-height:1.32; word-break:break-word; }
+.steptext{ flex:1; min-width:0; font-family:inherit; font-size:16px; color:var(--ink); line-height:1.32; background:transparent; border:none; outline:none; padding:6px 4px; border-radius:8px; }
+.steptext:focus{ background:var(--brand-soft); }
 .steptext.sdone{ color:var(--ink-faint); text-decoration:line-through; }
 .stepdel{ flex:none; background:none; border:none; color:var(--ink-faint); cursor:pointer; padding:4px; display:grid; place-items:center; }
 .stepdel .ic{ width:15px; height:15px; }
@@ -366,7 +367,12 @@ body{
 .sheetlabel:first-child{ margin-top:4px; }
 .sheetlabel .ic{ width:15px; height:15px; }
 .schedsheet .pickpanel{ margin-top:0; }
-.notepreview{ display:block; width:100%; text-align:left; background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:14px; font-family:inherit; font-size:15.5px; line-height:1.55; color:var(--ink); white-space:pre-wrap; word-break:break-word; cursor:pointer; max-height:180px; overflow:hidden; position:relative; box-shadow:var(--shadow); }
+.catrow{ display:flex; flex-wrap:wrap; gap:9px; }
+.catchip{ display:inline-flex; align-items:center; gap:8px; min-height:44px; padding:0 16px; border:1.5px solid var(--line); border-radius:13px; background:var(--surface); color:var(--ink); font-family:inherit; font-size:15px; font-weight:600; cursor:pointer; }
+.catdot{ width:10px; height:10px; border-radius:50%; flex:none; }
+.catchip.on{ border-color:var(--brand); background:var(--brand-soft); color:var(--brand); }
+.catchip:active{ transform:scale(.97); }
+.notepreview{ display:block;width:100%; text-align:left; background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:14px; font-family:inherit; font-size:15.5px; line-height:1.55; color:var(--ink); white-space:pre-wrap; word-break:break-word; cursor:pointer; max-height:180px; overflow:hidden; position:relative; box-shadow:var(--shadow); }
 .notepreview.empty{ color:var(--ink-faint); }
 .notepreview:active{ background:var(--surface-2); }
 .noteeditor{ position:absolute; inset:0; z-index:90; background:var(--bg); display:flex; flex-direction:column; animation:sheetup .28s cubic-bezier(.22,.61,.36,1); }
@@ -630,7 +636,9 @@ function datePickerHTML(t){
   return '<div class="pickpanel">'
     +opt("today","Ma",todayISO())
     +opt("tomorrow","Holnap",addDaysISO(1))
-    +opt("friday","A hét vége",fridayISO())
+    +opt("weekend","Hétvége",weekendISO())
+    +opt("friday","Utolsó munkanap",fridayISO())
+    +opt("nextweek","Következő héten",nextMondayISO())
     +opt("week","Egy hét múlva",addDaysISO(7))
     +opt("monthend","Hónap vége",monthEndISO())
     +'<div class="dpkcustom"><span class="dpkt">Más dátum</span><input type="date" class="dateinput" id="ddate" data-id="'+t.id+'" value="'+(du||"")+'"></div>'
@@ -815,6 +823,7 @@ function defaultData(){
 let data, view={type:"smart",key:"today"}, drawerOpen=false, editLists=false, openTaskId=null, showDone=true, focusAdd=false, focusStep=false;
 let lastDoneId=null;
 let showFilter=false;
+let resetScroll=false;
 let searchOpen=false;
 let printNotes=false;
 let searchQuery="", searchSel=-1, suggPicking=false, focusSearch=false;
@@ -1091,7 +1100,8 @@ function render(){
 
   const smart=(key,ic,label,n)=>'<button class="smartitem '+(view.type==="smart"&&view.key===key?"active":"")+'" data-action="view" data-vt="smart" data-vk="'+key+'"><span class="smarticon" style="color:'+(key==="today"?"var(--brand)":key==="important"?"var(--amber)":"var(--ink-soft)")+'">'+icon(ic)+'</span><span class="smartlabel">'+label+'</span>'+(n>0?'<span class="badge">'+n+'</span>':'')+'</button>';
 
-  const listRows=data.lists.map(l=>{
+  const listRows=(editLists?"":'<div class="listrow"><button class="listbtn '+(view.type==="smart"&&view.key==="all"?"active":"")+'" data-action="view" data-vt="smart" data-vk="all"><span class="dot" style="background:var(--ink-faint)"></span><span class="listname">Összes</span>'+(counts.all>0?'<span class="badge">'+counts.all+'</span>':'')+'</button></div>')
+  +data.lists.map(l=>{
     if(editLists){
       return '<div class="listrow"><input class="listedit" data-rename="'+l.id+'" value="'+esc(l.name)+'">'+(data.lists.length>1?'<button class="deletelist" data-action="dellist" data-id="'+l.id+'">'+icon("trash")+'</button>':'')+'</div>';
     }
@@ -1153,8 +1163,7 @@ function render(){
   let plannedBar="";
   if(barOn && showFilter){
     const allLabel=(view.type==="smart"&&view.key==="planned")?"Az összes tervezett":"Összes";
-    const chips=[["all",allLabel]];
-    if(!(view.type==="smart"&&view.key==="planned")) chips.push(["none","Nincs határidő"]);
+    const chips=[["all",allLabel],["none","Nincs határidő"]];
     chips.push(["overdue","Késedelmes"],["today","Ma"],["tomorrow","Holnap"],["week","E héten"],["later","Később"]);
     plannedBar='<div class="qfilter">'+chips.map(c=>{
       const n=scope.filter(t=>!t.done && (c[0]==="all"?true:c[0]==="none"? !t.due : (t.due&&dueBucket(t.due)===c[0]))).length;
@@ -1174,7 +1183,7 @@ function render(){
     const steps=(detail.steps||[]).slice().sort((a,b)=>a.order-b.order);
     const rows=steps.map(s=>'<li class="step" data-id="'+s.id+'">'
       +'<button class="stepcheck '+(s.done?"on":"")+'" data-action="stepdone" data-sid="'+s.id+'">'+icon("check")+'</button>'
-      +'<span class="steptext '+(s.done?"sdone":"")+'">'+esc(s.text)+'</span>'
+      +'<input class="steptext '+(s.done?"sdone":"")+'" data-steptext="'+s.id+'" value="'+esc(s.text)+'" placeholder="Lépés szövege…">'
       +'<button class="stepdel" data-action="stepdel" data-sid="'+s.id+'" aria-label="Törlés">'+icon("x")+'</button>'
       +'<button class="stepgrip" aria-label="Húzás">'+GRIP+'</button>'
       +'</li>').join("");
@@ -1184,6 +1193,9 @@ function render(){
       +'<input id="stepinput" class="stepinput" placeholder="Lépés hozzáadása…"></div></div>';
   }
 
+  const _sc=document.querySelector(".scroll"), _fb=document.querySelector(".fsbody");
+  const _scTop=resetScroll?0:(_sc?_sc.scrollTop:0), _fbTop=resetScroll?0:(_fb?_fb.scrollTop:0);
+  resetScroll=false;
   document.getElementById("app").innerHTML=
   '<div class="scrim '+(drawerOpen?"on":"")+'" data-action="closedrawer"></div>'
   +'<aside class="drawer '+(drawerOpen?"on":"")+'">'
@@ -1242,6 +1254,9 @@ function render(){
         +'<div class="fstop"><button class="check big '+(detail.done?"on":"")+'" data-action="toggle" data-id="'+detail.id+'">'+icon("check")+'</button>'
           +'<textarea class="fstitle" id="dtitle" rows="1" data-id="'+detail.id+'">'+esc(detail.title)+'</textarea>'
           +'<button class="starbtn '+(detail.important?"on":"")+'" data-action="star" data-id="'+detail.id+'">'+icon("star",detail.important?"var(--amber)":"none")+'</button></div>'
+        +'<div class="field"><label class="fieldlabel">'+icon("list")+' Kategória</label>'
+          +'<div class="catrow">'+data.lists.map(l=>'<button class="catchip'+(detail.listId===l.id?" on":"")+'" data-action="setlist" data-lid="'+l.id+'" data-id="'+detail.id+'"><span class="catdot" style="background:'+l.color+'"></span>'+esc(l.name)+'</button>').join("")+'</div>'
+        +'</div>'
         +stepsHTML
         +'<div class="field"><label class="fieldlabel">'+icon("calendar")+' Ütemezés</label>'
           +'<div class="schedrow">'
@@ -1283,6 +1298,14 @@ function render(){
   document.querySelectorAll("[data-rename]").forEach(inp=>{
     inp.addEventListener("blur",()=>{ const l=listById(inp.dataset.rename); l.name=inp.value.trim()||l.name; l.mod=Date.now(); save(); });
   });
+  document.querySelectorAll("[data-steptext]").forEach(inp=>{
+    inp.addEventListener("input",()=>{
+      const t=data.tasks.find(x=>x.id===openTaskId); if(!t||!t.steps) return;
+      const s=t.steps.find(x=>x.id===inp.dataset.steptext); if(!s) return;
+      s.text=inp.value; t.mod=Date.now(); save();
+    });
+    inp.addEventListener("keydown",e=>{ if(e.key==="Enter"){ e.preventDefault(); inp.blur(); } });
+  });
   const netext=document.getElementById("netext");
   if(netext){
     netext.addEventListener("input",()=>{
@@ -1299,7 +1322,7 @@ function render(){
     dtitle.addEventListener("input",()=>{ const t=data.tasks.find(x=>x.id===dtitle.dataset.id); if(t){ t.title=dtitle.value; t.mod=Date.now(); save(); } growNote(dtitle); });
   }
   const ddate=document.getElementById("ddate");
-  if(ddate) ddate.addEventListener("change",()=>{ const t=data.tasks.find(x=>x.id===ddate.dataset.id); if(t){ t.due=ddate.value; t.mod=Date.now(); save(); render(); } });
+  if(ddate) ddate.addEventListener("change",()=>{ const t=data.tasks.find(x=>x.id===ddate.dataset.id); if(t){ t.due=ddate.value; t.mod=Date.now(); schedOpen=false; dueOpen=false; save(); render(); } });
   const drd=document.getElementById("dreminddate");
   const dhh=document.getElementById("dremindhour");
   const dmm=document.getElementById("dremindmin");
@@ -1324,6 +1347,9 @@ function render(){
 
   attachSearch();
   setupDrag();
+  const _sc2=document.querySelector(".scroll"), _fb2=document.querySelector(".fsbody");
+  if(_sc2 && _scTop) _sc2.scrollTop=_scTop;
+  if(_fb2 && _fbTop) _fb2.scrollTop=_fbTop;
   lastDoneId=null;
 }
 
@@ -1376,7 +1402,7 @@ document.getElementById("app").addEventListener("click",e=>{
   if(a==="opendrawer"){drawerOpen=true;render();}
   else if(a==="closedrawer"){drawerOpen=false;render();}
   else if(a==="editlists"){editLists=!editLists;render();}
-  else if(a==="view"){view={type:el.dataset.vt,key:el.dataset.vk};plannedFilter="all";drawerOpen=false;render();}
+  else if(a==="view"){view={type:el.dataset.vt,key:el.dataset.vk};plannedFilter="all";drawerOpen=false;resetScroll=true;render();}
   else if(a==="toggle"){const t=data.tasks.find(x=>x.id===id);t.done=!t.done;t.completedAt=t.done?Date.now():null;if(t.done){lastDoneId=id;data.completedTotal=(data.completedTotal||0)+1;}save();render();}
   else if(a==="star"){const t=data.tasks.find(x=>x.id===id);t.important=!t.important;if(t.important){const mn=data.tasks.length?Math.min(...data.tasks.map(x=>typeof x.order==="number"?x.order:0)):0;t.order=mn-1;}save();render();}
   else if(a==="open"){trackOpen(id);openTaskId=id;dueOpen=false;remindOpen=false;schedOpen=false;noteEditor=false;render();}
@@ -1393,15 +1419,16 @@ document.getElementById("app").addEventListener("click",e=>{
   else if(a==="dellist"){delList(id);}
   else if(a==="deltask"){if(!data.deleted)data.deleted={};data.deleted[id]=Date.now();data.tasks=data.tasks.filter(x=>x.id!==id);if(data.atts)delete data.atts[id];openTaskId=null;save();render();}
   else if(a==="duetoday"){const t=data.tasks.find(x=>x.id===id);t.due=todayISO();save();render();}
-  else if(a==="duequick"){const t=data.tasks.find(x=>x.id===id);const w=el.dataset.when;t.due=w==="today"?todayISO():w==="tomorrow"?addDaysISO(1):w==="weekend"?weekendISO():w==="friday"?fridayISO():w==="nextweek"?nextMondayISO():w==="week"?addDaysISO(7):w==="monthend"?monthEndISO():t.due;save();render();}
+  else if(a==="duequick"){const t=data.tasks.find(x=>x.id===id);const w=el.dataset.when;t.due=w==="today"?todayISO():w==="tomorrow"?addDaysISO(1):w==="weekend"?weekendISO():w==="friday"?fridayISO():w==="nextweek"?nextMondayISO():w==="week"?addDaysISO(7):w==="monthend"?monthEndISO():t.due;schedOpen=false;dueOpen=false;save();render();}
   else if(a==="remindquick"){const t=data.tasks.find(x=>x.id===id);const base=(t.due||todayISO());t.reminder=base+"T"+el.dataset.time;t.reminderFired=false;requestNotify();save();render();}
   else if(a==="remindhour"){const t=data.tasks.find(x=>x.id===id);const date=(t.reminder?t.reminder.slice(0,10):(t.due||todayISO()));const mm=(t.reminder&&t.reminder.slice(14,16))||"00";t.reminder=date+"T"+el.dataset.hour+":"+mm;t.reminderFired=false;requestNotify();save();render();}
   else if(a==="remindmin"){const t=data.tasks.find(x=>x.id===id);const date=(t.reminder?t.reminder.slice(0,10):(t.due||todayISO()));const hh=(t.reminder&&t.reminder.slice(11,13))||"09";t.reminder=date+"T"+hh+":"+el.dataset.min;t.reminderFired=false;requestNotify();save();render();}
   else if(a==="duetomorrow"){const t=data.tasks.find(x=>x.id===id);t.due=localISO(new Date(Date.now()+86400000));save();render();}
-  else if(a==="dueclear"){const t=data.tasks.find(x=>x.id===id);t.due="";save();render();}
+  else if(a==="dueclear"){const t=data.tasks.find(x=>x.id===id);t.due="";schedOpen=false;dueOpen=false;save();render();}
   else if(a==="remindclear"){const t=data.tasks.find(x=>x.id===id);t.reminder="";t.reminderFired=false;save();render();}
   else if(a==="toggledone"){showDone=!showDone;render();}
   else if(a==="qfilter"){ plannedFilter=el.dataset.key; render(); }
+  else if(a==="setlist"){ const t=data.tasks.find(x=>x.id===id); if(t){ t.listId=el.dataset.lid; t.mod=Date.now(); save(); render(); } }
   else if(a==="printtoday"){ printDaily(); }
   else if(a==="togglefilter"){ showFilter=!showFilter; render(); }
   else if(a==="togglesearch"){ searchOpen=!searchOpen; if(searchOpen) focusSearch=true; else searchQuery=""; render(); }
