@@ -192,9 +192,11 @@ body{
 .delete .ic{ width:16px; height:16px; }
 .done2{ background:var(--brand); color:#fff; border:none; border-radius:12px; padding:11px 24px; font-family:inherit; font-size:14.5px; font-weight:600; cursor:pointer; }
 .done2:active{ transform:scale(.96); }
-.grip{ flex:none; background:none; border:none; color:var(--ink-faint); padding:6px 2px; margin-left:-2px;
-  display:grid; place-items:center; cursor:grab; touch-action:none; opacity:.65; }
+.grip{ flex:none; background:none; border:none; color:var(--ink-faint); padding:9px 6px; margin-left:-2px;
+  display:grid; place-items:center; cursor:grab; touch-action:none; opacity:.7; }
+.grip:hover{ opacity:1; color:var(--brand); background:var(--brand-soft); border-radius:8px; }
 .grip:active{ cursor:grabbing; }
+.grip .ic{ width:18px; height:18px; }
 .task.lift{ z-index:50; box-shadow:0 12px 28px rgba(30,42,56,.22); background:var(--surface); border-radius:12px; }
 .due.clock{ color:var(--brand); background:var(--brand-soft); }
 .task.lift .grip{ opacity:1; color:var(--ink-soft); }
@@ -947,12 +949,19 @@ function ensureOrders(){
   data.lists.sort((a,b)=>((a.order||0)-(b.order||0))||(a.id<b.id?-1:1));
   saveLocal();
 }
-function applyVisibleOrder(ids, movedId, targetIndex){
+function applyVisibleOrder(ids, movedId){
   const byId=id=>data.tasks.find(t=>t.id===id);
   const now=Date.now();
-  const moved=movedId?byId(movedId):null;
-  if(moved){ moved.manual=true; moved.pos=(typeof targetIndex==="number")?targetIndex:ids.indexOf(movedId); moved.mod=now; }
-  ids.forEach((id,i)=>{ const t=byId(id); if(t){ t.order=i; if(t.manual && t!==moved && t.pos!==i){ t.pos=i; t.mod=now; } } });
+  // A látott (átrendezett) sorrendet rögzítjük: minden érintett feladat manual lesz,
+  // és a pos pontosan a sorindexe. Így a napon belüli sorrend stabilan megmarad.
+  ids.forEach((id,i)=>{
+    const t=byId(id); if(!t) return;
+    t.order=i;
+    t.manual=true;
+    if(t.pos!==i){ t.pos=i; }
+  });
+  const m=movedId?byId(movedId):null;
+  if(m) m.mod=now; else if(ids.length){ const f=byId(ids[0]); if(f) f.mod=now; }
 }
 function applyStepOrder(taskId, ids){
   const t=data.tasks.find(x=>x.id===taskId); if(!t||!t.steps)return;
@@ -1090,13 +1099,25 @@ function titleKey(t){ return (t.title||"").trim().toLocaleLowerCase("hu"); }
 function cmpTitle(a,b){ return titleKey(a).localeCompare(titleKey(b),"hu",{numeric:true,sensitivity:"base"}); }
 function cmpDueTitle(a,b){ const ad=a.due||"~~~~", bd=b.due||"~~~~"; if(ad!==bd) return ad<bd?-1:1; return cmpTitle(a,b); }
 function orderList(arr, cmp){
-  const manual=arr.filter(t=>t.manual).sort((a,b)=>(a.pos||0)-(b.pos||0));
-  const out=arr.filter(t=>!t.manual).sort(cmp||cmpTitle);
-  manual.forEach(t=>{
-    const p=Math.max(0, Math.min(out.length, typeof t.pos==="number"?t.pos:out.length));
-    out.splice(p,0,t);
+  const compare=cmp||cmpTitle;
+  // Ha egyáltalán nincs kézzel rendezett elem: tiszta ABC (vagy dátum+ABC).
+  if(!arr.some(t=>t.manual)) return arr.slice().sort(compare);
+  // Van kézi sorrend: a rögzített elemek a pos-uk szerint kerülnek helyre,
+  // a többi (nem rögzített) ABC szerint tölti ki a maradék helyeket.
+  const pinned=arr.filter(t=>t.manual).sort((a,b)=>((a.pos||0)-(b.pos||0)) || compare(a,b));
+  const rest=arr.filter(t=>!t.manual).sort(compare);
+  const out=new Array(arr.length).fill(null);
+  // 1) rögzítettek a kívánt indexre (ütközésnél a következő szabad helyre)
+  pinned.forEach(t=>{
+    let p=Math.max(0, Math.min(out.length-1, typeof t.pos==="number"?t.pos:out.length-1));
+    while(out[p]!==null && p<out.length-1) p++;
+    while(out[p]!==null && p>0) p--;
+    out[p]=t;
   });
-  return out;
+  // 2) a maradék helyekre jönnek a nem rögzítettek ABC-ben
+  let ri=0;
+  for(let i=0;i<out.length && ri<rest.length;i++){ if(out[i]===null) out[i]=rest[ri++]; }
+  return out.filter(Boolean);
 }
 function sortTasks(a,b){
   if(a.important!==b.important)return a.important?-1:1;
@@ -1620,6 +1641,7 @@ function setupDrag(){
 }
 function longPressStart(e, rowSel, onReorder){
   if(!e.isPrimary || dragState) return;
+  if(e.pointerType==="mouse") return; // egérrel a fogantyúval lehet húzni, hosszú nyomás csak érintésre
   const li=e.target.closest(rowSel); if(!li) return;
   const body=e.currentTarget, pid=e.pointerId, sx=e.clientX, sy=e.clientY;
   const move=ev=>{ if(Math.abs(ev.clientY-sy)>9 || Math.abs(ev.clientX-sx)>9) cancelLP(); };
@@ -1631,7 +1653,7 @@ function longPressStart(e, rowSel, onReorder){
   lpTimer=setTimeout(()=>{
     lpTimer=null; clearLPListeners();
     startDragFrom(li, rowSel, pid, sy, onReorder);
-  }, 230);
+  }, 200);
 }
 function clearLPListeners(){ if(lpData){ lpData.body.removeEventListener("pointermove",lpData.move); lpData.body.removeEventListener("pointerup",lpData.end); lpData.body.removeEventListener("pointercancel",lpData.end); lpData=null; } }
 function cancelLP(){ if(lpTimer){ clearTimeout(lpTimer); lpTimer=null; } clearLPListeners(); }
@@ -1695,10 +1717,11 @@ function onGripUp(){
       if(t && tb && tb!==sb){ if(tb==="nodue"){ t.due=""; t.manual=false; t.mod=Date.now(); setLocalTs(Date.now()); saveLocal(); pushToCloud(); handled=true; } else { const nd=bucketDate(tb); if(nd){ t.due=nd; t.manual=false; t.mod=Date.now(); setLocalTs(Date.now()); saveLocal(); pushToCloud(); handled=true; } } }
     }
     if(!handled && d.target!==d.index){
+      const movedId=d.items[d.index].id;
       const ids=d.items.map(it=>it.id);
-      const[m]=ids.splice(d.index,1);
-      ids.splice(d.target,0,m);
-      d.onReorder(ids, d.items[d.index].id, d.target);
+      ids.splice(d.index,1);
+      ids.splice(d.target,0,movedId);
+      d.onReorder(ids, movedId);
     }
   }
   suppressClick=true; setTimeout(()=>{ suppressClick=false; },80);
