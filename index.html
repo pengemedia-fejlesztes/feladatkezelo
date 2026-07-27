@@ -44,6 +44,9 @@ body{
 .sub{ margin-top:5px; color:var(--ink-soft); font-size:14px; font-weight:500; }
 
 .scroll{ flex:1; overflow-y:auto; padding:6px 12px 12px; -webkit-overflow-scrolling:touch; }
+body.dragging{ touch-action:none; overflow:hidden; }
+body.dragging .scroll{ overflow:hidden; touch-action:none; }
+body.dragging .task:not(.lift){ transition:transform .16s ease; }
 .tasklist{ list-style:none; background:var(--surface); border:1px solid var(--line); border-radius:16px; overflow:hidden; box-shadow:var(--shadow); margin-bottom:12px; }
 
 .task{ -webkit-touch-callout:none; -webkit-user-select:none; user-select:none; display:flex; align-items:center; gap:12px;
@@ -192,11 +195,13 @@ body{
 .delete .ic{ width:16px; height:16px; }
 .done2{ background:var(--brand); color:#fff; border:none; border-radius:12px; padding:11px 24px; font-family:inherit; font-size:14.5px; font-weight:600; cursor:pointer; }
 .done2:active{ transform:scale(.96); }
-.grip{ flex:none; background:none; border:none; color:var(--ink-faint); padding:9px 6px; margin-left:-2px;
-  display:grid; place-items:center; cursor:grab; touch-action:none; opacity:.7; }
+.grip{ flex:none; background:none; border:none; color:var(--ink-faint); padding:11px 8px; margin-left:-2px;
+  display:grid; place-items:center; cursor:grab; touch-action:none; opacity:.75; }
 .grip:hover{ opacity:1; color:var(--brand); background:var(--brand-soft); border-radius:8px; }
-.grip:active{ cursor:grabbing; }
-.grip .ic{ width:18px; height:18px; }
+.grip:active{ cursor:grabbing; color:var(--brand); background:var(--brand-soft); border-radius:8px; }
+.grip .ic{ width:20px; height:20px; }
+body.dragging{ overflow:hidden; touch-action:none; }
+body.dragging .scroll, body.dragging .fsbody{ overflow:hidden !important; }
 .task.lift{ z-index:50; box-shadow:0 12px 28px rgba(30,42,56,.22); background:var(--surface); border-radius:12px; }
 .due.clock{ color:var(--brand); background:var(--brand-soft); }
 .task.lift .grip{ opacity:1; color:var(--ink-soft); }
@@ -1664,21 +1669,24 @@ function beginDrag(e, rowSel, onReorder){
 }
 function startDragFrom(li, rowSel, pointerId, startY, onReorder){
   if(!li) return;
+  document.body.classList.add("dragging");
   const tl=(rowSel===".task")?li.closest(".tlgroup"):null;
   let itemsEls;
   if(tl){ itemsEls=Array.from(document.querySelectorAll(".scroll .task")); }
   else { const ul=li.parentNode; itemsEls=Array.from(ul.children).filter(c=>c.matches(rowSel)); }
   const items=itemsEls.map(el=>{ const r=el.getBoundingClientRect(); return {el,id:el.dataset.id,center:r.top+r.height/2}; });
   const index=items.findIndex(it=>it.el===li);
+  if(index<0){ document.body.classList.remove("dragging"); return; }
   dragState={ li, items, index, target:index, startY, lastY:startY, height:li.getBoundingClientRect().height, moved:false, pid:pointerId, onReorder, cross:!!tl };
   try{ li.setPointerCapture(pointerId); }catch(_){}
   li.classList.add("lift");
-  li.addEventListener("pointermove",onGripMove);
-  li.addEventListener("pointerup",onGripUp);
-  li.addEventListener("pointercancel",onGripUp);
+  document.addEventListener("pointermove",onGripMove,{passive:false});
+  document.addEventListener("pointerup",onGripUp);
+  document.addEventListener("pointercancel",onGripUp);
 }
 function onGripMove(e){
   const d=dragState; if(!d)return;
+  if(d.pid!=null && e.pointerId!=null && e.pointerId!==d.pid) return;
   e.preventDefault();
   d.lastY=e.clientY;
   const dy=e.clientY-d.startY;
@@ -1699,11 +1707,13 @@ function onGripMove(e){
     it.el.style.transform=shift?"translateY("+shift+"px)":"";
   });
 }
-function onGripUp(){
+function onGripUp(e){
   const d=dragState; if(!d)return;
-  d.li.removeEventListener("pointermove",onGripMove);
-  d.li.removeEventListener("pointerup",onGripUp);
-  d.li.removeEventListener("pointercancel",onGripUp);
+  if(e && d.pid!=null && e.pointerId!=null && e.pointerId!==d.pid) return;
+  document.removeEventListener("pointermove",onGripMove,{passive:false});
+  document.removeEventListener("pointerup",onGripUp);
+  document.removeEventListener("pointercancel",onGripUp);
+  document.body.classList.remove("dragging");
   d.items.forEach(it=>{ it.el.style.transition=""; it.el.style.transform=""; });
   d.li.classList.remove("lift");
   if(d.moved){
@@ -1725,6 +1735,7 @@ function onGripUp(){
     }
   }
   suppressClick=true; setTimeout(()=>{ suppressClick=false; },80);
+  document.body.classList.remove("dragging");
   dragState=null;
   render();
 }
