@@ -348,6 +348,33 @@ body.dragging .scroll, body.dragging .fsbody{ overflow:hidden !important; }
 .dpkcustom{ display:flex; align-items:center; justify-content:space-between; gap:10px; padding:4px 11px; min-height:40px; border-top:1px solid var(--hair); margin-top:2px; }
 .dpkcustom .dpkt{ font-size:14.5px; }
 .dpkcustom .dateinput{ max-width:52%; height:34px; font-size:14px; }
+/* kompakt hataridokvalaszto racs */
+.dgrid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(138px,1fr)); gap:6px; margin-bottom:6px; }
+.dchip{ display:flex; flex-direction:column; justify-content:center; gap:1px; min-height:50px; padding:8px 12px; border:1px solid var(--line); border-radius:11px; background:var(--surface-2); cursor:pointer; font-family:inherit; text-align:left; transition:transform .1s; }
+.dchip:active{ transform:scale(.96); }
+.dchip .dt{ font-size:14px; font-weight:700; color:var(--ink); display:flex; align-items:center; gap:5px; line-height:1.15; }
+.dchip .dt .ic{ width:14px; height:14px; color:var(--brand); flex:none; }
+.dchip .ds{ font-size:11.5px; font-weight:600; color:var(--ink-faint); }
+.dchip.on{ background:var(--brand-soft); border-color:var(--brand); }
+.dchip.on .dt{ color:var(--brand); }
+.dchip.on .ds{ color:var(--brand); opacity:.85; }
+.dchip.more .dt{ color:var(--brand); }
+/* sajat naptar */
+.cal{ background:var(--surface-2); border:1px solid var(--line); border-radius:12px; padding:10px 10px 12px; margin:0 0 6px; max-width:360px; }
+.calhead{ display:flex; align-items:center; justify-content:space-between; padding:0 2px 8px; }
+.calm{ font-size:14.5px; font-weight:800; color:var(--ink); text-transform:capitalize; }
+.calnav{ width:38px; height:38px; border-radius:10px; background:var(--surface); border:1px solid var(--line); display:grid; place-items:center; color:var(--brand); cursor:pointer; }
+.calnav .ic{ width:18px; height:18px; }
+.calnav:active{ transform:scale(.92); }
+.calgrid{ display:grid; grid-template-columns:repeat(7,minmax(0,1fr)); gap:3px; }
+.cdow{ text-align:center; font-size:10.5px; font-weight:800; color:var(--ink-faint); text-transform:uppercase; padding-bottom:4px; }
+.cd{ height:42px; display:grid; place-items:center; font-size:14.5px; font-weight:600; border-radius:9px; border:none; background:none; color:var(--ink); cursor:pointer; font-family:inherit; }
+.cd:active{ transform:scale(.88); }
+.cd.we{ color:var(--ink-soft); }
+.cd.past{ color:var(--ink-faint); opacity:.45; }
+.cd.today{ box-shadow:inset 0 0 0 2px var(--brand); color:var(--brand); font-weight:800; }
+.cd.sel{ background:var(--brand); color:#fff; font-weight:800; box-shadow:none; }
+.cd.empty{ background:none; cursor:default; }
 .tphead{ display:flex; align-items:center; gap:6px; font-size:13px; color:var(--ink-soft); padding:5px 5px 9px; }
 .tphead .ic{ width:15px; height:15px; color:var(--brand); flex:none; }
 .tphead b{ color:var(--ink); font-weight:700; }
@@ -666,18 +693,41 @@ function monthEndISO(){ const d=new Date(); return localISO(new Date(d.getFullYe
 function formatDayLong(iso){ if(!iso) return ""; return parseISO(iso).toLocaleDateString("hu-HU",{weekday:"short",month:"short",day:"numeric"}); }
 function datePickerHTML(t){
   const du=t.due;
-  const opt=(w,title,iso)=>'<button class="dpk'+(du===iso?" on":"")+'" data-action="duequick" data-when="'+w+'" data-id="'+t.id+'"><span class="dpkt">'+title+'</span><span class="dpks">'+formatDayLong(iso)+'</span></button>';
+  const quick=[["today","Ma",todayISO()],["tomorrow","Holnap",addDaysISO(1)],["weekend","Hétvége",weekendISO()],["friday","Utolsó munkanap",fridayISO()],["nextweek","Következő héten",nextMondayISO()],["week","Egy hét múlva",addDaysISO(7)],["monthend","Hónap vége",monthEndISO()]];
+  const quickISOs=quick.map(q=>q[2]);
+  const isCustom = !!du && quickISOs.indexOf(du)<0;
+  const chips=quick.map(q=>'<button class="dchip'+(du===q[2]?" on":"")+'" data-action="duequick" data-when="'+q[0]+'" data-id="'+t.id+'"><span class="dt">'+q[1]+'</span><span class="ds">'+formatDayLong(q[2])+'</span></button>').join("");
   return '<div class="pickpanel">'
-    +opt("today","Ma",todayISO())
-    +opt("tomorrow","Holnap",addDaysISO(1))
-    +opt("weekend","Hétvége",weekendISO())
-    +opt("friday","Utolsó munkanap",fridayISO())
-    +opt("nextweek","Következő héten",nextMondayISO())
-    +opt("week","Egy hét múlva",addDaysISO(7))
-    +opt("monthend","Hónap vége",monthEndISO())
-    +'<div class="dpkcustom"><span class="dpkt">Más dátum</span><input type="date" class="dateinput" id="ddate" data-id="'+t.id+'" value="'+(du||"")+'"></div>'
+    +'<div class="dgrid">'+chips
+      +'<button class="dchip more'+((isCustom||calOpen)?" on":"")+'" data-action="caltoggle" data-id="'+t.id+'"><span class="dt">'+icon("calendar")+(isCustom?formatDayLong(du):"Más dátum")+'</span><span class="ds">'+(calOpen?"bezárás":"naptár")+'</span></button>'
+    +'</div>'
+    +(calOpen?calendarHTML(t):"")
     +'<button class="dpk clr'+(!du?" on":"")+'" data-action="dueclear" data-id="'+t.id+'"><span class="dpkt">Nincs határidő</span></button>'
   +'</div>';
+}
+function calendarHTML(t){
+  const du=t.due;
+  const y=(calY!=null?calY:new Date().getFullYear()), m=(calM!=null?calM:new Date().getMonth());
+  const base=new Date(y,m,1);
+  const monthName=base.toLocaleDateString("hu-HU",{year:"numeric",month:"long"});
+  const startOffset=(base.getDay()+6)%7;
+  const daysIn=new Date(y,m+1,0).getDate();
+  const today=todayISO();
+  const arL='<svg class="ic" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>';
+  const arR='<svg class="ic" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>';
+  let cells="";
+  for(let d=1;d<=daysIn;d++){
+    const cur=new Date(y,m,d), iso=localISO(cur), dow=cur.getDay(), we=(dow===0||dow===6);
+    let cls="cd"; if(we)cls+=" we"; if(iso<today)cls+=" past"; if(iso===today)cls+=" today"; if(iso===du)cls+=" sel";
+    const style=(d===1&&startOffset>0)?' style="grid-column-start:'+(startOffset+1)+'"':'';
+    cells+='<button class="'+cls+'"'+style+' data-action="calpick" data-iso="'+iso+'" data-id="'+t.id+'">'+d+'</button>';
+  }
+  const dows=["H","K","Sze","Cs","P","Szo","V"].map(x=>'<span class="cdow">'+x+'</span>').join("");
+  return '<div class="cal"><div class="calhead">'
+    +'<button class="calnav" data-action="calprev" aria-label="Előző hónap">'+arL+'</button>'
+    +'<span class="calm">'+monthName+'</span>'
+    +'<button class="calnav" data-action="calnext" aria-label="Következő hónap">'+arR+'</button>'
+    +'</div><div class="calgrid">'+dows+cells+'</div></div>';
 }
 function timePickerHTML(t){
   const cur=t.reminder?t.reminder.slice(11,16):"";
@@ -864,6 +914,7 @@ let searchQuery="", searchSel=-1, suggPicking=false, focusSearch=false;
 let plannedFilter="all";
 let dueOpen=false, remindOpen=false;
 let schedOpen=false;
+let calOpen=false, calY=null, calM=null;
 let noteEditor=false, focusNote=false;
 function noteEditorHTML(t){
   return '<div class="noteeditor">'
@@ -1394,8 +1445,6 @@ function render(){
     growNote(dtitle);
     dtitle.addEventListener("input",()=>{ const t=data.tasks.find(x=>x.id===dtitle.dataset.id); if(t){ t.title=dtitle.value; t.mod=Date.now(); save(); } growNote(dtitle); });
   }
-  const ddate=document.getElementById("ddate");
-  if(ddate) ddate.addEventListener("change",()=>{ const t=data.tasks.find(x=>x.id===ddate.dataset.id); if(t){ t.due=ddate.value; t.mod=Date.now(); schedOpen=false; dueOpen=false; save(); render(); } });
   const drd=document.getElementById("dreminddate");
   const dhh=document.getElementById("dremindhour");
   const dmm=document.getElementById("dremindmin");
@@ -1490,8 +1539,8 @@ document.getElementById("app").addEventListener("click",e=>{
   else if(a==="open"){trackOpen(id);openTaskId=id;dueOpen=false;remindOpen=false;schedOpen=false;noteEditor=false;render();}
   else if(a==="toggledue"){ dueOpen=!dueOpen; render(); }
   else if(a==="togglereminder"){ remindOpen=!remindOpen; render(); }
-  else if(a==="opensched"){ schedOpen=true; render(); }
-  else if(a==="closesched"){ schedOpen=false; render(); }
+  else if(a==="opensched"){ schedOpen=true; calOpen=false; render(); }
+  else if(a==="closesched"){ schedOpen=false; calOpen=false; render(); }
   else if(a==="opennote"){ noteEditor=true; focusNote=true; render(); }
   else if(a==="closenote"){ noteEditor=false; render(); }
   else if(a==="pickfile"){ const fi=document.getElementById("fileinput"); if(fi) fi.click(); }
@@ -1503,6 +1552,10 @@ document.getElementById("app").addEventListener("click",e=>{
     const short=snap.title&&snap.title.length>28?snap.title.slice(0,27)+"…":(snap.title||"Feladat"); showToast('„'+short+'” törölve', 'Visszavonás', ()=>{ snap.mod=Date.now(); data.tasks.push(snap); if(data.deleted)delete data.deleted[id]; if(snapAtt){ if(!data.atts)data.atts={}; data.atts[id]=snapAtt; } save(); render(); });
   }
   else if(a==="duetoday"){const t=data.tasks.find(x=>x.id===id);t.due=todayISO();save();render();}
+  else if(a==="caltoggle"){ if(!calOpen){ const t=data.tasks.find(x=>x.id===id); const b=(t&&t.due)?parseISO(t.due):new Date(); calY=b.getFullYear(); calM=b.getMonth(); } calOpen=!calOpen; render(); }
+  else if(a==="calprev"){ if(calM===null){ const n=new Date(); calY=n.getFullYear(); calM=n.getMonth(); } calM--; if(calM<0){ calM=11; calY--; } render(); }
+  else if(a==="calnext"){ if(calM===null){ const n=new Date(); calY=n.getFullYear(); calM=n.getMonth(); } calM++; if(calM>11){ calM=0; calY++; } render(); }
+  else if(a==="calpick"){ const t=data.tasks.find(x=>x.id===id); if(t){ t.due=el.dataset.iso; t.mod=Date.now(); save(); render(); } }
   else if(a==="duequick"){const t=data.tasks.find(x=>x.id===id);const w=el.dataset.when;t.due=w==="today"?todayISO():w==="tomorrow"?addDaysISO(1):w==="weekend"?weekendISO():w==="friday"?fridayISO():w==="nextweek"?nextMondayISO():w==="week"?addDaysISO(7):w==="monthend"?monthEndISO():t.due;schedOpen=false;dueOpen=false;save();render();}
   else if(a==="remindquick"){const t=data.tasks.find(x=>x.id===id);const base=(t.due||todayISO());t.reminder=base+"T"+el.dataset.time;t.reminderFired=false;requestNotify();save();render();}
   else if(a==="remindhour"){const t=data.tasks.find(x=>x.id===id);const date=(t.reminder?t.reminder.slice(0,10):(t.due||todayISO()));const mm=(t.reminder&&t.reminder.slice(14,16))||"00";t.reminder=date+"T"+el.dataset.hour+":"+mm;t.reminderFired=false;requestNotify();save();render();}
