@@ -1047,6 +1047,8 @@ function mergeData(local, remote){
     deleted: delMap,
     createdTotal: Math.max(local.createdTotal||0, remote.createdTotal||0),
     listMerge2: !!(local.listMerge2||remote.listMerge2),
+    inboxSince: Math.max(local.inboxSince||0, remote.inboxSince||0),
+    inboxSeen: Object.assign({}, remote.inboxSeen||{}, local.inboxSeen||{}),
     usageLog: mergeUsage(local.usageLog, remote.usageLog),
     searches: mergeSearches(local.searches, remote.searches),
     atts: mergeAtts(local.atts, remote.atts)
@@ -1855,6 +1857,46 @@ function growNote(el){
 }
 
 /* ----------------------------- Firebase szinkron ----------------------------- */
+/* ---- Webhook „inbox": az AI/Worker által a data/tasks.json-ba írt ÚJ feladatok behozása ---- */
+const INBOX_URL="https://raw.githubusercontent.com/pengemedia-fejlesztes/feladatkezelo/main/data/tasks.json";
+function msToLocalDT(ms){ const d=new Date(ms); const p=n=>String(n).padStart(2,"0"); return d.getFullYear()+"-"+p(d.getMonth()+1)+"-"+p(d.getDate())+"T"+p(d.getHours())+":"+p(d.getMinutes()); }
+let inboxBusy=false;
+async function pullInbox(){
+  if(inboxBusy) return; inboxBusy=true;
+  try{
+    if(typeof data.inboxSince!=="number"){ data.inboxSince=Date.now(); if(!data.inboxSeen) data.inboxSeen={}; saveLocal(); }
+    if(!data.inboxSeen) data.inboxSeen={};
+    const r=await fetch(INBOX_URL+"?t="+Date.now(), {cache:"no-store"});
+    if(!r.ok){ inboxBusy=false; return; }
+    const src=await r.json();
+    if(!src || !Array.isArray(src.tasks)){ inboxBusy=false; return; }
+    const srcListName={}; (src.lists||[]).forEach(l=>{ srcListName[l.id]=l.name||""; });
+    const byName={}; data.lists.forEach(l=>{ byName[(l.name||"").trim().toLowerCase()]=l.id; });
+    const pickList=name=>{
+      const n=(name||"").trim().toLowerCase();
+      if(byName[n]) return byName[n];
+      if(/mag[aá]n/i.test(name||"")){ const m=data.lists.find(l=>/mag[aá]n/i.test(l.name)); if(m) return m.id; }
+      const c=data.lists.find(l=>/c[eé]ges/i.test(l.name)); if(c) return c.id;
+      return data.lists.length ? data.lists[data.lists.length-1].id : null;
+    };
+    let added=0;
+    src.tasks.forEach(st=>{
+      if(!st || !st.id) return;
+      if((st.createdAt||0) <= data.inboxSince) return;   // régi elem (pl. a korábbi import) → kihagyjuk
+      if(data.inboxSeen[st.id]) return;                    // már behoztuk korábban
+      const now=Date.now();
+      const task={ id:uid(), listId:pickList(srcListName[st.listId]||st.list||""), title:String(st.title||""), done:!!st.done, important:!!st.important, note:String(st.note||""), due:String(st.due||""), createdAt:now, mod:now, order:data.tasks.length };
+      if(st.reminder){ const rms=(typeof st.reminder==="number")?st.reminder:Date.parse(st.reminder); if(rms && !isNaN(rms)){ task.reminder=msToLocalDT(rms); task.reminderFired=false; } }
+      if(Array.isArray(st.steps)) task.steps=st.steps.map((s,i)=>({ id:uid(), text:String(s&&s.text!=null?s.text:s), done:!!(s&&s.done), order:i }));
+      data.tasks.push(task);
+      data.inboxSeen[st.id]=true;
+      added++;
+    });
+    if(added){ save(); render(); showToast(added+" új feladat érkezett"); }
+    else { saveLocal(); }
+  }catch(e){ /* csendes: hálózat vagy JSON hiba */ }
+  inboxBusy=false;
+}
 function initFirebase(){
   if(!SYNC_ENABLED || typeof firebase==="undefined") return;
   try{
@@ -1986,6 +2028,10 @@ try{ const old=JSON.parse(localStorage.getItem("todo-att-v1")||"null"); if(old){
 render();
 warnNoStorage();
 initFirebase();
+pullInbox();
+setInterval(pullInbox, 90000);
+window.addEventListener("focus", pullInbox);
+document.addEventListener("visibilitychange", ()=>{ if(document.visibilityState==="visible") pullInbox(); });
 checkReminders();
 setInterval(checkReminders, 30000);
 window.addEventListener("pagehide", ()=>{ trackClose(); flushPush(); });
