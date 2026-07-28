@@ -25,10 +25,11 @@ html,body{ height:100%; }
 body{
   font-family:'Hanken Grotesk',system-ui,-apple-system,sans-serif;
   background:var(--bg); color:var(--ink);
-  height:100dvh; overflow:hidden; -webkit-font-smoothing:antialiased;
+  position:fixed; top:0; left:0; right:0; bottom:0;
+  height:100%; overflow:hidden; overscroll-behavior:none; -webkit-font-smoothing:antialiased;
 }
 .ic{ display:block; }
-#app{ display:flex; height:100dvh; position:relative; }
+#app{ display:flex; height:100%; position:relative; overflow:hidden; }
 
 /* fő terület */
 .main{ flex:1; display:flex; flex-direction:column; min-width:0; max-width:760px; margin:0 auto; width:100%; }
@@ -44,7 +45,7 @@ body{
 .verbadge{ align-self:center; font-family:'Hanken Grotesk',sans-serif; font-size:11px; font-weight:700; letter-spacing:.02em; color:var(--ink-faint); background:var(--hair); border-radius:20px; padding:2px 8px; }
 .sub{ margin-top:5px; color:var(--ink-soft); font-size:14px; font-weight:500; }
 
-.scroll{ flex:1; overflow-y:auto; padding:6px 12px 12px; -webkit-overflow-scrolling:touch; }
+.scroll{ flex:1; overflow-y:auto; overscroll-behavior:contain; padding:6px 12px 12px; -webkit-overflow-scrolling:touch; }
 body.dragging{ touch-action:none; overflow:hidden; }
 body.dragging .scroll{ overflow:hidden; touch-action:none; }
 body.dragging .task:not(.lift){ transition:transform .16s ease; }
@@ -282,7 +283,7 @@ body.dragging .scroll, body.dragging .fsbody{ overflow:hidden !important; }
 .fsback .ic{ width:22px; height:22px; }
 .fsback:active{ opacity:.6; }
 .fsdel{ background:none; border:none; color:var(--ink-faint); cursor:pointer; padding:8px; display:grid; place-items:center; }
-.fsbody{ flex:1; overflow-y:auto; padding:8px 20px max(28px,env(safe-area-inset-bottom)); max-width:760px; margin:0 auto; width:100%; -webkit-overflow-scrolling:touch; }
+.fsbody{ flex:1; overflow-y:auto; overscroll-behavior:contain; padding:8px 20px max(28px,env(safe-area-inset-bottom)); max-width:760px; margin:0 auto; width:100%; -webkit-overflow-scrolling:touch; }
 .fstop{ display:flex; align-items:flex-start; gap:13px; background:var(--surface); border:1px solid var(--line); border-radius:18px; padding:16px; box-shadow:var(--shadow); }
 .fstop .check{ margin-top:5px; }
 .check.big{ width:28px; height:28px; }
@@ -397,7 +398,7 @@ body.dragging .scroll, body.dragging .fsbody{ overflow:hidden !important; }
 .sheettitle{ font-family:'Hanken Grotesk',sans-serif; font-weight:800; font-size:17px; color:var(--ink); }
 .sheetdone{ background:var(--brand); color:#fff; border:none; border-radius:11px; padding:8px 20px; font-family:inherit; font-size:14.5px; font-weight:700; cursor:pointer; box-shadow:0 4px 12px rgba(46,111,176,.28); }
 .sheetdone:active{ transform:scale(.96); }
-.sheetscroll{ overflow-y:auto; -webkit-overflow-scrolling:touch; padding-bottom:4px; }
+.sheetscroll{ overflow-y:auto; overscroll-behavior:contain; -webkit-overflow-scrolling:touch; padding-bottom:4px; }
 .sheetlabel{ display:flex; align-items:center; gap:6px; font-family:'Hanken Grotesk',sans-serif; font-size:11.5px; font-weight:800; text-transform:uppercase; letter-spacing:.05em; color:var(--ink-soft); margin:11px 2px 5px; }
 .sheetlabel:first-child{ margin-top:4px; }
 .sheetlabel .ic{ width:15px; height:15px; }
@@ -639,7 +640,7 @@ const P = {
 };
 function icon(n, fill){ return '<svg class="ic" width="24" height="24" viewBox="0 0 24 24" fill="'+(fill||'none')+'" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">'+P[n]+'</svg>'; }
 const GRIP='<svg class="ic" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.4"/><circle cx="9" cy="12" r="1.4"/><circle cx="9" cy="18" r="1.4"/><circle cx="15" cy="6" r="1.4"/><circle cx="15" cy="12" r="1.4"/><circle cx="15" cy="18" r="1.4"/></svg>';
-const APP_VERSION="v32";
+const APP_VERSION="v33";
 
 /* ----------------------------- segéd ----------------------------- */
 const LIST_COLORS=["#287FAA","#2C8C8C","#C77A16","#8A5BB8","#C0392B","#4FA3CE","#C9518A"];
@@ -1965,6 +1966,7 @@ function initFirebase(){
   try{
     firebase.initializeApp(firebaseConfig);
     fbAuth=firebase.auth();
+    try{ fbAuth.setPersistence(firebase.auth.Auth.Persistence.LOCAL); }catch(e){ console.error("Persistence hiba",e); }
     fbDb=firebase.firestore();
     fbAuth.onAuthStateChanged(onAuthChange);
   }catch(e){ console.error("Firebase init hiba",e); }
