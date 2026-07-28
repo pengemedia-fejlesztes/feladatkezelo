@@ -7,8 +7,8 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Feladatok">
-<meta name="theme-color" content="#2E6FB0">
-<link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxODAiIGhlaWdodD0iMTgwIiB2aWV3Qm94PSIwIDAgMTgwIDE4MCI+PHJlY3Qgd2lkdGg9IjE4MCIgaGVpZ2h0PSIxODAiIHJ4PSI0MCIgZmlsbD0iIzJFNkZCMCIvPjxwYXRoIGQ9Ik01NSA5MiBsMjIgMjIgNDggLTQ4IiBmaWxsPSJub25lIiBzdHJva2U9IiNmZmYiIHN0cm9rZS13aWR0aD0iMTQiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjwvc3ZnPg==">
+<meta name="theme-color" content="#287FAA">
+<link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxODAiIGhlaWdodD0iMTgwIiB2aWV3Qm94PSIwIDAgMTgwIDE4MCI+PHJlY3Qgd2lkdGg9IjE4MCIgaGVpZ2h0PSIxODAiIHJ4PSI0MCIgZmlsbD0iIzI4N0ZBQSIvPjxwYXRoIGQ9Ik01NSA5MiBsMjIgMjIgNDggLTQ4IiBmaWxsPSJub25lIiBzdHJva2U9IiNmZmYiIHN0cm9rZS13aWR0aD0iMTQiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjwvc3ZnPg==">
 <title>Feladatok</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700&family=Inter:wght@400;500;600&family=Hanken+Grotesk:wght@400;500;600;700&display=swap');
@@ -16,7 +16,7 @@
 :root{
   --bg:#F0F4F9; --surface:#FFFFFF; --surface-2:#F0F4F9;
   --ink:#1E2A38; --ink-soft:#5D6B7A; --ink-faint:#97A3AF;
-  --brand:#2E6FB0; --brand-soft:#E3EDF7; --amber:#C77A16; --amber-soft:#FBEFD8;
+  --brand:#287FAA; --brand-soft:#E1EEF4; --brand-accent:#4FA3CE; --amber:#C77A16; --amber-soft:#FBEFD8;
   --teal:#2C8C8C; --teal-soft:#E0F0EE;
   --danger:#C0392B; --danger-soft:#F6E3DE; --line:#E1E8F0; --hair:#EEF2F7; --chk:#BCC6D1;
   --shadow:0 1px 2px rgba(30,42,56,.05);
@@ -130,7 +130,7 @@ body.dragging .task:not(.lift){ transition:transform .16s ease; }
 .tllabel{ font-family:'Hanken Grotesk',sans-serif; font-weight:800; font-size:12.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-soft); }
 .tlrule{ flex:1; height:1px; background:var(--line); }
 .tlcount{ font-size:12px; font-weight:700; color:var(--ink-faint); background:var(--hair); border-radius:20px; padding:1px 9px; }
-.tlhead.today .tllabel{ color:var(--brand); } .tlhead.today .tlrule{ background:#D9E3EF; } .tlhead.today .tlcount{ color:var(--brand); background:var(--brand-soft); }
+.tlhead.today .tllabel{ color:var(--brand); } .tlhead.today .tlrule{ background:#CFE4EC; } .tlhead.today .tlcount{ color:var(--brand); background:var(--brand-soft); }
 .tlhead.late .tllabel{ color:var(--danger); } .tlhead.late .tlrule{ background:#EAD9D5; } .tlhead.late .tlcount{ color:var(--danger); background:var(--danger-soft); }
 
 .scrim{ position:absolute; inset:0; background:rgba(20,28,24,.34); opacity:0; pointer-events:none;
@@ -437,7 +437,7 @@ body.dragging .scroll, body.dragging .fsbody{ overflow:hidden !important; }
 .statsinceval{ font-family:'Hanken Grotesk',sans-serif; font-weight:700; font-size:22px; margin-top:8px; }
 .statsincesub{ margin-top:4px; font-size:13px; opacity:.9; }
 /* ---- 1B statisztika oldal ---- */
-.statspage.v1b{ --acc:#2E6FB0; --acc-soft:#E3EDF7; font-family:'Hanken Grotesk','Inter',sans-serif; }
+.statspage.v1b{ --acc:#287FAA; --acc-soft:#E1EEF4; font-family:'Hanken Grotesk','Inter',sans-serif; }
 .s3hero{ display:flex; align-items:center; gap:16px; background:var(--surface); border:1px solid var(--line); border-radius:18px; padding:18px; box-shadow:var(--shadow); }
 .s3ring{ position:relative; width:104px; height:104px; flex:none; }
 .s3ring svg{ width:104px; height:104px; transform:rotate(-90deg); }
@@ -462,7 +462,7 @@ body.dragging .scroll, body.dragging .fsbody{ overflow:hidden !important; }
 .attntitle{ font-size:14.5px; font-weight:600; color:var(--ink); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 .attnreason{ flex:none; font-size:12px; font-weight:600; color:var(--amber); }
 .statspage.v1b .statval{ color:var(--ink); }
-.statspage.v1b .statsince{ background:linear-gradient(135deg,#2E6FB0,#2C6AA8); }
+.statspage.v1b .statsince{ background:linear-gradient(135deg,#287FAA,#1F6E96); }
 .stathero{ background:var(--brand); color:#fff; border-radius:18px; padding:20px; margin-bottom:12px; }
 .statherolabel{ font-size:13.5px; font-weight:600; opacity:.9; }
 .statheropct{ font-family:'Hanken Grotesk',sans-serif; font-weight:800; font-size:40px; line-height:1; margin-top:4px; }
@@ -500,12 +500,12 @@ body.dragging .scroll, body.dragging .fsbody{ overflow:hidden !important; }
   body{ height:auto; overflow:visible; background:#fff; }
   #app{ display:none !important; }
   #printarea{ display:block !important; position:static; padding:0 4mm; color:#111; font-family:'Hanken Grotesk',Arial,sans-serif; }
-  .pbrand{ font-weight:800; font-size:13px; letter-spacing:.02em; color:#2E6FB0; }
+  .pbrand{ font-weight:800; font-size:13px; letter-spacing:.02em; color:#287FAA; }
   .ph1{ font-size:21px; font-weight:800; margin-top:2px; }
   .psub{ font-size:12px; color:#444; margin-top:3px; }
   .pnames{ font-size:12px; color:#222; margin-top:2px; }
   .pcount{ font-size:12.5px; color:#111; margin:11px 0 4px; padding:7px 0; border-top:1.5px solid #111; border-bottom:1.5px solid #111; }
-  .psec{ font-size:13px; font-weight:800; text-transform:uppercase; letter-spacing:.05em; color:#2E6FB0; margin:15px 0 5px; border-bottom:1px solid #ccc; padding-bottom:3px; }
+  .psec{ font-size:13px; font-weight:800; text-transform:uppercase; letter-spacing:.05em; color:#287FAA; margin:15px 0 5px; border-bottom:1px solid #ccc; padding-bottom:3px; }
   .pitem{ display:flex; gap:9px; padding:7px 0; border-bottom:1px solid #e2e2e2; break-inside:avoid; }
   .pcheck{ font-size:17px; line-height:1.2; }
   .ptitle{ font-size:14.5px; font-weight:700; }
@@ -609,7 +609,7 @@ function icon(n, fill){ return '<svg class="ic" width="24" height="24" viewBox="
 const GRIP='<svg class="ic" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.4"/><circle cx="9" cy="12" r="1.4"/><circle cx="9" cy="18" r="1.4"/><circle cx="15" cy="6" r="1.4"/><circle cx="15" cy="12" r="1.4"/><circle cx="15" cy="18" r="1.4"/></svg>';
 
 /* ----------------------------- segéd ----------------------------- */
-const LIST_COLORS=["#2E6FB0","#2C8C8C","#C77A16","#8A5BB8","#C0392B","#3B6FB0","#C9518A"];
+const LIST_COLORS=["#287FAA","#2C8C8C","#C77A16","#8A5BB8","#C0392B","#4FA3CE","#C9518A"];
 const STORE="todo-data-v1";
 const uid=()=>Math.random().toString(36).slice(2,10)+Date.now().toString(36).slice(-4);
 const NAMEDAYS={"01-01":"Fruzsina","01-02":"Ábel","01-03":"Genovéva, Benjámin","01-04":"Titusz, Leona","01-05":"Simon","01-06":"Boldizsár","01-07":"Attila, Ramóna","01-08":"Gyöngyvér","01-09":"Marcell","01-10":"Melánia","01-11":"Ágota","01-12":"Ernő","01-13":"Veronika","01-14":"Bódog","01-15":"Lóránt, Loránd","01-16":"Gusztáv","01-17":"Antal, Antónia","01-18":"Piroska","01-19":"Sára, Márió","01-20":"Fábián, Sebestyén","01-21":"Ágnes","01-22":"Vince, Artúr","01-23":"Zelma, Rajmund","01-24":"Timót","01-25":"Pál","01-26":"Vanda, Paula","01-27":"Angelika","01-28":"Károly, Karola","01-29":"Adél","01-30":"Martina, Gerda","01-31":"Marcella",
@@ -2017,7 +2017,7 @@ if(!data.listMerge2 && data.lists.length){
   data.lists.forEach(l=>{ if(l.id!==MAGAN && l.id!==CEGES) data.deleted[l.id]=now; });
   data.lists=[
     {id:MAGAN,name:"Magán",color:"#2C8C8C",order:0,mod:now},
-    {id:CEGES,name:"Céges",color:"#2E6FB0",order:1,mod:now}
+    {id:CEGES,name:"Céges",color:"#287FAA",order:1,mod:now}
   ];
   if(view.type==="list" && view.key!==MAGAN && view.key!==CEGES) view={type:"smart",key:"today"};
   data.listMerge2=true;
