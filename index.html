@@ -109,18 +109,21 @@ body.dragging .task:not(.lift){ transition:transform .16s ease; }
 .addbtn:active{ transform:scale(.92); }
 .addbtn.big{ width:54px; height:54px; }
 .addbtn.big .ic{ width:26px; height:26px; }
-.addwrap{ flex:1; display:flex; align-items:center; gap:9px; height:52px; border-radius:26px; border:1.5px solid var(--line); background:var(--surface); padding:0 8px 0 16px; box-shadow:var(--shadow); }
-.addwrap:focus-within{ border-color:var(--brand); box-shadow:0 0 0 3px var(--brand-soft); }
+.newtaskbtn{ flex:1; min-width:0; display:flex; align-items:center; justify-content:center; gap:8px; height:52px; border-radius:26px; border:none; background:var(--brand); color:#fff; font-family:inherit; font-size:15.5px; font-weight:700; cursor:pointer; box-shadow:0 6px 16px rgba(14,122,99,.28); white-space:nowrap; }
+.newtaskbtn .ic{ width:20px; height:20px; }
+.newtaskbtn:active{ transform:scale(.98); }
+.searchpill,.addpill{ flex:1; min-width:0; display:flex; align-items:center; gap:8px; height:52px; border-radius:26px; border:1.5px solid var(--line); background:var(--surface); padding:0 10px 0 14px; box-shadow:var(--shadow); }
+.searchpill:focus-within,.addpill:focus-within{ border-color:var(--brand); box-shadow:0 0 0 3px var(--brand-soft); }
 .addicon{ flex:none; color:var(--ink-faint); display:grid; place-items:center; }
 .addicon .ic{ width:20px; height:20px; }
-.addwrap:focus-within .addicon{ color:var(--brand); }
+.searchpill:focus-within .addicon{ color:var(--brand); }
 .addinput{ flex:1; min-width:0; height:100%; border:none; background:none; padding:0;
-  font-size:15.5px; font-family:inherit; color:var(--ink); outline:none; }
+  font-size:15px; font-family:inherit; color:var(--ink); outline:none; }
 .addinput::placeholder{ color:var(--ink-faint); }
-.footclear{ flex:none; background:none; border:none; color:var(--ink-faint); cursor:pointer; padding:6px; display:none; }
-.footclear.show{ display:grid; place-items:center; }
-.footclear .ic{ width:16px; height:16px; }
-.footerdrop{ top:auto; bottom:calc(100% - 2px); left:16px; right:16px; }
+.footclear,.addclear{ flex:none; background:none; border:none; color:var(--ink-faint); cursor:pointer; padding:6px; display:none; }
+.footclear.show,.addclear.show{ display:grid; place-items:center; }
+.footclear .ic,.addclear .ic{ width:16px; height:16px; }
+.footerdrop{ position:fixed; top:auto; left:12px; right:12px; bottom:150px; max-height:44vh; z-index:60; }
 .header.nomenu{ display:flex; align-items:flex-start; justify-content:space-between; gap:12px; }
 .titlewrap{ min-width:0; }
 .hdrbtn{ flex:none; width:44px; height:44px; border-radius:14px; border:1px solid var(--line); background:var(--surface); color:var(--brand); display:grid; place-items:center; cursor:pointer; box-shadow:var(--shadow); }
@@ -664,7 +667,7 @@ const P = {
 };
 function icon(n, fill){ return '<svg class="ic" width="24" height="24" viewBox="0 0 24 24" fill="'+(fill||'none')+'" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">'+P[n]+'</svg>'; }
 const GRIP='<svg class="ic" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.4"/><circle cx="9" cy="12" r="1.4"/><circle cx="9" cy="18" r="1.4"/><circle cx="15" cy="6" r="1.4"/><circle cx="15" cy="12" r="1.4"/><circle cx="15" cy="18" r="1.4"/></svg>';
-const APP_VERSION="v42";
+const APP_VERSION="v44";
 
 /* ----------------------------- segéd ----------------------------- */
 const LIST_COLORS=["#287FAA","#2C8C8C","#C77A16","#8A5BB8","#C0392B","#4FA3CE","#C9518A"];
@@ -956,6 +959,7 @@ let lastDoneId=null;
 let showFilter=false;
 let resetScroll=false;
 let searchOpen=false;
+let addingTask=false;
 let printNotes=false;
 let searchQuery="", searchSel=-1, suggPicking=false, focusSearch=false;
 let plannedFilter="all";
@@ -1415,10 +1419,14 @@ function render(){
     +'</section>'
     +(isSpecial ? '' : '<div class="addbar">'
       +'<div id="footdrop" class="searchdrop footerdrop"></div>'
-      +'<div class="addwrap"><span class="addicon">'+icon("search")+'</span>'
-        +'<input id="addinput" class="addinput" placeholder="Keresés vagy új feladat…" autocomplete="off" autocapitalize="off">'
+      +'<div class="searchpill"><span class="addicon">'+icon("search")+'</span>'
+        +'<input id="footsearch" class="addinput" placeholder="Keresés" autocomplete="off" autocapitalize="off">'
         +'<button class="footclear" aria-label="Törlés">'+icon("x")+'</button></div>'
-      +'<button class="addbtn big" data-action="add" aria-label="Feladat hozzáadása">'+icon("plus")+'</button></div>')
+      +(addingTask
+        ? '<div class="addpill"><input id="addinput" class="addinput" placeholder="Írd be, majd Enter…" autocomplete="off">'
+            +'<button class="addclear" aria-label="Mégse">'+icon("x")+'</button></div>'
+        : '<button class="newtaskbtn" data-action="startadd">'+icon("plus")+'<span>Új feladat</span></button>')
+      +'</div>')
     +'<nav class="tabbar">'
       +tabBtn("Ma","sun","today", view.type==="smart"&&view.key==="today")
       +tabBtn("Tervezett","calendar","planned", view.type==="smart"&&view.key==="planned")
@@ -1476,15 +1484,24 @@ function render(){
   // input figyelők (újrarajzolás nélkül a gépeléshez)
   const ai=document.getElementById("addinput");
   if(ai){
-    ai.addEventListener("keydown",e=>{ if(e.key==="Enter"){ addTask(ai.value); footerSearch(); } else if(e.key==="Escape"){ ai.value=""; footerSearch(); ai.blur(); } });
-    ai.addEventListener("input", footerSearch);
-    ai.addEventListener("blur",()=>{ setTimeout(()=>{ if(!suggPicking){ const fd=document.getElementById("footdrop"); if(fd) fd.classList.remove("show"); } },160); });
+    ai.addEventListener("keydown",e=>{
+      if(e.key==="Enter"){ if(ai.value.trim()){ focusAdd=true; addTask(ai.value, false); } }
+      else if(e.key==="Escape"){ addingTask=false; render(); }
+    });
     if(focusAdd){ ai.focus(); focusAdd=false; }
   }
+  const aclr=document.querySelector(".addclear");
+  if(aclr) aclr.addEventListener("click",()=>{ addingTask=false; render(); });
+  const fsi=document.getElementById("footsearch");
+  if(fsi){
+    fsi.addEventListener("input", footerSearch);
+    fsi.addEventListener("keydown",e=>{ if(e.key==="Escape"){ fsi.value=""; footerSearch(); fsi.blur(); } });
+    fsi.addEventListener("blur",()=>{ setTimeout(()=>{ if(!suggPicking){ const fd=document.getElementById("footdrop"); if(fd) fd.classList.remove("show"); } },160); });
+  }
   const fclr=document.querySelector(".footclear");
-  if(fclr) fclr.addEventListener("click",()=>{ if(ai){ ai.value=""; footerSearch(); ai.focus(); } });
+  if(fclr) fclr.addEventListener("click",()=>{ if(fsi){ fsi.value=""; footerSearch(); fsi.focus(); } });
   const fd=document.getElementById("footdrop");
-  if(fd){ fd.addEventListener("pointerdown",()=>{ suggPicking=true; }); fd.addEventListener("click",e=>{ const s=e.target.closest(".sugg"); if(s&&s.dataset.id){ if(ai) ai.value=""; openSuggestion(s.dataset.id); } suggPicking=false; }); }
+  if(fd){ fd.addEventListener("pointerdown",()=>{ suggPicking=true; }); fd.addEventListener("click",e=>{ const s=e.target.closest(".sugg"); if(s&&s.dataset.id){ if(fsi) fsi.value=""; footerSearch(); openSuggestion(s.dataset.id); } suggPicking=false; }); }
   const nl=document.getElementById("newlist");
   if(nl) nl.addEventListener("keydown",e=>{ if(e.key==="Enter") addList(nl.value); });
   document.querySelectorAll("[data-rename]").forEach(inp=>{
@@ -1551,7 +1568,7 @@ function render(){
 }
 
 /* ----------------------------- műveletek ----------------------------- */
-function addTask(val){
+function addTask(val, openAfter){
   const title=(val||"").trim(); if(!title)return;
   let listId,important=false;
   if(view.type==="list")listId=view.key;
@@ -1561,7 +1578,7 @@ function addTask(val){
   data.tasks.push(nt);
   data.createdTotal=(data.createdTotal||0)+1;
   save();
-  openTaskId=nt.id; dueOpen=false; remindOpen=false;
+  if(openAfter!==false){ openTaskId=nt.id; dueOpen=false; remindOpen=false; }
   render();
 }
 function addStep(taskId, text){
@@ -1614,7 +1631,8 @@ document.getElementById("app").addEventListener("click",e=>{
   else if(a==="pickfile"){ const fi=document.getElementById("fileinput"); if(fi) fi.click(); }
   else if(a==="attdel"){ if(!data.atts)data.atts={}; data.atts[openTaskId]=taskAtts(openTaskId).filter(x=>x.id!==el.dataset.aid); save(); render(); }
   else if(a==="closesheet"){trackClose();openTaskId=null;render();}
-  else if(a==="add"){const ai=document.getElementById("addinput");addTask(ai?ai.value:"");}
+  else if(a==="startadd"){ addingTask=true; focusAdd=true; render(); }
+  else if(a==="add"){ const ai=document.getElementById("addinput"); if(ai&&ai.value.trim()){ focusAdd=true; addTask(ai.value, false); } }
   else if(a==="dellist"){delList(id);}
   else if(a==="deltask"){ const t=data.tasks.find(x=>x.id===id); if(!t)return; const snap=JSON.parse(JSON.stringify(t)); const snapAtt=(data.atts&&data.atts[id])?JSON.parse(JSON.stringify(data.atts[id])):null; if(!data.deleted)data.deleted={};data.deleted[id]=Date.now();data.tasks=data.tasks.filter(x=>x.id!==id);if(data.atts)delete data.atts[id];openTaskId=null;save();render();
     const short=snap.title&&snap.title.length>28?snap.title.slice(0,27)+"…":(snap.title||"Feladat"); showToast('„'+short+'” törölve', 'Visszavonás', ()=>{ snap.mod=Date.now(); data.tasks.push(snap); if(data.deleted)delete data.deleted[id]; if(snapAtt){ if(!data.atts)data.atts={}; data.atts[id]=snapAtt; } save(); render(); });
@@ -1724,14 +1742,14 @@ function matchTask(t,q){
   return null;
 }
 function footerSearch(){
-  const ai=document.getElementById("addinput"), fd=document.getElementById("footdrop"), fc=document.querySelector(".footclear");
-  if(!ai||!fd) return;
-  const raw=ai.value.trim(), q=norm(raw);
-  if(fc) fc.classList.toggle("show", ai.value.length>0);
+  const si=document.getElementById("footsearch"), fd=document.getElementById("footdrop"), fc=document.querySelector(".footclear");
+  if(!si||!fd) return;
+  const raw=si.value.trim(), q=norm(raw);
+  if(fc) fc.classList.toggle("show", si.value.length>0);
   if(!q){ fd.classList.remove("show"); fd.innerHTML=""; return; }
   const matches=[];
   for(const t of data.tasks){ const via=matchTask(t,q); if(via){ matches.push({t,via}); if(matches.length>=8) break; } }
-  if(!matches.length){ fd.innerHTML='<div class="suggempty">Nincs ilyen feladat — Enterrel vagy a + gombbal hozzáadhatod</div>'; fd.classList.add("show"); return; }
+  if(!matches.length){ fd.innerHTML='<div class="suggempty">Nincs találat</div>'; fd.classList.add("show"); return; }
   fd.innerHTML=matches.map(m=>{
     const t=m.t, ln=listById(t.listId);
     const meta=esc(ln?ln.name:"")+(t.due?" · "+formatDue(t.due):"");
