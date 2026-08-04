@@ -123,7 +123,7 @@ body.dragging .task:not(.lift){ transition:transform .16s ease; }
 .footclear,.addclear{ flex:none; background:none; border:none; color:var(--ink-faint); cursor:pointer; padding:6px; display:none; }
 .footclear.show,.addclear.show{ display:grid; place-items:center; }
 .footclear .ic,.addclear .ic{ width:16px; height:16px; }
-.footerdrop{ position:fixed; top:auto; left:12px; right:12px; bottom:150px; max-height:44vh; z-index:60; }
+.searchdrop.footerdrop{ position:fixed; top:auto; left:12px; right:12px; bottom:150px; max-height:44vh; z-index:60; }
 .header.nomenu{ display:flex; align-items:flex-start; justify-content:space-between; gap:12px; }
 .titlewrap{ min-width:0; }
 .hdrbtn{ flex:none; width:44px; height:44px; border-radius:14px; border:1px solid var(--line); background:var(--surface); color:var(--brand); display:grid; place-items:center; cursor:pointer; box-shadow:var(--shadow); }
@@ -147,7 +147,11 @@ body.dragging .task:not(.lift){ transition:transform .16s ease; }
 .tab.on .tabic{ background:var(--brand-soft); }
 .tab:active{ opacity:.6; }
 .tlgroup{ margin-bottom:18px; }
-.tlhead{ display:flex; align-items:center; gap:10px; padding:2px 4px 10px; }
+.tlhead{ display:flex; align-items:center; gap:9px; padding:4px 4px 10px; width:100%; background:none; border:none; cursor:pointer; font-family:inherit; text-align:left; }
+.tlhead:active{ opacity:.65; }
+.tlchev{ display:inline-flex; color:var(--ink-faint); transition:transform .18s; }
+.tlchev .ic{ width:16px; height:16px; }
+.tlhead.collapsed .tlchev{ transform:rotate(-90deg); }
 .tllabel{ font-family:'Hanken Grotesk',sans-serif; font-weight:800; font-size:12.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-soft); }
 .tlrule{ flex:1; height:1px; background:var(--line); }
 .tlcount{ font-size:12px; font-weight:700; color:var(--ink-faint); background:var(--hair); border-radius:20px; padding:1px 9px; }
@@ -667,7 +671,7 @@ const P = {
 };
 function icon(n, fill){ return '<svg class="ic" width="24" height="24" viewBox="0 0 24 24" fill="'+(fill||'none')+'" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">'+P[n]+'</svg>'; }
 const GRIP='<svg class="ic" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.4"/><circle cx="9" cy="12" r="1.4"/><circle cx="9" cy="18" r="1.4"/><circle cx="15" cy="6" r="1.4"/><circle cx="15" cy="12" r="1.4"/><circle cx="15" cy="18" r="1.4"/></svg>';
-const APP_VERSION="v45";
+const APP_VERSION="v46";
 
 /* ----------------------------- segéd ----------------------------- */
 const LIST_COLORS=["#287FAA","#2C8C8C","#C77A16","#8A5BB8","#C0392B","#4FA3CE","#C9518A"];
@@ -798,9 +802,11 @@ function statsHTML(){
   const total=tasks.length;
   const done=tasks.filter(t=>t.done).length;
   const active=total-done;
-  const rate=total?Math.round(done/total*100):0;
   const overdue=tasks.filter(t=>!t.done&&isOverdue(t.due)).length;
-  const createdTotal=(data.createdTotal!=null)?data.createdTotal:total;
+  // "Teljesítve összesen" = teljes életciklus, hogy a kész feladatok törlése ne nullázza le
+  const doneAll=Math.max(done, data.completedTotal||0);
+  const createdAll=Math.max(total, doneAll, data.createdTotal||0);
+  const rate=createdAll?Math.min(100,Math.round(doneAll/createdAll*100)):0;
   const first=total?Math.min.apply(null,tasks.map(t=>t.createdAt||Date.now())):null;
   const daysUsing=first?(Math.floor((Date.now()-first)/86400000)+1):0;
   const firstStr=first?new Date(first).toLocaleDateString("hu-HU",{year:"numeric",month:"long",day:"numeric"}):"—";
@@ -858,7 +864,7 @@ function statsHTML(){
     +'<label class="printopt"><input type="checkbox" id="printnotes"'+(printNotes?" checked":"")+'> Leírásokkal együtt nyomtat</label>'
     +'<div class="s3hero">'
       +'<div class="s3ring"><svg viewBox="0 0 120 120"><circle class="s3rbg" cx="60" cy="60" r="52"/><circle class="s3rfg" cx="60" cy="60" r="52" stroke-dasharray="'+RC.toFixed(1)+'" stroke-dashoffset="'+roff.toFixed(1)+'"/></svg><div class="s3rtext"><div class="s3pct">'+rate+'%</div><div class="s3plab">kész</div></div></div>'
-      +'<div class="s3hright"><div class="s3htitle">Teljesítve összesen</div><div class="s3hsub">'+done+' / '+total+' feladat</div>'
+      +'<div class="s3hright"><div class="s3htitle">Teljesítve összesen</div><div class="s3hsub">'+doneAll+' / '+createdAll+' feladat</div>'
         +(streak?'<div class="s3streak">'+icon("flame")+streak+' napos lendület</div>':'')+'</div>'
     +'</div>'
     +'<div class="s3nums">'
@@ -959,6 +965,7 @@ let lastDoneId=null;
 let showFilter=false;
 let resetScroll=false;
 let searchOpen=false;
+let collapsedBuckets={};
 let addingTask=false;
 let printNotes=false;
 let searchQuery="", searchSel=-1, suggPicking=false, focusSearch=false;
@@ -1312,11 +1319,13 @@ function render(){
     const order=[["today","Ma","today"],["tomorrow","Holnap",""],["week","E héten",""],["later","Később",""],["nodue","Nincs határidő",""],["overdue","Lejárt","late"]];
     const groups={};
     list.forEach(t=>{ const b=t.due?(dueBucket(t.due)||"later"):"nodue"; (groups[b]||(groups[b]=[])).push(t); });
-    Object.keys(groups).forEach(k=>{ groups[k]=(k==="week"||k==="later") ? groups[k].slice().sort(cmpDueTitle) : orderList(groups[k], cmpDueTitle); });
-    return order.filter(x=>groups[x[0]]&&groups[x[0]].length).map(x=>
-      '<div class="tlgroup"><div class="tlhead '+x[2]+'"><span class="tllabel">'+x[1]+'</span><span class="tlrule"></span><span class="tlcount">'+groups[x[0]].length+'</span></div>'
-      +'<ul class="tasklist" data-bucket="'+x[0]+'">'+groups[x[0]].map(t=>taskRow(t,true,true)).join("")+'</ul></div>'
-    ).join("");
+    Object.keys(groups).forEach(k=>{ groups[k]=orderList(groups[k], cmpDueTitle); });
+    return order.filter(x=>groups[x[0]]&&groups[x[0]].length).map(x=>{
+      const key=x[0], coll=!!collapsedBuckets[key];
+      return '<div class="tlgroup"><button type="button" class="tlhead '+x[2]+(coll?" collapsed":"")+'" data-action="togglebucket" data-bucket="'+key+'"><span class="tlchev">'+icon("chevron")+'</span><span class="tllabel">'+x[1]+'</span><span class="tlrule"></span><span class="tlcount">'+groups[key].length+'</span></button>'
+        +(coll?'':'<ul class="tasklist" data-bucket="'+key+'">'+groups[key].map(t=>taskRow(t,true,true)).join("")+'</ul>')
+        +'</div>';
+    }).join("");
   };
 
   let emptyT="",emptyS="";
@@ -1644,6 +1653,7 @@ document.getElementById("app").addEventListener("click",e=>{
   else if(a==="dueclear"){const t=data.tasks.find(x=>x.id===id);t.due="";schedOpen=false;dueOpen=false;save();render();}
   else if(a==="remindclear"){const t=data.tasks.find(x=>x.id===id);t.reminder="";t.reminderFired=false;save();render();}
   else if(a==="toggledone"){showDone=!showDone;render();}
+  else if(a==="togglebucket"){ const b=el.dataset.bucket; collapsedBuckets[b]=!collapsedBuckets[b]; render(); }
   else if(a==="qfilter"){ plannedFilter=el.dataset.key; render(); }
   else if(a==="setlist"){ const t=data.tasks.find(x=>x.id===id); if(t){ t.listId=el.dataset.lid; t.mod=Date.now(); save(); render(); } }
   else if(a==="cleardone"){
