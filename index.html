@@ -667,7 +667,7 @@ const P = {
 };
 function icon(n, fill){ return '<svg class="ic" width="24" height="24" viewBox="0 0 24 24" fill="'+(fill||'none')+'" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">'+P[n]+'</svg>'; }
 const GRIP='<svg class="ic" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.4"/><circle cx="9" cy="12" r="1.4"/><circle cx="9" cy="18" r="1.4"/><circle cx="15" cy="6" r="1.4"/><circle cx="15" cy="12" r="1.4"/><circle cx="15" cy="18" r="1.4"/></svg>';
-const APP_VERSION="v44";
+const APP_VERSION="v45";
 
 /* ----------------------------- segéd ----------------------------- */
 const LIST_COLORS=["#287FAA","#2C8C8C","#C77A16","#8A5BB8","#C0392B","#4FA3CE","#C9518A"];
@@ -1215,22 +1215,16 @@ function orderList(arr, cmp){
   const compare=cmp||cmpTitle;
   // Ha egyáltalán nincs kézzel rendezett elem: tiszta ABC (vagy dátum+ABC).
   if(!arr.some(t=>t.manual)) return arr.slice().sort(compare);
-  // Van kézi sorrend: a rögzített elemek a pos-uk szerint kerülnek helyre,
-  // a többi (nem rögzített) ABC szerint tölti ki a maradék helyeket.
-  const pinned=arr.filter(t=>t.manual).sort((a,b)=>((a.pos||0)-(b.pos||0)) || compare(a,b));
-  const rest=arr.filter(t=>!t.manual).sort(compare);
-  const out=new Array(arr.length).fill(null);
-  // 1) rögzítettek a kívánt indexre (ütközésnél a következő szabad helyre)
-  pinned.forEach(t=>{
-    let p=Math.max(0, Math.min(out.length-1, typeof t.pos==="number"?t.pos:out.length-1));
-    while(out[p]!==null && p<out.length-1) p++;
-    while(out[p]!==null && p>0) p--;
-    out[p]=t;
+  // Van kézi sorrend: STABIL rendezés — a rögzítettek a pos-uk szerint elöl,
+  // a nem rögzítettek utánuk dátum/ABC szerint. Így egy elem eltűnése/hozzáadása
+  // NEM rendezi át a többit (nincs abszolút indexes helykitöltés).
+  return arr.slice().sort((a,b)=>{
+    const am=!!a.manual, bm=!!b.manual;
+    if(am&&bm) return ((a.pos||0)-(b.pos||0)) || compare(a,b);
+    if(am) return -1;
+    if(bm) return 1;
+    return compare(a,b);
   });
-  // 2) a maradék helyekre jönnek a nem rögzítettek ABC-ben
-  let ri=0;
-  for(let i=0;i<out.length && ri<rest.length;i++){ if(out[i]===null) out[i]=rest[ri++]; }
-  return out.filter(Boolean);
 }
 function sortTasks(a,b){
   if(a.important!==b.important)return a.important?-1:1;
@@ -1626,7 +1620,7 @@ document.getElementById("app").addEventListener("click",e=>{
   else if(a==="togglereminder"){ remindOpen=!remindOpen; render(); }
   else if(a==="opensched"){ schedOpen=true; calOpen=false; render(); }
   else if(a==="closesched"){ schedOpen=false; calOpen=false; render(); }
-  else if(a==="opennote"){ noteEditor=true; focusNote=true; render(); }
+  else if(a==="opennote"){ noteEditor=true; focusNote=false; render(); }
   else if(a==="closenote"){ noteEditor=false; render(); }
   else if(a==="pickfile"){ const fi=document.getElementById("fileinput"); if(fi) fi.click(); }
   else if(a==="attdel"){ if(!data.atts)data.atts={}; data.atts[openTaskId]=taskAtts(openTaskId).filter(x=>x.id!==el.dataset.aid); save(); render(); }
@@ -1741,6 +1735,12 @@ function matchTask(t,q){
   if(t.steps && t.steps.some(s=>norm(s.text).includes(q))) return "step";
   return null;
 }
+function posFootdrop(si, fd){
+  const r=si.getBoundingClientRect();
+  fd.style.bottom=Math.max(8, window.innerHeight - r.top + 8)+"px";
+  fd.style.left=Math.max(8, r.left)+"px";
+  fd.style.right=Math.max(8, window.innerWidth - r.right)+"px";
+}
 function footerSearch(){
   const si=document.getElementById("footsearch"), fd=document.getElementById("footdrop"), fc=document.querySelector(".footclear");
   if(!si||!fd) return;
@@ -1749,7 +1749,7 @@ function footerSearch(){
   if(!q){ fd.classList.remove("show"); fd.innerHTML=""; return; }
   const matches=[];
   for(const t of data.tasks){ const via=matchTask(t,q); if(via){ matches.push({t,via}); if(matches.length>=8) break; } }
-  if(!matches.length){ fd.innerHTML='<div class="suggempty">Nincs találat</div>'; fd.classList.add("show"); return; }
+  if(!matches.length){ fd.innerHTML='<div class="suggempty">Nincs találat</div>'; posFootdrop(si,fd); fd.classList.add("show"); return; }
   fd.innerHTML=matches.map(m=>{
     const t=m.t, ln=listById(t.listId);
     const meta=esc(ln?ln.name:"")+(t.due?" · "+formatDue(t.due):"");
@@ -1757,6 +1757,7 @@ function footerSearch(){
       +'<div class="suggmain"><div class="suggtitle'+(t.done?" sdone":"")+'">'+highlight(t.title,raw)+'</div>'
       +'<div class="suggmeta">'+meta+'</div></div></div>';
   }).join("");
+  posFootdrop(si,fd);
   fd.classList.add("show");
 }
 function updateSearch(){
