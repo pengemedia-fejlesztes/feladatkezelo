@@ -602,7 +602,8 @@ body.dragging .scroll, body.dragging .fsbody{ overflow:hidden !important; }
   .nefoot .nelinks{ max-width:680px; margin:0 auto; padding:12px 0 0; }
   .schedscrim{ top:58px; }
   .schedsheet{ border-radius:16px 16px 0 0; max-height:calc(100dvh - 90px); }
-  .schedsheet .sheetscroll{ max-width:680px; width:100%; margin:0 auto; }
+  .schedsheet .sheethead, .schedsheet .sheetscroll{ max-width:680px; width:100%; margin:0 auto; }
+  .schedsheet .sheethead{ padding-left:2px; padding-right:2px; }
 }
 @media (prefers-reduced-motion:reduce){ *{ animation:none !important; transition:none !important; } }
 </style>
@@ -671,7 +672,7 @@ const P = {
 };
 function icon(n, fill){ return '<svg class="ic" width="24" height="24" viewBox="0 0 24 24" fill="'+(fill||'none')+'" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">'+P[n]+'</svg>'; }
 const GRIP='<svg class="ic" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.4"/><circle cx="9" cy="12" r="1.4"/><circle cx="9" cy="18" r="1.4"/><circle cx="15" cy="6" r="1.4"/><circle cx="15" cy="12" r="1.4"/><circle cx="15" cy="18" r="1.4"/></svg>';
-const APP_VERSION="v49";
+const APP_VERSION="v50";
 
 /* ----------------------------- segéd ----------------------------- */
 const LIST_COLORS=["#287FAA","#2C8C8C","#C77A16","#8A5BB8","#C0392B","#4FA3CE","#C9518A"];
@@ -1609,6 +1610,15 @@ function refreshCat(id){
   const li=document.querySelector('.task[data-id="'+id+'"]');
   if(li){ li.style.setProperty('--strip', ln?ln.color:'var(--ink-faint)'); const ml=li.querySelector('.metalist'); if(ml) ml.textContent=(ln?ln.name:''); }
 }
+// Az ütemező-sheet (naptár/emlékeztető) helyben frissül, nincs teljes oldal-újrarajzolás
+function refreshSched(){
+  const sheet=document.querySelector('.schedsheet');
+  const t=data.tasks.find(x=>x.id===openTaskId);
+  if(!sheet || !t || !schedOpen){ render(); return; }
+  const tmp=document.createElement('div'); tmp.innerHTML=schedSheetHTML(t);
+  const ns=tmp.querySelector('.schedsheet');
+  if(ns){ sheet.innerHTML=ns.innerHTML; } else { render(); }
+}
 function delList(id){
   if(data.lists.length<=1)return;
   if(!data.deleted)data.deleted={};
@@ -1653,17 +1663,17 @@ document.getElementById("app").addEventListener("click",e=>{
     const short=snap.title&&snap.title.length>28?snap.title.slice(0,27)+"…":(snap.title||"Feladat"); showToast('„'+short+'” törölve', 'Visszavonás', ()=>{ snap.mod=Date.now(); data.tasks.push(snap); if(data.deleted)delete data.deleted[id]; if(snapAtt){ if(!data.atts)data.atts={}; data.atts[id]=snapAtt; } save(); render(); });
   }
   else if(a==="duetoday"){const t=data.tasks.find(x=>x.id===id);t.due=todayISO();save();render();}
-  else if(a==="caltoggle"){ if(!calOpen){ const t=data.tasks.find(x=>x.id===id); const b=(t&&t.due)?parseISO(t.due):new Date(); calY=b.getFullYear(); calM=b.getMonth(); } calOpen=!calOpen; render(); }
-  else if(a==="calprev"){ if(calM===null){ const n=new Date(); calY=n.getFullYear(); calM=n.getMonth(); } calM--; if(calM<0){ calM=11; calY--; } render(); }
-  else if(a==="calnext"){ if(calM===null){ const n=new Date(); calY=n.getFullYear(); calM=n.getMonth(); } calM++; if(calM>11){ calM=0; calY++; } render(); }
-  else if(a==="calpick"){ const t=data.tasks.find(x=>x.id===id); if(t){ t.due=el.dataset.iso; t.mod=Date.now(); save(); render(); } }
+  else if(a==="caltoggle"){ if(!calOpen){ const t=data.tasks.find(x=>x.id===id); const b=(t&&t.due)?parseISO(t.due):new Date(); calY=b.getFullYear(); calM=b.getMonth(); } calOpen=!calOpen; refreshSched(); }
+  else if(a==="calprev"){ if(calM===null){ const n=new Date(); calY=n.getFullYear(); calM=n.getMonth(); } calM--; if(calM<0){ calM=11; calY--; } refreshSched(); }
+  else if(a==="calnext"){ if(calM===null){ const n=new Date(); calY=n.getFullYear(); calM=n.getMonth(); } calM++; if(calM>11){ calM=0; calY++; } refreshSched(); }
+  else if(a==="calpick"){ const t=data.tasks.find(x=>x.id===id); if(t){ t.due=el.dataset.iso; t.mod=Date.now(); save(); refreshSched(); } }
   else if(a==="duequick"){const t=data.tasks.find(x=>x.id===id);const w=el.dataset.when;t.due=w==="today"?todayISO():w==="tomorrow"?addDaysISO(1):w==="weekend"?weekendISO():w==="friday"?fridayISO():w==="nextweek"?nextMondayISO():w==="week"?addDaysISO(7):w==="monthend"?monthEndISO():t.due;schedOpen=false;dueOpen=false;save();render();}
-  else if(a==="remindquick"){const t=data.tasks.find(x=>x.id===id);const base=(t.due||todayISO());t.reminder=base+"T"+el.dataset.time;t.reminderFired=false;requestNotify();save();render();}
-  else if(a==="remindhour"){const t=data.tasks.find(x=>x.id===id);const date=(t.reminder?t.reminder.slice(0,10):(t.due||todayISO()));const mm=(t.reminder&&t.reminder.slice(14,16))||"00";t.reminder=date+"T"+el.dataset.hour+":"+mm;t.reminderFired=false;requestNotify();save();render();}
-  else if(a==="remindmin"){const t=data.tasks.find(x=>x.id===id);const date=(t.reminder?t.reminder.slice(0,10):(t.due||todayISO()));const hh=(t.reminder&&t.reminder.slice(11,13))||"09";t.reminder=date+"T"+hh+":"+el.dataset.min;t.reminderFired=false;requestNotify();save();render();}
+  else if(a==="remindquick"){const t=data.tasks.find(x=>x.id===id);const base=(t.due||todayISO());t.reminder=base+"T"+el.dataset.time;t.reminderFired=false;requestNotify();save();refreshSched();}
+  else if(a==="remindhour"){const t=data.tasks.find(x=>x.id===id);const date=(t.reminder?t.reminder.slice(0,10):(t.due||todayISO()));const mm=(t.reminder&&t.reminder.slice(14,16))||"00";t.reminder=date+"T"+el.dataset.hour+":"+mm;t.reminderFired=false;requestNotify();save();refreshSched();}
+  else if(a==="remindmin"){const t=data.tasks.find(x=>x.id===id);const date=(t.reminder?t.reminder.slice(0,10):(t.due||todayISO()));const hh=(t.reminder&&t.reminder.slice(11,13))||"09";t.reminder=date+"T"+hh+":"+el.dataset.min;t.reminderFired=false;requestNotify();save();refreshSched();}
   else if(a==="duetomorrow"){const t=data.tasks.find(x=>x.id===id);t.due=localISO(new Date(Date.now()+86400000));save();render();}
   else if(a==="dueclear"){const t=data.tasks.find(x=>x.id===id);t.due="";schedOpen=false;dueOpen=false;save();render();}
-  else if(a==="remindclear"){const t=data.tasks.find(x=>x.id===id);t.reminder="";t.reminderFired=false;save();render();}
+  else if(a==="remindclear"){const t=data.tasks.find(x=>x.id===id);t.reminder="";t.reminderFired=false;save();refreshSched();}
   else if(a==="toggledone"){showDone=!showDone;render();}
   else if(a==="togglebucket"){ const b=el.dataset.bucket; collapsedBuckets[b]=!collapsedBuckets[b]; render(); }
   else if(a==="qfilter"){ plannedFilter=el.dataset.key; render(); }
