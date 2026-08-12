@@ -459,10 +459,16 @@ body.dragging .scroll, body.dragging .fsbody{ overflow:hidden !important; }
 .neback .ic{ width:24px; height:24px; }
 .netitle{ font-family:'Hanken Grotesk',sans-serif; font-weight:800; font-size:17px; color:var(--ink); display:flex; flex-direction:column; align-items:center; line-height:1.15; min-width:0; }
 .netitle .nesub{ font-size:11px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-faint); }
-.netitle .netask{ font-size:16px; font-weight:800; color:var(--ink); max-width:60vw; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.netitle .netask{ font-size:16px; font-weight:800; color:var(--ink); max-width:42vw; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 .nedonebtn{ background:var(--brand); color:#fff; border:none; border-radius:11px; padding:9px 20px; font-family:inherit; font-size:15px; font-weight:700; cursor:pointer; }
 .nedonebtn:active{ transform:scale(.96); }
-.nearea{ flex:1; width:100%; border:none; outline:none; resize:none; background:transparent; padding:16px; font-family:inherit; font-size:17px; line-height:1.6; color:var(--ink); -webkit-overflow-scrolling:touch; }
+.needitbtn{ background:var(--surface-2); color:var(--brand); border:1px solid var(--line); border-radius:11px; padding:7px 8px; display:grid; place-items:center; cursor:pointer; flex:none; }
+.needitbtn .ic{ width:20px; height:20px; }
+.needitbtn:active{ transform:scale(.96); }
+.needitbtn.on{ background:var(--brand); color:#fff; border-color:var(--brand); }
+.nearea{ flex:1; min-height:0; width:100%; overflow-y:auto; white-space:pre-wrap; overflow-wrap:break-word; border:none; outline:none; background:transparent; padding:16px; font-family:inherit; font-size:17px; line-height:1.6; color:var(--ink); -webkit-overflow-scrolling:touch; -webkit-user-select:text; user-select:text; touch-action:manipulation; }
+.nearea:empty::before{ content:attr(data-ph); color:var(--ink-faint); pointer-events:none; }
+.nearea[contenteditable="false"]{ cursor:default; }
 .nefoot{ max-height:34vh; overflow-y:auto; }
 .nefoot .nelinks:empty{ display:none; }
 .nefoot .nelinks{ padding:0 14px calc(12px + env(safe-area-inset-bottom)); }
@@ -672,7 +678,7 @@ const P = {
 };
 function icon(n, fill){ return '<svg class="ic" width="24" height="24" viewBox="0 0 24 24" fill="'+(fill||'none')+'" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">'+P[n]+'</svg>'; }
 const GRIP='<svg class="ic" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.4"/><circle cx="9" cy="12" r="1.4"/><circle cx="9" cy="18" r="1.4"/><circle cx="15" cy="6" r="1.4"/><circle cx="15" cy="12" r="1.4"/><circle cx="15" cy="18" r="1.4"/></svg>';
-const APP_VERSION="v50";
+const APP_VERSION="v51";
 
 /* ----------------------------- segéd ----------------------------- */
 const LIST_COLORS=["#287FAA","#2C8C8C","#C77A16","#8A5BB8","#C0392B","#4FA3CE","#C9518A"];
@@ -955,7 +961,7 @@ function defaultData(){
 let data, view={type:"smart",key:"today"}, drawerOpen=false, editLists=false, openTaskId=null, showDone=true, focusAdd=false, focusStep=false;
 let navStack=[];
 function goBack(){
-  if(noteEditor){ noteEditor=false; render(); return true; }
+  if(noteEditor){ noteEditor=false; noteEditMode=false; render(); return true; }
   if(schedOpen){ schedOpen=false; render(); return true; }
   if(openTaskId){ trackClose(); openTaskId=null; render(); return true; }
   if(drawerOpen){ drawerOpen=false; render(); return true; }
@@ -974,15 +980,43 @@ let plannedFilter="all";
 let dueOpen=false, remindOpen=false;
 let schedOpen=false;
 let calOpen=false, calY=null, calM=null;
-let noteEditor=false, focusNote=false;
+let noteEditor=false, focusNote=false, noteEditMode=false;
 function noteEditorHTML(t){
   return '<div class="noteeditor">'
     +'<header class="netop"><button class="neback" data-action="closenote">'+icon("back")+'</button>'
       +'<span class="netitle"><span class="nesub">Leírás</span><span class="netask">'+esc(t.title||"")+'</span></span>'
+      +'<button class="needitbtn'+(noteEditMode?" on":"")+'" id="needit" type="button" aria-label="Szerkesztés">'+icon("pencil")+'</button>'
       +'<button class="nedonebtn" data-action="closenote">Kész</button></header>'
-    +'<textarea class="nearea" id="netext" data-id="'+t.id+'" placeholder="Írj ide bármilyen megjegyzést, telefonszámot, e-mailt vagy weboldalt…">'+esc(t.note)+'</textarea>'
+    +'<div class="nearea" id="netext" data-id="'+t.id+'" contenteditable="'+(noteEditMode?"true":"false")+'" role="textbox" aria-multiline="true" data-ph="Írj ide bármilyen megjegyzést, telefonszámot, e-mailt vagy weboldalt…">'+esc(t.note)+'</div>'
     +'<div class="nefoot"><div id="nelinks" class="nelinks">'+linksHTML(t.note)+'</div></div>'
   +'</div>';
+}
+/* Olvasas mod: contenteditable=false -> nincs billentyuzet es nincs iOS-sav.
+   Szerkesztes: dupla koppintas a szovegre vagy a ceruza gomb. */
+function setNoteEdit(on, x, y){
+  const el=document.getElementById("netext"); if(!el) return;
+  const btn=document.getElementById("needit");
+  noteEditMode=!!on;
+  if(noteEditMode){
+    el.setAttribute("contenteditable","plaintext-only");
+    if(el.contentEditable!=="plaintext-only") el.setAttribute("contenteditable","true");
+    if(btn) btn.classList.add("on");
+    el.focus();
+    let placed=false;
+    if(x!=null && document.caretRangeFromPoint){
+      try{
+        const r=document.caretRangeFromPoint(x,y);
+        if(r && el.contains(r.startContainer)){ const s=window.getSelection(); s.removeAllRanges(); s.addRange(r); placed=true; }
+      }catch(_){}
+    }
+    if(!placed){
+      try{ const r=document.createRange(); r.selectNodeContents(el); r.collapse(false); const s=window.getSelection(); s.removeAllRanges(); s.addRange(r); }catch(_){}
+    }
+  }else{
+    el.setAttribute("contenteditable","false");
+    if(btn) btn.classList.remove("on");
+    try{ el.blur(); }catch(_){}
+  }
 }
 function schedSheetHTML(t){
   return '<div class="schedscrim" data-action="closesched"></div>'
@@ -1520,14 +1554,33 @@ function render(){
   });
   const netext=document.getElementById("netext");
   if(netext){
+    const noteVal=()=>(netext.innerText||"").replace(/ /g," ").replace(/\r\n?/g,"\n");
     netext.addEventListener("input",()=>{
+      const v=noteVal();
       const t=data.tasks.find(x=>x.id===netext.dataset.id);
-      if(t){ t.note=netext.value; t.mod=Date.now(); save(); }
+      if(t && v!==t.note){ t.note=v; t.mod=Date.now(); save(); }
       const nl2=document.getElementById("nelinks");
-      if(nl2) nl2.innerHTML=linksHTML(netext.value);
+      if(nl2) nl2.innerHTML=linksHTML(v);
     });
-    if(focusNote){ netext.focus(); const v=netext.value; netext.value=""; netext.value=v; focusNote=false; }
+    netext.addEventListener("paste",e=>{
+      if(!noteEditMode) return;
+      e.preventDefault();
+      const txt=((e.clipboardData||window.clipboardData).getData("text/plain")||"");
+      try{ document.execCommand("insertText",false,txt); }catch(_){}
+    });
+    let lastTap=0,lastTX=0,lastTY=0;
+    netext.addEventListener("pointerup",e=>{
+      if(noteEditMode) return;
+      const now=Date.now();
+      if(now-lastTap<650 && Math.abs(e.clientX-lastTX)<44 && Math.abs(e.clientY-lastTY)<44){
+        lastTap=0; setNoteEdit(true,e.clientX,e.clientY);
+      }else{ lastTap=now; lastTX=e.clientX; lastTY=e.clientY; }
+    });
+    if(focusNote){ focusNote=false; setNoteEdit(true); }
+    else if(noteEditMode) setNoteEdit(true);
   }
+  const needitbtn=document.getElementById("needit");
+  if(needitbtn) needitbtn.addEventListener("click",()=>setNoteEdit(!noteEditMode));
   const dtitle=document.getElementById("dtitle");
   if(dtitle){
     growNote(dtitle);
@@ -1646,13 +1699,13 @@ document.getElementById("app").addEventListener("click",e=>{
   }
   else if(a==="star"){ const t=data.tasks.find(x=>x.id===id); if(!t)return; t.important=!t.important; save(); refreshStar(id);
     if(!t.important && view.type==="smart" && view.key==="important"){ const li=document.querySelector('.task[data-id="'+id+'"]'); if(li) li.remove(); } }
-  else if(a==="open"){trackOpen(id);openTaskId=id;dueOpen=false;remindOpen=false;schedOpen=false;noteEditor=false;render();}
+  else if(a==="open"){trackOpen(id);openTaskId=id;dueOpen=false;remindOpen=false;schedOpen=false;noteEditor=false;noteEditMode=false;render();}
   else if(a==="toggledue"){ dueOpen=!dueOpen; render(); }
   else if(a==="togglereminder"){ remindOpen=!remindOpen; render(); }
   else if(a==="opensched"){ schedOpen=true; calOpen=false; render(); }
   else if(a==="closesched"){ schedOpen=false; calOpen=false; render(); }
-  else if(a==="opennote"){ noteEditor=true; focusNote=false; render(); }
-  else if(a==="closenote"){ noteEditor=false; render(); }
+  else if(a==="opennote"){ noteEditor=true; focusNote=false; noteEditMode=false; render(); }
+  else if(a==="closenote"){ noteEditor=false; noteEditMode=false; render(); }
   else if(a==="pickfile"){ const fi=document.getElementById("fileinput"); if(fi) fi.click(); }
   else if(a==="attdel"){ if(!data.atts)data.atts={}; data.atts[openTaskId]=taskAtts(openTaskId).filter(x=>x.id!==el.dataset.aid); save(); render(); }
   else if(a==="closesheet"){trackClose();openTaskId=null;render();}
@@ -1834,7 +1887,7 @@ function openSuggestion(id){
   logSearch(searchQuery);
   searchQuery=""; suggPicking=false;
   view={type:"list",key:t.listId};
-  trackOpen(id); openTaskId=id; dueOpen=false; remindOpen=false; schedOpen=false; noteEditor=false;
+  trackOpen(id); openTaskId=id; dueOpen=false; remindOpen=false; schedOpen=false; noteEditor=false;noteEditMode=false;
   render();
 }
 
