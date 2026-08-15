@@ -684,7 +684,7 @@ const P = {
 };
 function icon(n, fill){ return '<svg class="ic" width="24" height="24" viewBox="0 0 24 24" fill="'+(fill||'none')+'" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">'+P[n]+'</svg>'; }
 const GRIP='<svg class="ic" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.4"/><circle cx="9" cy="12" r="1.4"/><circle cx="9" cy="18" r="1.4"/><circle cx="15" cy="6" r="1.4"/><circle cx="15" cy="12" r="1.4"/><circle cx="15" cy="18" r="1.4"/></svg>';
-const APP_VERSION="v52";
+const APP_VERSION="v53";
 
 /* ----------------------------- segéd ----------------------------- */
 const LIST_COLORS=["#287FAA","#2C8C8C","#C77A16","#8A5BB8","#C0392B","#4FA3CE","#C9518A"];
@@ -741,7 +741,8 @@ function nextMonthEndISO(){ const d=new Date(); return localISO(new Date(d.getFu
 function formatDayLong(iso){ if(!iso) return ""; return parseISO(iso).toLocaleDateString("hu-HU",{weekday:"short",month:"short",day:"numeric"}); }
 function datePickerHTML(t){
   const du=t.due;
-  const quick=[["today","Ma",todayISO()],["tomorrow","Holnap",addDaysISO(1)],["weekend","Hétvége",weekendISO()],["friday","Utolsó munkanap",fridayISO()],["nextweek","Következő héten",nextMondayISO()],["week","Egy hét múlva",addDaysISO(7)],["monthend","Hónap vége",monthEndISO()]].sort((a,b)=>a[2]<b[2]?-1:(a[2]>b[2]?1:0));
+  // Fix sorrend (2 oszlopos rács, balról jobbra): Ma, Holnap, Egy hét múlva, Hétvége, Utolsó munkanap, Következő héten, Hónap vége
+  const quick=[["today","Ma",todayISO()],["tomorrow","Holnap",addDaysISO(1)],["week","Egy hét múlva",addDaysISO(7)],["weekend","Hétvége",weekendISO()],["friday","Utolsó munkanap",fridayISO()],["nextweek","Következő héten",nextMondayISO()],["monthend","Hónap vége",monthEndISO()]];
   const quickISOs=quick.map(q=>q[2]);
   const isCustom = !!du && quickISOs.indexOf(du)<0;
   const chips=quick.map(q=>'<button class="dchip'+(du===q[2]?" on":"")+'" data-action="duequick" data-when="'+q[0]+'" data-id="'+t.id+'"><span class="dt">'+q[1]+'</span><span class="ds">'+formatDayLong(q[2])+'</span></button>').join("");
