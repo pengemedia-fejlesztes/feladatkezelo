@@ -380,7 +380,7 @@ body.dragging .scroll, body.dragging .fsbody{ overflow:hidden !important; }
 .dpkcustom .dpkt{ font-size:14.5px; }
 .dpkcustom .dateinput{ max-width:52%; height:34px; font-size:14px; }
 /* kompakt hataridokvalaszto racs */
-.dgrid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(138px,1fr)); gap:6px; margin-bottom:6px; }
+.dgrid{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:6px; margin-bottom:6px; }
 .dchip{ display:flex; flex-direction:column; justify-content:center; gap:1px; min-height:50px; padding:8px 12px; border:1px solid var(--line); border-radius:11px; background:var(--surface-2); cursor:pointer; font-family:inherit; text-align:left; transition:transform .1s; }
 .dchip:active{ transform:scale(.96); }
 .dchip .dt{ font-size:14px; font-weight:700; color:var(--ink); display:flex; align-items:center; gap:5px; line-height:1.15; }
@@ -420,7 +420,7 @@ body.dragging .scroll, body.dragging .fsbody{ overflow:hidden !important; }
 .timepanel .dpk.clr{ border-top:1px solid var(--hair); margin-top:4px; }
 .schedscrim{ position:absolute; inset:0; background:rgba(20,32,44,.42); z-index:80; animation:fadein .2s ease; }
 @keyframes fadein{ from{ opacity:0; } }
-.schedsheet{ position:absolute; left:0; right:0; bottom:0; z-index:81; background:var(--bg); border-radius:20px 20px 0 0; padding:6px 14px max(14px,env(safe-area-inset-bottom)); box-shadow:0 -10px 34px rgba(20,32,44,.24); animation:sheetup .32s cubic-bezier(.22,.61,.36,1); max-height:82vh; display:flex; flex-direction:column; }
+.schedsheet{ position:absolute; left:0; right:0; bottom:0; margin:0 auto; max-width:520px; z-index:81; background:var(--bg); border-radius:20px 20px 0 0; padding:6px 14px max(14px,env(safe-area-inset-bottom)); box-shadow:0 -10px 34px rgba(20,32,44,.24); animation:sheetup .32s cubic-bezier(.22,.61,.36,1); max-height:82vh; display:flex; flex-direction:column; overflow-x:hidden; }
 @keyframes sheetup{ from{ transform:translateY(100%); } }
 .sheetgrip{ width:40px; height:4px; border-radius:2px; background:var(--line); margin:5px auto 6px; }
 .sheethead{ display:flex; align-items:center; justify-content:space-between; padding:0 2px 5px; }
@@ -453,8 +453,11 @@ body.dragging .scroll, body.dragging .fsbody{ overflow:hidden !important; }
 .notepreview{ display:block; width:100%; text-align:left; background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:14px; font-family:inherit; font-size:15.5px; line-height:1.55; color:var(--ink); white-space:pre-wrap !important; -webkit-user-select:none; user-select:none; overflow-wrap:anywhere; word-break:break-word; cursor:pointer; max-height:180px; overflow:hidden; position:relative; box-shadow:var(--shadow); }
 .notepreview.empty{ color:var(--ink-faint); }
 .notepreview:active{ background:var(--surface-2); }
-.noteeditor{ position:absolute; inset:0; z-index:90; background:var(--bg); display:flex; flex-direction:column; animation:sheetup .28s cubic-bezier(.22,.61,.36,1); }
-.netop{ display:flex; align-items:center; justify-content:space-between; gap:10px; padding:max(14px,env(safe-area-inset-top)) 14px 10px; border-bottom:1px solid var(--line); background:var(--surface); }
+.nedis{ opacity:1 !important; color:var(--ink) !important; -webkit-text-fill-color:var(--ink); background:var(--surface) !important; }
+.notescrim{ position:absolute; inset:0; z-index:88; background:rgba(20,32,44,.42); animation:fadein .2s ease; }
+.noteeditor{ position:absolute; left:0; right:0; top:13dvh; margin:0 auto; width:min(94vw,560px); height:64dvh; z-index:90; background:var(--bg); border:1px solid var(--line); border-radius:20px; box-shadow:0 20px 54px rgba(20,32,44,.34); overflow:hidden; display:flex; flex-direction:column; animation:popin .22s cubic-bezier(.22,.61,.36,1); }
+@keyframes popin{ from{ opacity:0; transform:scale(.96); } }
+.netop{ display:flex; align-items:center; justify-content:space-between; gap:10px; padding:12px 14px 10px; border-bottom:1px solid var(--line); background:var(--surface); border-radius:19px 19px 0 0; flex:none; }
 .neback{ background:none; border:none; color:var(--brand); cursor:pointer; display:grid; place-items:center; padding:6px; }
 .neback .ic{ width:24px; height:24px; }
 .netitle{ font-family:'Hanken Grotesk',sans-serif; font-weight:800; font-size:17px; color:var(--ink); display:flex; flex-direction:column; align-items:center; line-height:1.15; min-width:0; }
@@ -469,10 +472,10 @@ body.dragging .scroll, body.dragging .fsbody{ overflow:hidden !important; }
 .nearea{ flex:1; min-height:0; width:100%; overflow-y:auto; white-space:pre-wrap; overflow-wrap:break-word; border:none; outline:none; background:transparent; padding:16px; font-family:inherit; font-size:17px; line-height:1.6; color:var(--ink); -webkit-overflow-scrolling:touch; -webkit-user-select:text; user-select:text; touch-action:manipulation; }
 .nearea:empty::before{ content:attr(data-ph); color:var(--ink-faint); pointer-events:none; }
 .nearea[contenteditable="false"]{ cursor:default; }
-.nefoot{ position:absolute; left:0; right:0; bottom:0; z-index:6; max-height:52vh; overflow-y:auto; -webkit-overflow-scrolling:touch; overscroll-behavior:contain; background:var(--surface); border-top:1px solid var(--line); border-radius:20px 20px 0 0; box-shadow:0 -12px 34px rgba(20,32,44,.18); transform:translateY(102%); visibility:hidden; transition:transform .26s cubic-bezier(.22,.61,.36,1), visibility 0s linear .26s; }
+.nefoot{ position:absolute; left:0; right:0; bottom:0; z-index:6; max-height:56%; overflow-y:auto; -webkit-overflow-scrolling:touch; overscroll-behavior:contain; background:var(--surface); border-top:1px solid var(--line); border-radius:20px 20px 0 0; box-shadow:0 -12px 34px rgba(20,32,44,.18); transform:translateY(102%); visibility:hidden; transition:transform .26s cubic-bezier(.22,.61,.36,1), visibility 0s linear .26s; }
 .nefoot.open{ transform:translateY(0); visibility:visible; transition:transform .26s cubic-bezier(.22,.61,.36,1), visibility 0s; }
 .nefoot .nelinks:empty{ display:none; }
-.nefoot .nelinks{ padding:0 14px calc(14px + env(safe-area-inset-bottom)); }
+.nefoot .nelinks{ padding:0 14px 14px; }
 .nefoot .linkshead{ margin-top:2px; }
 .nefoothead{ position:sticky; top:0; z-index:2; background:var(--surface); padding:6px 10px 0; }
 .neclose{ position:absolute; top:2px; right:10px; background:var(--surface-2); border:1px solid var(--line); color:var(--ink-soft); border-radius:10px; padding:5px; display:grid; place-items:center; cursor:pointer; }
@@ -607,14 +610,10 @@ body.dragging .scroll, body.dragging .fsbody{ overflow:hidden !important; }
   .fshead{ padding-top:16px; }
   .fsbody{ max-width:680px; }
   /* a szerkesztő és az ütemezés csak a jobb oldali sávban, a fejléc alatt */
-  .noteeditor{ top:58px; border-top:1px solid var(--line); animation:fadein .18s ease; padding:0 20px 16px; }
-  .netop{ padding:12px 0 10px; background:transparent; border-bottom:none; max-width:680px; width:100%; margin:0 auto; }
-  .nearea{ max-width:680px; width:100%; margin:0 auto; background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:16px; box-shadow:var(--shadow); font-size:15.5px; line-height:1.55; }
-  .nefoot{ max-height:46vh; }
-  .nefoot .nelinks{ max-width:680px; margin:0 auto; padding:0 0 16px; }
-  .schedscrim{ top:58px; }
-  .schedsheet{ border-radius:16px 16px 0 0; max-height:calc(100dvh - 90px); }
-  .schedsheet .sheethead, .schedsheet .sheetscroll{ max-width:680px; width:100%; margin:0 auto; }
+  .noteeditor{ top:12dvh; height:68dvh; width:min(88%,620px); }
+  .nearea{ font-size:15.5px; line-height:1.55; }
+  .schedscrim, .notescrim{ top:58px; }
+  .schedsheet{ border-radius:18px 18px 0 0; max-height:calc(100dvh - 90px); }
   .schedsheet .sheethead{ padding-left:2px; padding-right:2px; }
 }
 @media (prefers-reduced-motion:reduce){ *{ animation:none !important; transition:none !important; } }
@@ -684,7 +683,7 @@ const P = {
 };
 function icon(n, fill){ return '<svg class="ic" width="24" height="24" viewBox="0 0 24 24" fill="'+(fill||'none')+'" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">'+P[n]+'</svg>'; }
 const GRIP='<svg class="ic" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.4"/><circle cx="9" cy="12" r="1.4"/><circle cx="9" cy="18" r="1.4"/><circle cx="15" cy="6" r="1.4"/><circle cx="15" cy="12" r="1.4"/><circle cx="15" cy="18" r="1.4"/></svg>';
-const APP_VERSION="v53";
+const APP_VERSION="v54";
 
 /* ----------------------------- segéd ----------------------------- */
 const LIST_COLORS=["#287FAA","#2C8C8C","#C77A16","#8A5BB8","#C0392B","#4FA3CE","#C9518A"];
@@ -997,8 +996,20 @@ function setNoteLinks(on){
   const f=document.getElementById("nefoot");
   if(f) f.classList.toggle("open", noteLinksOpen);
 }
+/* Ha felnyilik a billentyuzet, a popup a lathato terulethez igazodik (kulonben alatta maradna). */
+function fitNoteEditor(){
+  const ed=document.querySelector(".noteeditor"); if(!ed) return;
+  const vv=window.visualViewport, full=window.innerHeight, vh=vv?vv.height:full;
+  if(full-vh>110){                                   // billentyuzet fent
+    const pad=Math.max(8, Math.round(vh*0.045));
+    ed.style.top=((vv?vv.offsetTop:0)+pad)+"px";
+    ed.style.height=(vh-pad*2)+"px";
+  }else{ ed.style.top=""; ed.style.height=""; }      // vissza a CSS szerinti meretre
+}
+if(window.visualViewport){ window.visualViewport.addEventListener("resize",fitNoteEditor); }
 function noteEditorHTML(t){
-  return '<div class="noteeditor">'
+  return '<div class="notescrim" data-action="closenotesave"></div>'
+    +'<div class="noteeditor">'
     +'<header class="netop"><button class="neback" data-action="closenote">'+icon("back")+'</button>'
       +'<span class="netitle"><span class="nesub">Leírás</span><span class="netask">'+esc(t.title||"")+'</span></span>'
       +'<button class="needitbtn'+(noteEditMode?" on":"")+'" id="needit" type="button" aria-label="Szerkesztés">'+icon("pencil")+'</button>'
@@ -1034,11 +1045,13 @@ function setNoteEdit(on, x, y){
     if(!placed){
       try{ const r=document.createRange(); r.selectNodeContents(el); r.collapse(false); const s=window.getSelection(); s.removeAllRanges(); s.addRange(r); }catch(_){}
     }
+    setTimeout(fitNoteEditor,320);                        // a billentyuzet animacioja utan igazitunk
   }else{
     el.setAttribute("contenteditable","false");
     if(btn) btn.classList.remove("on");
     try{ el.blur(); }catch(_){}
     setNoteLinks(true);                                   // szerkesztes utan visszajon a kapcsolat-popup
+    setTimeout(fitNoteEditor,320);
   }
 }
 function schedSheetHTML(t){
@@ -1599,7 +1612,7 @@ function render(){
     });
     /* iOS: a hatterben maradt beviteli mezok miatt jelenik meg a billentyuzet feletti
        "elozo/kovetkezo" nyilpar - amig a leiras nyitva van, letiltjuk oket. */
-    document.querySelectorAll("input,textarea,select").forEach(f=>{ if(!f.closest(".noteeditor")) f.disabled=true; });
+    document.querySelectorAll("input,textarea,select").forEach(f=>{ if(!f.closest(".noteeditor")){ f.disabled=true; f.classList.add("nedis"); } });
     if(focusNote){ focusNote=false; setNoteEdit(true); }
     else if(noteEditMode) setNoteEdit(true);
     else if(noteLinksOpen) requestAnimationFrame(()=>setNoteLinks(true));
@@ -1731,6 +1744,18 @@ document.getElementById("app").addEventListener("click",e=>{
   else if(a==="closesched"){ schedOpen=false; calOpen=false; render(); }
   else if(a==="opennote"){ noteEditor=true; focusNote=false; noteEditMode=false; noteLinksOpen=true; render(); }
   else if(a==="closelinks"){ setNoteLinks(false); }
+  /* Kikattintas a popupbol: a leiras mentodik, majd a popup ES a feladat is bezarodik. */
+  else if(a==="closenotesave"){
+    const nt=document.getElementById("netext");
+    if(nt){
+      const t2=data.tasks.find(x=>x.id===nt.dataset.id);
+      const v=(nt.innerText||"").replace(/ /g," ").replace(/\r\n?/g,"\n");
+      if(t2 && v!==t2.note){ t2.note=v; t2.mod=Date.now(); }
+    }
+    blurActive(); save();
+    noteEditor=false; noteEditMode=false; noteLinksOpen=false;
+    trackClose(); openTaskId=null; render();
+  }
   else if(a==="closenote"){ blurActive(); noteEditor=false; noteEditMode=false; noteLinksOpen=false; render(); }
   else if(a==="pickfile"){ const fi=document.getElementById("fileinput"); if(fi) fi.click(); }
   else if(a==="attdel"){ if(!data.atts)data.atts={}; data.atts[openTaskId]=taskAtts(openTaskId).filter(x=>x.id!==el.dataset.aid); save(); render(); }
