@@ -472,15 +472,21 @@ body.dragging .scroll, body.dragging .fsbody{ overflow:hidden !important; }
 .nearea{ flex:1; min-height:0; width:100%; overflow-y:auto; white-space:pre-wrap; overflow-wrap:break-word; border:none; outline:none; background:transparent; padding:16px; font-family:inherit; font-size:17px; line-height:1.6; color:var(--ink); -webkit-overflow-scrolling:touch; -webkit-user-select:text; user-select:text; touch-action:manipulation; }
 .nearea:empty::before{ content:attr(data-ph); color:var(--ink-faint); pointer-events:none; }
 .nearea[contenteditable="false"]{ cursor:default; }
-.nefoot{ position:absolute; left:0; right:0; bottom:0; z-index:6; max-height:56%; overflow-y:auto; -webkit-overflow-scrolling:touch; overscroll-behavior:contain; background:var(--surface); border-top:1px solid var(--line); border-radius:20px 20px 0 0; box-shadow:0 -12px 34px rgba(20,32,44,.18); transform:translateY(102%); visibility:hidden; transition:transform .26s cubic-bezier(.22,.61,.36,1), visibility 0s linear .26s; }
-.nefoot.open{ transform:translateY(0); visibility:visible; transition:transform .26s cubic-bezier(.22,.61,.36,1), visibility 0s; }
+.nefoot{ position:absolute; left:0; right:0; bottom:0; z-index:6; max-height:56%; overflow-y:auto; -webkit-overflow-scrolling:touch; overscroll-behavior:contain; background:var(--surface); border-top:1px solid var(--line); border-radius:18px 18px 0 0; box-shadow:0 -10px 28px rgba(20,32,44,.14); transform:translateY(calc(100% - 48px)); transition:transform .26s cubic-bezier(.22,.61,.36,1); }
+.nefoot.open{ transform:translateY(0); }
+.nefoot.gone{ transform:translateY(102%); }
 .nefoot .nelinks:empty{ display:none; }
 .nefoot .nelinks{ padding:0 14px 14px; }
-.nefoot .linkshead{ margin-top:2px; }
-.nefoothead{ position:sticky; top:0; z-index:2; background:var(--surface); padding:6px 10px 0; }
-.neclose{ position:absolute; top:2px; right:10px; background:var(--surface-2); border:1px solid var(--line); color:var(--ink-soft); border-radius:10px; padding:5px; display:grid; place-items:center; cursor:pointer; }
-.neclose .ic{ width:16px; height:16px; }
-.neclose:active{ transform:scale(.94); }
+.nefoot .linkshead{ display:none; }
+.nefoothead{ position:sticky; top:0; z-index:2; background:var(--surface); }
+.nebar{ display:flex; align-items:center; gap:9px; width:100%; height:48px; padding:0 14px; background:none; border:none; font-family:inherit; cursor:pointer; text-align:left; }
+.nebar:active{ background:var(--surface-2); }
+.nebar > .ic{ width:17px; height:17px; color:var(--brand); flex:none; }
+.nebartxt{ font-size:11.5px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; color:var(--ink-soft); }
+.nebarcount{ font-size:11.5px; font-weight:800; color:var(--brand); background:var(--brand-soft); border-radius:999px; padding:2px 8px; }
+.nebarchev{ margin-left:auto; display:grid; place-items:center; color:var(--ink-faint); transform:rotate(180deg); transition:transform .2s; }
+.nebarchev .ic{ width:18px; height:18px; }
+.nefoot.open .nebarchev{ transform:rotate(0deg); }
 .bulkbar{ display:flex; gap:9px; padding:0 16px 12px; }
 .bulkbtn{ flex:1; display:inline-flex; align-items:center; justify-content:center; gap:6px; height:42px; border-radius:13px; border:1px solid var(--line); background:var(--surface); color:var(--ink); font-family:inherit; font-size:14px; font-weight:600; cursor:pointer; box-shadow:var(--shadow); }
 .bulkbtn .ic{ width:16px; height:16px; color:var(--brand); }
@@ -683,7 +689,7 @@ const P = {
 };
 function icon(n, fill){ return '<svg class="ic" width="24" height="24" viewBox="0 0 24 24" fill="'+(fill||'none')+'" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">'+P[n]+'</svg>'; }
 const GRIP='<svg class="ic" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.4"/><circle cx="9" cy="12" r="1.4"/><circle cx="9" cy="18" r="1.4"/><circle cx="15" cy="6" r="1.4"/><circle cx="15" cy="12" r="1.4"/><circle cx="15" cy="18" r="1.4"/></svg>';
-const APP_VERSION="v55";
+const APP_VERSION="v56";
 
 /* ----------------------------- segéd ----------------------------- */
 const LIST_COLORS=["#287FAA","#2C8C8C","#C77A16","#8A5BB8","#C0392B","#4FA3CE","#C9518A"];
@@ -990,11 +996,17 @@ let schedOpen=false;
 let calOpen=false, calY=null, calM=null;
 let noteEditor=false, focusNote=false, noteEditMode=false, noteLinksOpen=false;
 /* A "Felismert kapcsolatok" popup nyitasa/zarasa ujrarajzolas nelkul. */
-function noteHasLinks(){ const nl=document.getElementById("nelinks"); return !!(nl && nl.innerHTML.trim()); }
+function noteLinkCount(){ const nl=document.getElementById("nelinks"); return nl?nl.querySelectorAll(".linkrow").length:0; }
+function noteHasLinks(){ return noteLinkCount()>0; }
+/* Harom allapot: rejtett (nincs kapcsolat vagy eppen irunk) / osszecsukott sav / nyitott lista. */
 function setNoteLinks(on){
-  noteLinksOpen = !!on && noteHasLinks();
-  const f=document.getElementById("nefoot");
-  if(f) f.classList.toggle("open", noteLinksOpen);
+  const f=document.getElementById("nefoot"); if(!f) return;
+  const n=noteLinkCount();
+  const c=f.querySelector(".nebarcount"); if(c) c.textContent=n;
+  noteLinksOpen = !!on && n>0 && !noteEditMode;
+  f.classList.toggle("gone", n===0 || noteEditMode);
+  f.classList.toggle("open", noteLinksOpen);
+  if(!noteLinksOpen) f.scrollTop=0;
 }
 /* Ha felnyilik a billentyuzet, a popup a lathato terulethez igazodik (kulonben alatta maradna). */
 function fitNoteEditor(){
@@ -1015,9 +1027,10 @@ function noteEditorHTML(t){
       +'<button class="needitbtn'+(noteEditMode?" on":"")+'" id="needit" type="button" aria-label="Szerkesztés">'+icon("pencil")+'</button>'
       +'<button class="nedonebtn" data-action="closenote">Kész</button></header>'
     +'<div class="nearea" id="netext" data-id="'+t.id+'" contenteditable="'+(noteEditMode?"true":"false")+'" role="textbox" aria-multiline="true" data-ph="Írj ide bármilyen megjegyzést, telefonszámot, e-mailt vagy weboldalt…">'+esc(t.note)+'</div>'
-    +'<div class="nefoot" id="nefoot">'
-      +'<div class="nefoothead"><div class="sheetgrip"></div>'
-        +'<button class="neclose" type="button" data-action="closelinks" aria-label="Bezárás">'+icon("x")+'</button></div>'
+    +'<div class="nefoot gone" id="nefoot">'
+      +'<div class="nefoothead"><button class="nebar" type="button" data-action="togglelinks">'
+        +icon("user")+'<span class="nebartxt">Felismert kapcsolatok</span>'
+        +'<span class="nebarcount">0</span><span class="nebarchev">'+icon("chevron")+'</span></button></div>'
       +'<div id="nelinks" class="nelinks">'+linksHTML(t.note)+'</div>'
     +'</div>'
   +'</div>';
@@ -1050,7 +1063,7 @@ function setNoteEdit(on, x, y){
     el.setAttribute("contenteditable","false");
     if(btn) btn.classList.remove("on");
     try{ el.blur(); }catch(_){}
-    setNoteLinks(true);                                   // szerkesztes utan visszajon a kapcsolat-popup
+    setNoteLinks(false);                                  // szerkesztes utan csak az osszecsukott sav latszik
     setTimeout(fitNoteEditor,320);
   }
 }
@@ -1596,7 +1609,7 @@ function render(){
       const t=data.tasks.find(x=>x.id===netext.dataset.id);
       if(t && v!==t.note){ t.note=v; t.mod=Date.now(); save(); }
       const nl2=document.getElementById("nelinks");
-      if(nl2) nl2.innerHTML=linksHTML(v);
+      if(nl2){ nl2.innerHTML=linksHTML(v); setNoteLinks(noteLinksOpen); }
     });
     netext.addEventListener("paste",e=>{
       if(!noteEditMode) return;
@@ -1613,20 +1626,20 @@ function render(){
       const moved=Math.abs(e.clientX-dnX)>10 || Math.abs(e.clientY-dnY)>10;
       if(moved || Date.now()-dnT>500) return;                               // gorgetes vagy hosszu nyomas -> nem koppintas
       try{ const s=window.getSelection(); if(s && !s.isCollapsed && String(s).length) return; }catch(_){}
+      if(!netext.textContent.trim()){ setNoteEdit(true); return; }          // ures leiras: nincs mit olvasni -> egybol iras
       const now=Date.now();
-      if(now-lastTapT<450 && Math.abs(e.clientX-lastTapX)<40 && Math.abs(e.clientY-lastTapY)<40){
+      if(now-lastTapT<600 && Math.abs(e.clientX-lastTapX)<40 && Math.abs(e.clientY-lastTapY)<40){
         lastTapT=0; setNoteEdit(true,e.clientX,e.clientY);                  // dupla koppintas -> billentyuzet
         return;
       }
-      lastTapT=now; lastTapX=e.clientX; lastTapY=e.clientY;
-      if(!noteLinksOpen && noteHasLinks()) setNoteLinks(true);              // egyszeru koppintas -> csak a kapcsolatok
+      lastTapT=now; lastTapX=e.clientX; lastTapY=e.clientY;                 // egyszeru koppintas: nem tortenik semmi
     });
     /* iOS: a hatterben maradt beviteli mezok miatt jelenik meg a billentyuzet feletti
        "elozo/kovetkezo" nyilpar - amig a leiras nyitva van, letiltjuk oket. */
     document.querySelectorAll("input,textarea,select").forEach(f=>{ if(!f.closest(".noteeditor")){ f.disabled=true; f.classList.add("nedis"); } });
     if(focusNote){ focusNote=false; setNoteEdit(true); }
     else if(noteEditMode) setNoteEdit(true);
-    else if(noteLinksOpen) requestAnimationFrame(()=>setNoteLinks(true));
+    else requestAnimationFrame(()=>setNoteLinks(noteLinksOpen));
   }
   const needitbtn=document.getElementById("needit");
   if(needitbtn) needitbtn.addEventListener("click",()=>setNoteEdit(!noteEditMode));
@@ -1753,8 +1766,8 @@ document.getElementById("app").addEventListener("click",e=>{
   else if(a==="togglereminder"){ remindOpen=!remindOpen; render(); }
   else if(a==="opensched"){ schedOpen=true; calOpen=false; render(); }
   else if(a==="closesched"){ schedOpen=false; calOpen=false; render(); }
-  else if(a==="opennote"){ noteEditor=true; focusNote=false; noteEditMode=false; noteLinksOpen=true; render(); }
-  else if(a==="closelinks"){ setNoteLinks(false); }
+  else if(a==="opennote"){ noteEditor=true; focusNote=false; noteEditMode=false; noteLinksOpen=false; render(); }
+  else if(a==="togglelinks"){ setNoteLinks(!noteLinksOpen); }
   /* Kikattintas a popupbol: a leiras mentodik, majd a popup ES a feladat is bezarodik. */
   else if(a==="closenotesave"){
     const nt=document.getElementById("netext");
