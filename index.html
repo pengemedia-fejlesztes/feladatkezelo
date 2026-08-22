@@ -674,7 +674,7 @@ const P = {
 };
 function icon(n, fill){ return '<svg class="ic" width="24" height="24" viewBox="0 0 24 24" fill="'+(fill||'none')+'" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">'+P[n]+'</svg>'; }
 const GRIP='<svg class="ic" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.4"/><circle cx="9" cy="12" r="1.4"/><circle cx="9" cy="18" r="1.4"/><circle cx="15" cy="6" r="1.4"/><circle cx="15" cy="12" r="1.4"/><circle cx="15" cy="18" r="1.4"/></svg>';
-const APP_VERSION="v57";
+const APP_VERSION="v58";
 
 /* ----------------------------- segéd ----------------------------- */
 const LIST_COLORS=["#287FAA","#2C8C8C","#C77A16","#8A5BB8","#C0392B","#4FA3CE","#C9518A"];
@@ -1579,22 +1579,20 @@ function render(){
       const txt=((e.clipboardData||window.clipboardData).getData("text/plain")||"");
       try{ document.execCommand("insertText",false,txt); }catch(_){}
     });
-    /* Egyszeru koppintas SOHA nem nyitja meg a billentyuzetet - olvasni/gorgetni lehet.
-       Szerkesztes: ceruza gomb vagy dupla koppintas a szovegre. */
-    let dnX=0, dnY=0, dnT=0, lastTapT=0, lastTapX=0, lastTapY=0;
-    netext.addEventListener("pointerdown",e=>{ dnX=e.clientX; dnY=e.clientY; dnT=Date.now(); });
+    /* Egy koppintas = iras (mint barmelyik szovegmezoben). Gorgeto huzas es
+       hosszu nyomas (kijeloles) NEM valt szerkesztesre, igy olvasni is lehet. */
+    let dnX=0, dnY=0, dnT=0, dnSel=false;
+    netext.addEventListener("pointerdown",e=>{
+      dnX=e.clientX; dnY=e.clientY; dnT=Date.now();
+      dnSel=false;
+      try{ const s=window.getSelection(); dnSel=!!(s && !s.isCollapsed && String(s).length); }catch(_){}
+    });
     netext.addEventListener("pointerup",e=>{
       if(noteEditMode) return;
-      const moved=Math.abs(e.clientX-dnX)>10 || Math.abs(e.clientY-dnY)>10;
-      if(moved || Date.now()-dnT>500) return;                               // gorgetes vagy hosszu nyomas -> nem koppintas
-      try{ const s=window.getSelection(); if(s && !s.isCollapsed && String(s).length) return; }catch(_){}
-      if(!netext.textContent.trim()){ setNoteEdit(true); return; }          // ures leiras: nincs mit olvasni -> egybol iras
-      const now=Date.now();
-      if(now-lastTapT<600 && Math.abs(e.clientX-lastTapX)<40 && Math.abs(e.clientY-lastTapY)<40){
-        lastTapT=0; setNoteEdit(true,e.clientX,e.clientY);                  // dupla koppintas -> billentyuzet
-        return;
-      }
-      lastTapT=now; lastTapX=e.clientX; lastTapY=e.clientY;                 // egyszeru koppintas: nem tortenik semmi
+      if(Math.abs(e.clientX-dnX)>10 || Math.abs(e.clientY-dnY)>10) return;  // huzas -> gorgetes
+      if(Date.now()-dnT>500) return;                                        // hosszu nyomas -> kijeloles
+      if(dnSel) return;                                                     // volt kijeloles -> ez a koppintas csak megszunteti
+      setNoteEdit(true,e.clientX,e.clientY);                                // koppintas -> kurzor + billentyuzet
     });
     /* iOS: a hatterben maradt beviteli mezok miatt jelenik meg a billentyuzet feletti
        "elozo/kovetkezo" nyilpar - amig a leiras nyitva van, letiltjuk oket. */
@@ -1736,8 +1734,11 @@ document.getElementById("app").addEventListener("click",e=>{
       const v=(nt.innerText||"").replace(/ /g," ").replace(/\r\n?/g,"\n");
       if(t2 && v!==t2.note){ t2.note=v; t2.mod=Date.now(); }
     }
-    blurActive(); save();
-    noteEditor=false; noteEditMode=false;
+    save();
+    /* Iras kozben az elso kikattintas csak a billentyuzetet zarja - nem veszik el a hely. */
+    if(noteEditMode){ setNoteEdit(false); return; }
+    blurActive();
+    noteEditor=false;
     trackClose(); openTaskId=null; render();
   }
   else if(a==="closenote"){ blurActive(); noteEditor=false; noteEditMode=false; render(); }
