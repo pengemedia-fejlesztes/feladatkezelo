@@ -52,6 +52,33 @@ async function ghPut(env, data, sha, message){
   if(!r.ok) throw new Error("GitHub iras hiba "+r.status+": "+(await r.text()));
   return r.json();
 }
+/* --- Ekezet- es kisbetu-fuggetlen kereses (AI-baratsag): "ugyved" == "Ügyvéd" --- */
+function norm(s){ return String(s==null?"":s).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/\s+/g," ").trim(); }
+function hay(t){ return [t.title,t.note].concat(Array.isArray(t.steps)?t.steps.map(s=>(s&&s.text)||""):[]).map(norm).join(" \n "); }
+function findTasks(data, q, scope){
+  const nq=norm(q); if(!nq) return [];
+  const exact=data.tasks.filter(t=>norm(t.title)===nq);
+  if(exact.length) return exact;
+  return data.tasks.filter(t=> scope==="title" ? norm(t.title).includes(nq) : hay(t).includes(nq));
+}
+function slimTask(data,t){
+  const l=(data.lists||[]).find(x=>x.id===t.listId);
+  return { id:t.id, title:t.title||"", list:l?l.name:"", due:t.due||"", done:!!t.done, important:!!t.important, note:t.note||"" };
+}
+/* id VAGY q/title alapjan oldja fel a feladatot; tobb talalatnal 409 + a listaval */
+function resolveTask(data, payload){
+  if(payload.id){
+    const t=data.tasks.find(x=>x.id===payload.id);
+    return t?{task:t}:{error:"Nincs ilyen feladat: "+payload.id, status:404};
+  }
+  const q=payload.q||payload.title;
+  if(!q) return {error:"Hianyzik az 'id' vagy a 'q' mezo", status:400};
+  let hits=findTasks(data,q,"title");
+  if(!hits.length) hits=findTasks(data,q,"all");
+  if(!hits.length) return {error:"Nincs talalat erre: "+q, status:404};
+  if(hits.length>1) return {error:"Tobb talalat ("+hits.length+") erre: "+q+" - add meg az id-t", status:409, matches:hits.map(t=>slimTask(data,t))};
+  return {task:hits[0]};
+}
 function findList(data, ref){ if(!ref) return data.lists[0]; return data.lists.find(l=>l.id===ref) || data.lists.find(l=>l.name===ref) || null; }
 function ensureList(data, name){
   let l=data.lists.find(x=>x.name===name);
@@ -70,7 +97,18 @@ export default {
 
     try{
       if(op==="list"){ const g=await ghGet(env); return json({ok:true, lists:g.data.lists, tasks:g.data.tasks}); }
-      if(op==="get"){ const g=await ghGet(env); const t=g.data.tasks.find(x=>x.id===payload.id); return t?json({ok:true,task:t}):json({error:"Nincs ilyen feladat"},404); }
+      /* Ekezet-fuggetlen kereses: {"op":"find","q":"ugyved"} megtalalja az "Ügyvéd"-et is.
+         scope: "title" = csak cim, egyebkent cim+leiras+lepesek. */
+      if(op==="find"||op==="search"){
+        const g=await ghGet(env);
+        const hits=findTasks(g.data, payload.q||payload.title||"", payload.in||payload.scope||"all");
+        return json({ok:true, count:hits.length, tasks:hits.map(t=>slimTask(g.data,t))});
+      }
+      if(op==="get"){
+        const g=await ghGet(env); const r=resolveTask(g.data,payload);
+        if(r.error) return json({error:r.error, matches:r.matches}, r.status);
+        return json({ok:true, task:r.task});
+      }
 
       const g=await ghGet(env); const data=g.data; const now=Date.now(); let result, msg;
 
@@ -84,8 +122,9 @@ export default {
         data.tasks.push(task); data.createdTotal=(data.createdTotal||data.tasks.length)+1;
         result=task; msg="webhook: uj feladat - "+task.title.slice(0,60);
       } else {
-        const t=data.tasks.find(x=>x.id===payload.id);
-        if(!t) return json({error:"Nincs ilyen feladat"},404);
+        const r=resolveTask(data,payload);
+        if(r.error) return json({error:r.error, matches:r.matches}, r.status);
+        const t=r.task;
         if(op==="update"){
           const f=payload.fields||{};
           if("title" in f) t.title=String(f.title||"");

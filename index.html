@@ -674,7 +674,7 @@ const P = {
 };
 function icon(n, fill){ return '<svg class="ic" width="24" height="24" viewBox="0 0 24 24" fill="'+(fill||'none')+'" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">'+P[n]+'</svg>'; }
 const GRIP='<svg class="ic" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.4"/><circle cx="9" cy="12" r="1.4"/><circle cx="9" cy="18" r="1.4"/><circle cx="15" cy="6" r="1.4"/><circle cx="15" cy="12" r="1.4"/><circle cx="15" cy="18" r="1.4"/></svg>';
-const APP_VERSION="v58";
+const APP_VERSION="v59";
 
 /* ----------------------------- segéd ----------------------------- */
 const LIST_COLORS=["#287FAA","#2C8C8C","#C77A16","#8A5BB8","#C0392B","#4FA3CE","#C9518A"];
@@ -957,6 +957,14 @@ function defaultData(){
 /* ----------------------------- állapot ----------------------------- */
 let data, view={type:"smart",key:"today"}, drawerOpen=false, editLists=false, openTaskId=null, showDone=true, focusAdd=false, focusStep=false;
 let navStack=[];
+/* Gepel-e eppen a felhasznalo? A leiras szerkeszto contenteditable DIV, ezert
+   nem eleg az INPUT/TEXTAREA vizsgalat - enelkul a hatterbeli frissites
+   ujrarajzolna a szerkesztot iras kozben (elveszne a kurzor, duplazodna a szoveg). */
+function isTyping(){
+  const a=document.activeElement; if(!a) return false;
+  if(/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName||"")) return true;
+  return a.isContentEditable===true;
+}
 /* iOS: a billentyuzet es a folotte levo sav csak akkor tunik el, ha tenyleg elveszik a fokusz. */
 function blurActive(){ try{ const a=document.activeElement; if(a && a.blur) a.blur(); }catch(_){} }
 function goBack(){
@@ -2208,7 +2216,7 @@ async function pullInbox(){
       data.inboxSeen[st.id]=true;
       added++;
     });
-    if(added){ save(); render(); showToast(added+" új feladat érkezett"); }
+    if(added){ save(); if(!noteEditor && !isTyping()) render(); showToast(added+" új feladat érkezett"); }
     else { saveLocal(); }
   }catch(e){ /* csendes: hálózat vagy JSON hiba */ }
   inboxBusy=false;
@@ -2244,8 +2252,7 @@ function onAuthChange(user){
           const remoteCanon=canonicalBlob(remote);
           if(after!==before){
             ensureOrders(); setLocalTs(Date.now()); saveLocal();
-            const typing=/^(INPUT|TEXTAREA|SELECT)$/.test(((document.activeElement||{}).tagName)||"");
-            if(!typing) render();
+            if(!isTyping()) render();
           } else { saveLocal(); }
           if(after!==remoteCanon) pushToCloud(); else lastSyncedBlob=d.blob;
         }
@@ -2347,6 +2354,110 @@ if(!data.listMerge2 && data.lists.length){
   data.listMerge2=true;
   saveLocal(); setLocalTs(now); pushToCloud();
 }
+/* ============================ FK – gépi (AI/automata) API ============================
+   A felhasználói felületet NEM érinti: csak a window.FK objektumot teszi elérhetővé,
+   hogy AI-ügynökök gépelés és DOM-kattintgatás nélkül, egy lépésben dolgozhassanak.
+   A keresés ékezet- és kisbetű-független: FK.find("ugyved") megtalálja az "Ügyvéd"-et.
+   Minden módosító hívás a MENTETT állapotot adja vissza, így ellenőrizhető mentés után is,
+   a dryRun:true opcióval pedig mentés ELŐTT.  Részletes leírás: AI.md
+   ==================================================================================== */
+(function(){
+  const pub=t=>{
+    const l=data.lists.find(x=>x.id===t.listId);
+    return { id:t.id, title:t.title||"", list:l?l.name:"", listId:t.listId,
+      note:t.note||"", due:t.due||"", done:!!t.done, important:!!t.important,
+      reminder:t.reminder||null, steps:(t.steps||[]).map(s=>({text:s.text||"",done:!!s.done})),
+      mod:t.mod||0, createdAt:t.createdAt||0 };
+  };
+  const hay=t=>[t.title,t.note].concat((t.steps||[]).map(s=>s&&s.text||"")).map(norm).join(" \n ");
+  const raw=ref=>{
+    if(ref==null) throw new Error("FK: hiányzik a feladat azonosítója vagy neve");
+    const byId=data.tasks.find(t=>t.id===ref);
+    if(byId) return byId;
+    const hits=FK.find(ref,{in:"title"});
+    if(!hits.length) throw new Error('FK: nincs találat erre: "'+ref+'"');
+    if(hits.length>1) throw new Error('FK: több találat ('+hits.length+') erre: "'+ref+'" – add meg az id-t: '+hits.map(h=>h.id+" = "+h.title).join(" | "));
+    return data.tasks.find(t=>t.id===hits[0].id);
+  };
+  const commit=(t,dry)=>{
+    if(dry) return pub(t);
+    t.mod=Date.now(); save();
+    if(!isTyping()) render();
+    return pub(t);
+  };
+  const FK={
+    version:APP_VERSION,
+    /* --- olvasás --- */
+    lists(){ return data.lists.map(l=>({id:l.id,name:l.name})); },
+    list(opts){
+      let a=data.tasks.slice();
+      const o=opts||{};
+      if(o.list){ const nl=norm(o.list); a=a.filter(t=>{ const l=data.lists.find(x=>x.id===t.listId); return l && norm(l.name)===nl; }); }
+      if(o.done===true||o.done===false) a=a.filter(t=>!!t.done===o.done);
+      return a.map(pub);
+    },
+    /* Ékezet- és kisbetű-független keresés. opts.in: "title" | "all" (alap: "all") */
+    find(q,opts){
+      const nq=norm(q||""); if(!nq) return [];
+      const inT=(opts&&opts.in)==="title";
+      const exact=data.tasks.filter(t=>norm(t.title)===nq);
+      if(exact.length) return exact.map(pub);
+      return data.tasks.filter(t=>inT?norm(t.title).includes(nq):hay(t).includes(nq)).map(pub);
+    },
+    get(ref){ return pub(raw(ref)); },
+    /* --- írás (egy lépésben, gépelés nélkül) --- */
+    setNote(ref,text,opts){ const t=raw(ref); t.note=String(text==null?"":text); return commit(t,opts&&opts.dryRun); },
+    appendNote(ref,text,opts){ const t=raw(ref); const cur=t.note||""; t.note=(cur?cur.replace(/\s*$/,"")+"\n":"")+String(text==null?"":text); return commit(t,opts&&opts.dryRun); },
+    setTitle(ref,title,opts){ const t=raw(ref); t.title=String(title==null?"":title); return commit(t,opts&&opts.dryRun); },
+    setDue(ref,due,opts){ const t=raw(ref); t.due=String(due==null?"":due); return commit(t,opts&&opts.dryRun); },
+    setDone(ref,on,opts){ const t=raw(ref); t.done=!!on; t.completedAt=t.done?Date.now():null; return commit(t,opts&&opts.dryRun); },
+    setImportant(ref,on,opts){ const t=raw(ref); t.important=!!on; return commit(t,opts&&opts.dryRun); },
+    setReminder(ref,val,opts){
+      const t=raw(ref);
+      if(val==null||val===""){ delete t.reminder; delete t.reminderFired; }
+      else { t.reminder=String(val); t.reminderFired=false; }
+      return commit(t,opts&&opts.dryRun);
+    },
+    set(ref,fields,opts){
+      const t=raw(ref), f=fields||{};
+      if("title" in f) t.title=String(f.title==null?"":f.title);
+      if("note" in f) t.note=String(f.note==null?"":f.note);
+      if("due" in f) t.due=String(f.due==null?"":f.due);
+      if("important" in f) t.important=!!f.important;
+      if("done" in f){ t.done=!!f.done; t.completedAt=t.done?Date.now():null; }
+      if("reminder" in f){ if(f.reminder==null||f.reminder===""){ delete t.reminder; delete t.reminderFired; } else { t.reminder=String(f.reminder); t.reminderFired=false; } }
+      return commit(t,opts&&opts.dryRun);
+    },
+    add(task){
+      const t=task||{};
+      let listId=t.listId;
+      if(!listId && t.list){ const nl=norm(t.list); const l=data.lists.find(x=>norm(x.name)===nl); if(l) listId=l.id; }
+      if(!listId) listId=data.lists.length?data.lists[data.lists.length-1].id:null;
+      const now=Date.now();
+      const nt={ id:uid(), listId:listId, title:String(t.title||""), done:!!t.done, important:!!t.important,
+        note:String(t.note||""), due:String(t.due||""), createdAt:now, mod:now, order:data.tasks.length };
+      if(t.reminder){ nt.reminder=String(t.reminder); nt.reminderFired=false; }
+      if(Array.isArray(t.steps)) nt.steps=t.steps.map((x,i)=>({id:uid(),text:String(x&&x.text!=null?x.text:x),done:!!(x&&x.done),order:i}));
+      data.tasks.push(nt); data.createdTotal=(data.createdTotal||data.tasks.length)+1;
+      save(); if(!isTyping()) render();
+      return pub(nt);
+    },
+    remove(ref){ const t=raw(ref); const id=t.id; if(!data.deleted)data.deleted={}; data.deleted[id]=Date.now();
+      data.tasks=data.tasks.filter(x=>x.id!==id); save(); if(!isTyping()) render(); return {ok:true,id:id,title:t.title||""}; },
+    /* --- ellenőrzés --- */
+    verify(ref,fields){
+      const t=pub(raw(ref)), f=fields||{}, bad=[];
+      Object.keys(f).forEach(k=>{ if(String(t[k])!==String(f[k])) bad.push({mezo:k, elvart:f[k], tenyleges:t[k]}); });
+      return { ok:bad.length===0, task:t, elteresek:bad };
+    },
+    help(){ return ["FK.find(q) / FK.get(ref) / FK.list({list,done})",
+      "FK.setNote(ref,szoveg) / FK.appendNote(ref,szoveg) / FK.setTitle / FK.setDue / FK.setDone / FK.setImportant / FK.setReminder",
+      "FK.set(ref,{title,note,due,done,important,reminder}) / FK.add({title,list,note,due}) / FK.remove(ref)",
+      "ref = id VAGY cím (ékezetfüggetlen). Minden írónál opts {dryRun:true} = mentés nélküli próba.",
+      "FK.verify(ref,{note:'...'}) -> {ok, elteresek}"].join("\n"); }
+  };
+  window.FK=FK;
+})();
 if(fixOrphans()){ saveLocal(); setLocalTs(Date.now()); pushToCloud(); }
 try{ const old=JSON.parse(localStorage.getItem("todo-att-v1")||"null"); if(old){ Object.keys(old).forEach(tid=>{ if(!data.atts[tid]) data.atts[tid]=old[tid]; }); localStorage.removeItem("todo-att-v1"); saveLocal(); } }catch(e){}
 render();

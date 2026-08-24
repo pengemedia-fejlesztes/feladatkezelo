@@ -21,3 +21,9 @@ Ne kerdezz ra kulon engedelyre az elesiteshez – ez az alap munkafolyamat.
 - Ket lista van: Magan es Ceges (lst_magan / lst_ceges).
 - Firebase: projectId feladatkezelo-68f31 (Auth email/jelszo, Firestore appdata/{uid}.blob).
 - Minden valtoztatas elott ellenorizd, hogy nem a regi ~135000 bajtos fajlon dolgozol-e.
+
+## AI-ugynokoknek (automata hozzaferes)
+- Ekezetfuggetlen kereses es egy lepeses irasi API: lasd `AI.md`.
+- Bongeszoben NE gepelj a leiras szerkesztojebe (`#netext`, contenteditable) –
+  hasznald a `window.FK` API-t (`FK.find`, `FK.setNote`, `{dryRun:true}`).
+- Webhookon a `find` muvelet keres, a tobbi muvelet `id` helyett `q`-t is elfogad.
