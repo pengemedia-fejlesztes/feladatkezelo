@@ -62,9 +62,13 @@ egy külön olvasás nélkül.
 
 ## 2. Webhookon át (`data/tasks.json`)
 
-A telepítést és a hitelesítést lásd: `webhook/README.md`.
+Végpont: **`https://feladatkezelo.pengemedia.workers.dev/api`**
+(figyelem: az `/api` útvonal kell, a gyökér a weboldalt adja vissza).
+A hitelesítést lásd: `webhook/README.md`.
 
 ```bash
+URL="https://feladatkezelo.pengemedia.workers.dev/api"
+
 # ékezetfüggetlen keresés
 curl -s -X POST "$URL" -H "Authorization: Bearer $SEC" -H "Content-Type: application/json" \
   -d '{"op":"find","q":"ugyved"}'

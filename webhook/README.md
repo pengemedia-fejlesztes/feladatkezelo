@@ -28,11 +28,13 @@ Használható a Claude-ból és külső rendszerekből (pl. webshop) is.
    - `GITHUB_TOKEN` = a GitHub tokened  (**Secret / Encrypt**)
    - `WEBHOOK_SECRET` = egy általad választott hosszú titkos string  (**Secret / Encrypt**)
 4. GitHub token: https://github.com/settings/personal-access-tokens → **Fine-grained token** → Repository access: csak a `feladatkezelo` repó → Permissions: **Contents: Read and write** → Generate → másold a `GITHUB_TOKEN`-be.
-5. A Worker URL-je: `https://feladat-webhook.<felhasznalod>.workers.dev`
+5. A Worker API-vegpontja: `https://<worker>.workers.dev/api` – **az `/api` utvonal kell**,
+   a gyoker a weboldalt szolgalja ki. Ebben a projektben:
+   `https://feladatkezelo.pengemedia.workers.dev/api`
 
 ## Hívási példák (curl)
 ```bash
-URL="https://feladat-webhook.XXXX.workers.dev"
+URL="https://feladatkezelo.pengemedia.workers.dev/api"   # az /api utvonal kell!
 SEC="a_WEBHOOK_SECRET_erteked"
 
 # olvasás
