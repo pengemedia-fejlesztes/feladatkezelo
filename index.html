@@ -674,7 +674,7 @@ const P = {
 };
 function icon(n, fill){ return '<svg class="ic" width="24" height="24" viewBox="0 0 24 24" fill="'+(fill||'none')+'" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">'+P[n]+'</svg>'; }
 const GRIP='<svg class="ic" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.4"/><circle cx="9" cy="12" r="1.4"/><circle cx="9" cy="18" r="1.4"/><circle cx="15" cy="6" r="1.4"/><circle cx="15" cy="12" r="1.4"/><circle cx="15" cy="18" r="1.4"/></svg>';
-const APP_VERSION="v59";
+const APP_VERSION="v60";
 
 /* ----------------------------- segéd ----------------------------- */
 const LIST_COLORS=["#287FAA","#2C8C8C","#C77A16","#8A5BB8","#C0392B","#4FA3CE","#C9518A"];
@@ -2087,12 +2087,21 @@ function extractLinks(text){
 }
 function looksLikeName(line){
   const s=(line||"").trim();
-  if(!s || s.length>40) return false;
-  if(/[@:\/0-9]/.test(s)) return false;
+  if(!s || s.length>60) return false;
+  if(/[@:\/]/.test(s)) return false;
   if(/https?:|www\./i.test(s)) return false;
-  const words=s.split(/\s+/);
+  if(extractLinks(s).length) return false;                 // telefonszam/e-mail/link -> nem nev
+  // Beosztas/szerepkor levagasa a felismereshez:
+  // "Papp Rebeka Nora - gyamugyi szakugyintezo" -> "Papp Rebeka Nora"
+  const fo=s.split(/\s+[–—-]\s+|\s*[,(]/)[0].trim();
+  if(!fo || fo.length>40) return false;
+  const words=fo.split(/\s+/);
   if(words.length<1 || words.length>4) return false;
-  return words.every(w=>/^[A-ZÁÉÍÓÖŐÚÜŰ][\wáéíóöőúüűa-zA-Z.\-]*$/.test(w));
+  const cap=/^[A-ZÁÉÍÓÖŐÚÜŰ][\wáéíóöőúüűa-zA-Z.\-]*$/;
+  let n=0; while(n<words.length && cap.test(words[n])) n++;
+  if(n===words.length) return true;                        // minden szo nagybetus
+  // "Palotas Zsolt ugyved": legalabb 2 nagybetus szo, utana csak kisbetus szerepkor
+  return n>=2 && words.slice(n).every(w=>/^[a-záéíóöőúüű.\-]+$/.test(w));
 }
 function isNameHeader(line){
   const m=(line||"").match(/^\s*(.{2,48}?)\s*:\s*$/);
