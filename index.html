@@ -674,7 +674,7 @@ const P = {
 };
 function icon(n, fill){ return '<svg class="ic" width="24" height="24" viewBox="0 0 24 24" fill="'+(fill||'none')+'" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">'+P[n]+'</svg>'; }
 const GRIP='<svg class="ic" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.4"/><circle cx="9" cy="12" r="1.4"/><circle cx="9" cy="18" r="1.4"/><circle cx="15" cy="6" r="1.4"/><circle cx="15" cy="12" r="1.4"/><circle cx="15" cy="18" r="1.4"/></svg>';
-const APP_VERSION="v60";
+const APP_VERSION="v61";
 
 /* ----------------------------- segéd ----------------------------- */
 const LIST_COLORS=["#287FAA","#2C8C8C","#C77A16","#8A5BB8","#C0392B","#4FA3CE","#C9518A"];
@@ -979,7 +979,9 @@ let lastDoneId=null;
 let showFilter=false;
 let resetScroll=false;
 let searchOpen=false;
-let collapsedBuckets={};
+/* Tervezett nezet: alapbol minden csoport osszecsukva, csak a "Lejart" van nyitva.
+   A felhasznalo barmelyiket kinyithatja, az az oldal ujratoltéseig megmarad. */
+let collapsedBuckets={ today:true, tomorrow:true, week:true, later:true, nodue:true };
 let addingTask=false;
 let printNotes=false;
 let searchQuery="", searchSel=-1, suggPicking=false, focusSearch=false;
