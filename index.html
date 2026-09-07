@@ -674,7 +674,7 @@ const P = {
 };
 function icon(n, fill){ return '<svg class="ic" width="24" height="24" viewBox="0 0 24 24" fill="'+(fill||'none')+'" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">'+P[n]+'</svg>'; }
 const GRIP='<svg class="ic" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.4"/><circle cx="9" cy="12" r="1.4"/><circle cx="9" cy="18" r="1.4"/><circle cx="15" cy="6" r="1.4"/><circle cx="15" cy="12" r="1.4"/><circle cx="15" cy="18" r="1.4"/></svg>';
-const APP_VERSION="v61";
+const APP_VERSION="v62";
 
 /* ----------------------------- segéd ----------------------------- */
 const LIST_COLORS=["#287FAA","#2C8C8C","#C77A16","#8A5BB8","#C0392B","#4FA3CE","#C9518A"];
@@ -2114,7 +2114,9 @@ function isNameHeader(line){
   if(extractLinks(c).length) return null;
   return c.replace(/\s*[-–—]\s*$/,"");
 }
-function isSep(line){ return /^\s*(?:[-–—]{2,}|[_=.·•*~]{3,})\s*$/.test(line||""); }
+/* Elvalaszto sor: 2+ kotojel vagy 3+ egyeb jel, akar szokozzel tagolva ("- - -"). */
+function isSep(line){ const s=(line||"").trim(); if(!s) return false;
+  return /^(?:[-–—]\s*){2,}$/.test(s) || /^(?:[_=.·•*~]\s*){3,}$/.test(s); }
 function cleanName(s){
   const m=(s||"").match(/^\s*(?:feladó|felado|név|nev|name|kapcsolattartó|kapcsolattarto|ügyintéző|ugyintezo|kontakt|contact|cég|ceg|partner|ügyfél|ugyfel)\s*[:\-]\s*(.+?)\s*$/i);
   return (m?m[1]:s).trim().replace(/\s*[:\-–—]\s*$/,"").trim();
