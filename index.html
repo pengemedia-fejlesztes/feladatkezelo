@@ -676,7 +676,7 @@ const P = {
 };
 function icon(n, fill){ return '<svg class="ic" width="24" height="24" viewBox="0 0 24 24" fill="'+(fill||'none')+'" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">'+P[n]+'</svg>'; }
 const GRIP='<svg class="ic" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.4"/><circle cx="9" cy="12" r="1.4"/><circle cx="9" cy="18" r="1.4"/><circle cx="15" cy="6" r="1.4"/><circle cx="15" cy="12" r="1.4"/><circle cx="15" cy="18" r="1.4"/></svg>';
-const APP_VERSION="v66";
+const APP_VERSION="v67";
 
 /* ----------------------------- segéd ----------------------------- */
 const LIST_COLORS=["#287FAA","#2C8C8C","#C77A16","#8A5BB8","#C0392B","#4FA3CE","#C9518A"];
@@ -2092,6 +2092,8 @@ function extractLinks(text){
 /* Nev-e a sor? Kezeli a kisbetus titulust ("Lantaine dr. Palotas Ildiko") es a
    hosszabb, intezmenynevvel bovitett sorokat ("Dr. Palotas Ildiko Ugyvedi Iroda"). */
 const TITULUS=/^(dr|dr\.|prof|prof\.|id|id\.|ifj|ifj\.|ozv|özv|ozv\.|özv\.|nehai|néhai|mgr|mgr\.|phd|ph\.d\.|dipl|dipl\.)$/i;
+/* Nev utan allhato szerepkor/beosztas szavak - csak ezek engedettek kisbetuvel. */
+const SZEREP=/^(ügyvéd|ügyvédnő|ugyved|ugyvedno|ügyvédi|ugyvedi|iroda|irodája|irodaja|doktor|doktornő|doktorno|orvos|orvosnő|orvosno|főorvos|foorvos|szakorvos|ügyintéző|ugyintezo|szakügyintéző|szakugyintezo|szakértő|szakerto|tanácsadó|tanacsado|könyvelő|konyvelo|asszisztens|titkár|titkárnő|titkar|titkarno|munkatárs|munkatars|mérnök|mernok|ügyvezető|ugyvezeto|tulajdonos|kft|bt|zrt|nyrt|kkt|kht|ev)\.?$/i;
 function looksLikeName(line){
   const s=(line||"").trim();
   if(!s || s.length>70) return false;
@@ -2103,15 +2105,25 @@ function looksLikeName(line){
   const fo=s.split(/\s+[–—-]\s+|\s*[,(]/)[0].trim();
   if(!fo || fo.length>60) return false;
   const cap=/^[A-ZÁÉÍÓÖŐÚÜŰ][\wáéíóöőúüűa-zA-Z.\-]*$/;
-  const kis=/^[a-záéíóöőúüű.\-]+$/;
   const szavak=fo.split(/\s+/);
   if(szavak.length<1 || szavak.length>6) return false;
   const mag=szavak.filter(w=>!TITULUS.test(w));           // titulus nem szamit
   if(!mag.length) return false;
   if(mag.every(w=>cap.test(w))) return true;              // "Lamay", "Lantaine dr. Palotas Ildiko"
-  // vegyes: legalabb 2 nagybetus szo, utana csak kisbetus szerepkor ("Palotas Zsolt ugyved")
+  // vegyes: legalabb 2 nagybetus szo, utana CSAK ismert szerepkor-szo allhat
+  // ("Palotas Zsolt ugyved" igen, "Fb Post hirdetes" nem)
   let n=0; while(n<mag.length && cap.test(mag[n])) n++;
-  return n>=2 && mag.slice(n).every(w=>kis.test(w));
+  return n>=2 && mag.slice(n).every(w=>SZEREP.test(w));
+}
+/* Van-e kozos, legalabb 3 betus nagybetus szo a ket nevsorban? */
+function kozosNevszo(a,b){
+  const sz=x=>(x||"").split(/\s+/).filter(w=>!TITULUS.test(w))
+    .map(w=>w.replace(/[.,]+$/,""))
+    .filter(w=>/^[A-ZÁÉÍÓÖŐÚÜŰ]/.test(w))
+    .join("-").split("-")                      // "Bita-Petrik" -> "Bita", "Petrik"
+    .filter(w=>w.length>=3).map(w=>w.toLowerCase());
+  const A=sz(a), B=sz(b);
+  return A.some(w=>B.indexOf(w)>=0);
 }
 function isNameHeader(line){
   const m=(line||"").match(/^\s*(.{2,48}?)\s*:\s*$/);
@@ -2151,9 +2163,11 @@ function contactGroupsByLine(lines){
     const hdr=isNameHeader(line);
     if(hdr){ cur=ensure(hdr); continue; }
     if(looksLikeName(line)){
-      // Ha az elozo nevhez meg nem jott elerhetoseg, ez csak kiegeszito sor
-      // (pl. iroda neve a szemely alatt) - maradjon az elso, a szemely neve.
-      if(!(cur && cur.items.length===0)) cur=ensure(line.trim());
+      const nev=line.trim();
+      // Kiegeszito sor (pl. iroda neve a szemely alatt): csak akkor marad az elso nev,
+      // ha meg nincs elerhetoseg ES a ket sor kozos nevszot tartalmaz (ugyanaz a szemely).
+      if(cur && cur.items.length===0 && kozosNevszo(cur.name, nev)) continue;
+      cur=ensure(nev);
       continue;
     }
     const numName=line.replace(/^\s*\d{1,3}\s*[.)\-–—:]\s+/,"");   // "1. Szabó Zsoltné" -> "Szabó Zsoltné"
