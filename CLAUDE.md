@@ -27,3 +27,5 @@ Ne kerdezz ra kulon engedelyre az elesiteshez – ez az alap munkafolyamat.
 - Bongeszoben NE gepelj a leiras szerkesztojebe (`#netext`, contenteditable) –
   hasznald a `window.FK` API-t (`FK.find`, `FK.setNote`, `{dryRun:true}`).
 - Webhookon a `find` muvelet keres, a tobbi muvelet `id` helyett `q`-t is elfogad.
+- Kapcsolatok (nev + telefon + e-mail) irasa: kotelezo forma az `AI.md` 4. pontjaban
+  (`Nev:` elotag + `---` elvalaszto ket kapcsolat kozott).

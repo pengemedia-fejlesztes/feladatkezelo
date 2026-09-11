@@ -101,3 +101,46 @@ ilyenkor id-vel ismételd meg a hívást.
   `window.FK` API-n át éred el.
 - Adatvesztés nem megengedett: a szinkron MERGE alapú (módosítási időbélyeg +
   tombstone). Ne írj felül teljes listákat.
+
+---
+
+## 4. Kapcsolatok írásának kötelező formája
+
+A leírásból a program automatikusan felismeri a neveket, telefonszámokat és
+e-mail-címeket, és személyenként csoportosítja őket. Ahhoz, hogy ez **soha ne
+keveredjen össze**, a kapcsolatokat mindig így kell leírni:
+
+```
+Név: Dr. Kristóf Bálint
++36 30 686 1915
+kristof@pelda.hu
+Internetről találva – Bécsi út
+---
+Név: Szatmári Norbert
++36 70 256 1904
+Fb Post hirdetés – nagyon korrekt
+```
+
+Két szabály, ennyi:
+
+1. **`---` sor két kapcsolat között.** Ez KEMÉNY határ: elérhetőség soha nem
+   kerülhet át rajta a másik személyhez. Bármilyen, betűt és számot nem
+   tartalmazó sor jó (`---`, `- - -`, `———`, `***`).
+2. **`Név:` előtag a személy neve előtt.** Ez felülír minden automatikus
+   felismerést — akkor is működik, ha a név kisbetűs, számot vagy szokatlan
+   szót tartalmaz (pl. `Név: szatmári norbert 2-es rendelő`).
+
+A `Név:` helyett ezek is jók: `Kapcsolattartó:`, `Ügyintéző:`, `Cég:`, `Partner:`,
+`Ügyfél:`, `Feladó:`, `Kontakt:`.
+
+### Amit a program magától kezel
+- A cím- és megjegyzéssorok kimaradnak (számot tartalmazó sor sosem név).
+- A titulusok nem zavarnak: `dr.`, `Dr.`, `prof.`, `ifj.`, `özv.`, `PhD`.
+- Ha egy blokkban nincs felismerhető név, a csoport fejléce
+  „Nincs felismert név" lesz — ez jelzés, hogy oda `Név:` sor kell.
+
+### Amit NE csinálj
+- Ne írj kapcsolatokat elválasztó nélkül egymás után.
+- Ne tegyél megjegyzést a név helyére (pl. „Fb Post hirdetés" magában).
+- Meglévő leírást ne írj át csak azért, hogy megfeleljen ennek — csak ha a
+  felhasználó kéri, vagy ha te viszel fel új kapcsolatot.
