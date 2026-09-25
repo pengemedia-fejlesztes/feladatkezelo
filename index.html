@@ -677,7 +677,7 @@ const P = {
 };
 function icon(n, fill){ return '<svg class="ic" width="24" height="24" viewBox="0 0 24 24" fill="'+(fill||'none')+'" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">'+P[n]+'</svg>'; }
 const GRIP='<svg class="ic" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.4"/><circle cx="9" cy="12" r="1.4"/><circle cx="9" cy="18" r="1.4"/><circle cx="15" cy="6" r="1.4"/><circle cx="15" cy="12" r="1.4"/><circle cx="15" cy="18" r="1.4"/></svg>';
-const APP_VERSION="v73";
+const APP_VERSION="v74";
 
 /* ----------------------------- segéd ----------------------------- */
 const LIST_COLORS=["#287FAA","#2C8C8C","#C77A16","#8A5BB8","#C0392B","#4FA3CE","#C9518A"];
@@ -851,8 +851,24 @@ function statsHTML(){
   const nowD=new Date(); const wd0=(nowD.getDay()+6)%7; const weekStart=new Date(nowD.getFullYear(),nowD.getMonth(),nowD.getDate()-wd0).getTime();
   const doneToday=tasks.filter(t=>t.done&&t.completedAt&&isTodayDue(localISO(new Date(t.completedAt)))).length;
   const weekAct=new Array(7).fill(0);
-  // Heti aktivitas = hany feladatot nyitottal meg az adott napon (usageLog), hetfotol.
-  (data.usageLog||[]).forEach(ts=>{ if(ts>=weekStart) weekAct[(new Date(ts).getDay()+6)%7]++; });
+  // Heti aktivitas = hany KULONBOZO feladatot nyitottal meg az adott napon (openLog).
+  // Az openLog elotti napokra (amikor meg csak idopont volt naplozva) a regi
+  // usageLog osszes megnyitasa a tartalek - ezt a magyarazo sor jelzi.
+  const ol=data.openLog||[];
+  const olKezdet=ol.length?parseInt(ol[0],10):Infinity;
+  const napiFeladat=[{},{},{},{},{},{},{}];
+  ol.forEach(e=>{ const i=e.indexOf("|"), ts=parseInt(e,10); if(ts>=weekStart) napiFeladat[(new Date(ts).getDay()+6)%7][e.slice(i+1)]=1; });
+  let tartalek=false;
+  for(let n=0;n<7;n++){
+    const napVege=new Date(nowD.getFullYear(),nowD.getMonth(),nowD.getDate()-wd0+n+1).getTime();
+    if(napVege<=olKezdet){
+      const napEleje=new Date(nowD.getFullYear(),nowD.getMonth(),nowD.getDate()-wd0+n).getTime();
+      const db=(data.usageLog||[]).filter(ts=>ts>=napEleje&&ts<napVege).length;
+      if(db){ weekAct[n]=db; tartalek=true; }
+    } else {
+      weekAct[n]=Object.keys(napiFeladat[n]).length;
+    }
+  }
   const daySet={}; tasks.forEach(t=>{ if(t.done&&t.completedAt) daySet[localISO(new Date(t.completedAt))]=1; });
   let streak=0, sd=new Date(); if(!daySet[localISO(sd)]) sd=new Date(Date.now()-86400000);
   while(daySet[localISO(sd)]){ streak++; sd=new Date(sd.getTime()-86400000); }
@@ -880,7 +896,7 @@ function statsHTML(){
       +'<div class="s3num" data-action="statnav" data-target="overdue"><b class="red">'+overdue+'</b><span>Késett</span></div>'
       +'<div class="s3num"><b class="teal">'+doneToday+'</b><span>Ma kész</span></div>'
     +'</div>'
-    +colChart("Heti aktivitás",weekAct,["H","K","Sze","Cs","P","Szo","V"],"Megnyitott feladatok száma naponta, hétfőtől",true)
+    +colChart("Heti aktivitás",weekAct,["H","K","Sze","Cs","P","Szo","V"],(tartalek?"Különböző megnyitott feladatok naponta. A mérés indulása előtti napokon: összes megnyitás.":"Különböző megnyitott feladatok száma naponta, hétfőtől"),true)
     +barChart("Mikor dolgozol",[{label:"Reggel",value:parts[0]},{label:"Délelőtt",value:parts[1]},{label:"Délután",value:parts[2]},{label:"Este",value:parts[3]}])
     +'<div class="chartcard"><div class="charttitle">Figyelmet igényel</div>'
       +(attention.length?attention.map(x=>'<button class="attnrow" data-action="open" data-id="'+x.t.id+'"><span class="attntitle">'+esc(x.t.title)+'</span><span class="attnreason">'+esc(x.reason)+'</span></button>').join(""):'<div class="chempty">Minden rendben — nincs elhanyagolt feladat</div>')
@@ -1208,6 +1224,18 @@ function canonicalBlob(d){
   const byId=(a)=>(a||[]).slice().sort((x,y)=>x.id<y.id?-1:(x.id>y.id?1:0));
   return stableStr({ lists:byId(d.lists), tasks:byId(d.tasks), deleted:d.deleted||{}, createdTotal:d.createdTotal||0, atts:d.atts||{} });
 }
+/* Megnyitasi naplo: 60 napnal regebbi bejegyzesek es a 2000 feletti resz lekerul
+   (a Firestore dokumentum meretkorlatja miatt). */
+function pruneOpenLog(arr){
+  const hatar=Date.now()-60*86400000;
+  const out=(arr||[]).filter(e=>parseInt(e,10)>=hatar);
+  return out.length>2000?out.slice(-2000):out;
+}
+function mergeOpenLog(a,b){
+  const s={}; (a||[]).concat(b||[]).forEach(e=>{ if(typeof e==="string" && e.indexOf("|")>0) s[e]=1; });
+  const arr=Object.keys(s).sort((x,y)=>parseInt(x,10)-parseInt(y,10));
+  return pruneOpenLog(arr);
+}
 function mergeUsage(a,b){
   const s={}; (a||[]).concat(b||[]).forEach(t=>{ s[t]=1; });
   const arr=Object.keys(s).map(Number).sort((x,y)=>x-y);
@@ -1232,6 +1260,7 @@ function mergeData(local, remote){
     inboxSince: Math.max(local.inboxSince||0, remote.inboxSince||0),
     inboxSeen: Object.assign({}, remote.inboxSeen||{}, local.inboxSeen||{}),
     usageLog: mergeUsage(local.usageLog, remote.usageLog),
+    openLog: mergeOpenLog(local.openLog, remote.openLog),
     searches: mergeSearches(local.searches, remote.searches),
     atts: mergeAtts(local.atts, remote.atts)
   };
@@ -1246,6 +1275,11 @@ function trackOpen(id){
   if(!data.usageLog) data.usageLog=[];
   data.usageLog.push(Date.now());
   if(data.usageLog.length>1500) data.usageLog=data.usageLog.slice(-1500);
+  // Megnyitasi naplo feladattal egyutt ("idobelyeg|feladatId"), hogy naponta
+  // meg lehessen szamolni, hany KULONBOZO feladatot nyitottal meg.
+  if(!data.openLog) data.openLog=[];
+  data.openLog.push(Date.now()+"|"+id);
+  data.openLog=pruneOpenLog(data.openLog);
   save();
 }
 function trackClose(){
