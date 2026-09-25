@@ -557,6 +557,7 @@ body.dragging .scroll, body.dragging .fsbody{ overflow:hidden !important; }
 .colbar{ flex:1; display:flex; flex-direction:column; align-items:center; height:100%; }
 .colwrap{ flex:1; width:100%; display:flex; align-items:flex-end; }
 .colfill{ width:100%; background:var(--acc); border-radius:4px 4px 0 0; min-height:2px; }
+.colval{ font-size:11px; font-weight:700; color:var(--ink-soft); text-align:center; min-height:14px; margin-bottom:3px; }
 .collab{ font-size:9.5px; color:var(--ink-faint); margin-top:4px; height:12px; }
 .searchrowitem{ display:flex; align-items:center; justify-content:space-between; padding:8px 0; border-bottom:1px solid var(--line); }
 .searchrowitem:last-child{ border-bottom:none; }
@@ -676,7 +677,7 @@ const P = {
 };
 function icon(n, fill){ return '<svg class="ic" width="24" height="24" viewBox="0 0 24 24" fill="'+(fill||'none')+'" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">'+P[n]+'</svg>'; }
 const GRIP='<svg class="ic" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.4"/><circle cx="9" cy="12" r="1.4"/><circle cx="9" cy="18" r="1.4"/><circle cx="15" cy="6" r="1.4"/><circle cx="15" cy="12" r="1.4"/><circle cx="15" cy="18" r="1.4"/></svg>';
-const APP_VERSION="v71";
+const APP_VERSION="v72";
 
 /* ----------------------------- segéd ----------------------------- */
 const LIST_COLORS=["#287FAA","#2C8C8C","#C77A16","#8A5BB8","#C0392B","#4FA3CE","#C9518A"];
@@ -798,9 +799,9 @@ function barChart(title, rows, accent){
   const bars=rows.map(r=>'<div class="chrow"><div class="chlabel">'+esc(r.label)+'</div><div class="chbarwrap"><div class="chbar" style="width:'+Math.max(3,Math.round(r.value/max*100))+'%'+(accent?';background:'+accent:'')+'"></div></div><div class="chval">'+esc(r.display!=null?r.display:String(r.value))+'</div></div>').join("");
   return '<div class="chartcard"><div class="charttitle">'+esc(title)+'</div>'+(rows.length?bars:'<div class="chempty">Még nincs adat</div>')+'</div>';
 }
-function colChart(title, counts, labels, hint){
+function colChart(title, counts, labels, hint, ertekek){
   const max=Math.max(1,...counts);
-  const bars=counts.map((c,i)=>'<div class="colbar"><div class="colwrap"><div class="colfill" style="height:'+Math.max(2,Math.round(c/max*100))+'%" title="'+c+'"></div></div><div class="collab">'+(labels[i]!=null?labels[i]:"")+'</div></div>').join("");
+  const bars=counts.map((c,i)=>'<div class="colbar">'+(ertekek?'<div class="colval">'+(c||"")+'</div>':'')+'<div class="colwrap"><div class="colfill" style="height:'+Math.max(2,Math.round(c/max*100))+'%" title="'+c+'"></div></div><div class="collab">'+(labels[i]!=null?labels[i]:"")+'</div></div>').join("");
   return '<div class="chartcard"><div class="charttitle">'+esc(title)+'</div><div class="colchart">'+bars+'</div>'+(hint?'<div class="chhint">'+esc(hint)+'</div>':'')+'</div>';
 }
 function statsHTML(){
@@ -850,6 +851,11 @@ function statsHTML(){
   const nowD=new Date(); const wd0=(nowD.getDay()+6)%7; const weekStart=new Date(nowD.getFullYear(),nowD.getMonth(),nowD.getDate()-wd0).getTime();
   const doneToday=tasks.filter(t=>t.done&&t.completedAt&&isTodayDue(localISO(new Date(t.completedAt)))).length;
   const weekAct=new Array(7).fill(0);
+  // Heti aktivitas = TENYLEGES hasznalat ezen a heten: feladat-megnyitasok (usageLog)
+  // + befejezesek. Eddig csak a befejezett ES meg letezo feladatokat szamolta, igy
+  // azok a napok, amikor csak megnyitottal, szerkesztettel vagy lepest pipaltal,
+  // nullanak latszottak - es a torolt kesz feladatok is kiestek belole.
+  (data.usageLog||[]).forEach(ts=>{ if(ts>=weekStart) weekAct[(new Date(ts).getDay()+6)%7]++; });
   tasks.forEach(t=>{ if(t.done&&t.completedAt&&t.completedAt>=weekStart){ weekAct[(new Date(t.completedAt).getDay()+6)%7]++; } });
   const daySet={}; tasks.forEach(t=>{ if(t.done&&t.completedAt) daySet[localISO(new Date(t.completedAt))]=1; });
   let streak=0, sd=new Date(); if(!daySet[localISO(sd)]) sd=new Date(Date.now()-86400000);
@@ -878,7 +884,7 @@ function statsHTML(){
       +'<div class="s3num" data-action="statnav" data-target="overdue"><b class="red">'+overdue+'</b><span>Késett</span></div>'
       +'<div class="s3num"><b class="teal">'+doneToday+'</b><span>Ma kész</span></div>'
     +'</div>'
-    +colChart("Heti aktivitás",weekAct,["H","K","Sze","Cs","P","Szo","V"])
+    +colChart("Heti aktivitás",weekAct,["H","K","Sze","Cs","P","Szo","V"],"Feladat-megnyitások és befejezések ezen a héten, hétfőtől",true)
     +barChart("Mikor dolgozol",[{label:"Reggel",value:parts[0]},{label:"Délelőtt",value:parts[1]},{label:"Délután",value:parts[2]},{label:"Este",value:parts[3]}])
     +'<div class="chartcard"><div class="charttitle">Figyelmet igényel</div>'
       +(attention.length?attention.map(x=>'<button class="attnrow" data-action="open" data-id="'+x.t.id+'"><span class="attntitle">'+esc(x.t.title)+'</span><span class="attnreason">'+esc(x.reason)+'</span></button>').join(""):'<div class="chempty">Minden rendben — nincs elhanyagolt feladat</div>')
