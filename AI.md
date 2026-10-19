@@ -133,6 +133,14 @@ Két szabály, ennyi:
 A `Név:` helyett ezek is jók: `Kapcsolattartó:`, `Ügyintéző:`, `Cég:`, `Partner:`,
 `Ügyfél:`, `Feladó:`, `Kontakt:`.
 
+### Egysoros forma (szintén működik)
+Ha egy kapcsolat egyetlen sorban áll, a sor eleje gondolatjelig a név:
+```
+Trombitás Cukrászda – 1133 Bp., Dráva u. 18-20. – +36 70 905 7657
+Sárai Cukrászda – 1132 Bp., Visegrádi u. 51/C – 06 1 340 9788
+```
+Minden ilyen sor külön kapcsolat lesz. A név részben ne legyen szám.
+
 ### Amit a program magától kezel
 - A cím- és megjegyzéssorok kimaradnak (számot tartalmazó sor sosem név).
 - A titulusok nem zavarnak: `dr.`, `Dr.`, `prof.`, `ifj.`, `özv.`, `PhD`.

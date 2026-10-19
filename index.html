@@ -677,7 +677,7 @@ const P = {
 };
 function icon(n, fill){ return '<svg class="ic" width="24" height="24" viewBox="0 0 24 24" fill="'+(fill||'none')+'" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">'+P[n]+'</svg>'; }
 const GRIP='<svg class="ic" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.4"/><circle cx="9" cy="12" r="1.4"/><circle cx="9" cy="18" r="1.4"/><circle cx="15" cy="6" r="1.4"/><circle cx="15" cy="12" r="1.4"/><circle cx="15" cy="18" r="1.4"/></svg>';
-const APP_VERSION="v74";
+const APP_VERSION="v75";
 
 /* ----------------------------- segéd ----------------------------- */
 const LIST_COLORS=["#287FAA","#2C8C8C","#C77A16","#8A5BB8","#C0392B","#4FA3CE","#C9518A"];
@@ -2218,6 +2218,20 @@ function isNameish(s){
   if((s.match(/\s+/g)||[]).length>7) return false;      // sok szó -> próza
   return /[A-Za-zÁÉÍÓÖŐÚÜŰáéíóöőúüű]/.test(s);
 }
+/* Egysoros bejegyzes nevresze: a sor eleje az elso " – " / " - " / " — " elvalasztoig.
+   Csak akkor nev, ha nincs benne szam, link, e-mail, es nem cimke (Tel, Mobil, E-mail...). */
+const SORCIMKE=/^(tel|telefon|tel\.|mobil|mob|mobile|phone|fax|e-?mail|email|mail|web|weboldal|honlap|cím|cim|address|nyitvatartás|nyitvatartas|ár|ar)$/i;
+function egysorosNev(line){
+  const darabok=(line||"").split(/\s+[–—-]\s+/);
+  if(darabok.length<2) return null;
+  const n=darabok[0].trim().replace(/[:,;]+$/,"");
+  if(n.length<2 || n.length>60) return null;
+  if(/\d|@|https?:|www\./i.test(n)) return null;
+  if(extractLinks(n).length) return null;
+  if(!/^[A-Za-zÁÉÍÓÖŐÚÜŰáéíóöőúüű]/.test(n)) return null;
+  if(SORCIMKE.test(n)) return null;
+  return n;
+}
 function contactGroupsByLine(lines){
   const groups=[];
   const nameRe=/^\s*(feladó|felado|név|nev|name|kapcsolattartó|kapcsolattarto|ügyintéző|ugyintezo|kontakt|contact|cég|ceg|partner|ügyfél|ugyfel)\s*[:\-]\s*(.+?)\s*$/i;
@@ -2241,7 +2255,14 @@ function contactGroupsByLine(lines){
     const slashParts=numName.split(/\s*[\/|]\s*/);                 // "Palakovics Ferenc / Energotherm" (Név / Cég)
     if(slashParts.length>=2 && slashParts.length<=3 && numName.trim().length<=60 && !extractLinks(numName).length && looksLikeName(slashParts[0])){ cur=ensure(numName.trim()); continue; }
     const links=extractLinks(line);
-    if(links.length){ const g=cur||ensure(""); links.forEach(l=>{ const k=l.type+"|"+l.href.toLowerCase(); if(!g.seen.has(k)){ g.seen.add(k); g.items.push(l); } }); }
+    if(links.length){
+      // Egysoros bejegyzes: "Trombitas Cukraszda – 1133 Bp., Drava u. – +36 70 905 7657"
+      // A sor elejen allo, gondolatjellel levalasztott szoveg a nev, es a sor sajat csoportot kap.
+      const sorNev=egysorosNev(line);
+      if(sorNev) cur=ensure(sorNev);
+      const g=cur||ensure("");
+      links.forEach(l=>{ const k=l.type+"|"+l.href.toLowerCase(); if(!g.seen.has(k)){ g.seen.add(k); g.items.push(l); } });
+    }
   }
   return groups.filter(g=>g.items.length).map(g=>({name:g.name, items:g.items}));
 }
