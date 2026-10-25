@@ -2,6 +2,10 @@
 <html lang="hu">
 <head>
 <meta charset="UTF-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://apis.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https:; media-src 'self' data: blob:; connect-src 'self' https://*.googleapis.com https://raw.githubusercontent.com https://www.gstatic.com; frame-src https://*.firebaseapp.com https://*.google.com; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="strict-origin">
+<script>/* Kattintas-eltérítés (clickjacking) ellen: idegen oldalba agyazva nem fut */
+try{if(window.top!==window.self){window.top.location=window.location.href;}}catch(e){document.documentElement.style.display="none";}</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -677,7 +681,7 @@ const P = {
 };
 function icon(n, fill){ return '<svg class="ic" width="24" height="24" viewBox="0 0 24 24" fill="'+(fill||'none')+'" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">'+P[n]+'</svg>'; }
 const GRIP='<svg class="ic" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.4"/><circle cx="9" cy="12" r="1.4"/><circle cx="9" cy="18" r="1.4"/><circle cx="15" cy="6" r="1.4"/><circle cx="15" cy="12" r="1.4"/><circle cx="15" cy="18" r="1.4"/></svg>';
-const APP_VERSION="v75";
+const APP_VERSION="v76";
 
 /* ----------------------------- segéd ----------------------------- */
 const LIST_COLORS=["#287FAA","#2C8C8C","#C77A16","#8A5BB8","#C0392B","#4FA3CE","#C9518A"];
@@ -738,13 +742,13 @@ function datePickerHTML(t){
   const quick=[["today","Ma",todayISO()],["tomorrow","Holnap",addDaysISO(1)],["friday","Utolsó munkanap",fridayISO()],["weekend","Hétvége",weekendISO()],["nextweek","Következő héten",nextMondayISO()],["week","Egy hét múlva",addDaysISO(7)],["monthend","Hónap vége",monthEndISO()]];
   const quickISOs=quick.map(q=>q[2]);
   const isCustom = !!du && quickISOs.indexOf(du)<0;
-  const chips=quick.map(q=>'<button class="dchip'+(du===q[2]?" on":"")+'" data-action="duequick" data-when="'+q[0]+'" data-id="'+t.id+'"><span class="dt">'+q[1]+'</span><span class="ds">'+formatDayLong(q[2])+'</span></button>').join("");
+  const chips=quick.map(q=>'<button class="dchip'+(du===q[2]?" on":"")+'" data-action="duequick" data-when="'+q[0]+'" data-id="'+esc(t.id)+'"><span class="dt">'+q[1]+'</span><span class="ds">'+formatDayLong(q[2])+'</span></button>').join("");
   return '<div class="pickpanel">'
     +'<div class="dgrid">'+chips
-      +'<button class="dchip more'+((isCustom||calOpen)?" on":"")+'" data-action="caltoggle" data-id="'+t.id+'"><span class="dt">'+icon("calendar")+(isCustom?formatDayLong(du):"Más dátum")+'</span><span class="ds">'+(calOpen?"bezárás":"naptár")+'</span></button>'
+      +'<button class="dchip more'+((isCustom||calOpen)?" on":"")+'" data-action="caltoggle" data-id="'+esc(t.id)+'"><span class="dt">'+icon("calendar")+(isCustom?formatDayLong(du):"Más dátum")+'</span><span class="ds">'+(calOpen?"bezárás":"naptár")+'</span></button>'
     +'</div>'
     +(calOpen?calendarHTML(t):"")
-    +'<button class="dpk clr'+(!du?" on":"")+'" data-action="dueclear" data-id="'+t.id+'"><span class="dpkt">Nincs határidő</span></button>'
+    +'<button class="dpk clr'+(!du?" on":"")+'" data-action="dueclear" data-id="'+esc(t.id)+'"><span class="dpkt">Nincs határidő</span></button>'
   +'</div>';
 }
 function calendarHTML(t){
@@ -762,7 +766,7 @@ function calendarHTML(t){
     const cur=new Date(y,m,d), iso=localISO(cur), dow=cur.getDay(), we=(dow===0||dow===6);
     let cls="cd"; if(we)cls+=" we"; if(iso<today)cls+=" past"; if(iso===today)cls+=" today"; if(iso===du)cls+=" sel";
     const style=(d===1&&startOffset>0)?' style="grid-column-start:'+(startOffset+1)+'"':'';
-    cells+='<button class="'+cls+'"'+style+' data-action="calpick" data-iso="'+iso+'" data-id="'+t.id+'">'+d+'</button>';
+    cells+='<button class="'+cls+'"'+style+' data-action="calpick" data-iso="'+iso+'" data-id="'+esc(t.id)+'">'+d+'</button>';
   }
   const dows=["H","K","Sze","Cs","P","Szo","V"].map(x=>'<span class="cdow">'+x+'</span>').join("");
   return '<div class="cal"><div class="calhead">'
@@ -775,15 +779,15 @@ function timePickerHTML(t){
   const cur=t.reminder?t.reminder.slice(11,16):"";
   const ch=cur.slice(0,2), cm=cur.slice(3,5);
   const dateStr=t.reminder?t.reminder.slice(0,10):(t.due||todayISO());
-  let hg=""; for(let h=0;h<24;h++){ const v=String(h).padStart(2,"0"); hg+='<button class="tcell'+(v===ch?" on":"")+'" data-action="remindhour" data-hour="'+v+'" data-id="'+t.id+'">'+v+'</button>'; }
-  let mg=""; for(let m=0;m<60;m+=5){ const v=String(m).padStart(2,"0"); mg+='<button class="tcell'+(v===cm?" on":"")+'" data-action="remindmin" data-min="'+v+'" data-id="'+t.id+'">'+v+'</button>'; }
+  let hg=""; for(let h=0;h<24;h++){ const v=String(h).padStart(2,"0"); hg+='<button class="tcell'+(v===ch?" on":"")+'" data-action="remindhour" data-hour="'+v+'" data-id="'+esc(t.id)+'">'+v+'</button>'; }
+  let mg=""; for(let m=0;m<60;m+=5){ const v=String(m).padStart(2,"0"); mg+='<button class="tcell'+(v===cm?" on":"")+'" data-action="remindmin" data-min="'+v+'" data-id="'+esc(t.id)+'">'+v+'</button>'; }
   return '<div class="pickpanel timepanel">'
     +'<div class="tphead">'+icon("bell")+formatDayLong(dateStr)+' · <b>'+(cur||"—:—")+'</b></div>'
     +'<div class="tpgrids">'
       +'<div class="tpcol"><div class="tplab">Óra</div><div class="hgrid">'+hg+'</div></div>'
       +'<div class="tpcol"><div class="tplab">Perc</div><div class="mgrid">'+mg+'</div></div>'
     +'</div>'
-    +'<button class="dpk clr'+(!t.reminder?" on":"")+'" data-action="remindclear" data-id="'+t.id+'"><span class="dpkt">Nincs értesítés</span></button>'
+    +'<button class="dpk clr'+(!t.reminder?" on":"")+'" data-action="remindclear" data-id="'+esc(t.id)+'"><span class="dpkt">Nincs értesítés</span></button>'
   +'</div>';
 }
 function timeOptions(sel){
@@ -899,7 +903,7 @@ function statsHTML(){
     +colChart("Heti aktivitás",weekAct,["H","K","Sze","Cs","P","Szo","V"],(tartalek?"Különböző megnyitott feladatok naponta. A mérés indulása előtti napokon: összes megnyitás.":"Különböző megnyitott feladatok száma naponta, hétfőtől"),true)
     +barChart("Mikor dolgozol",[{label:"Reggel",value:parts[0]},{label:"Délelőtt",value:parts[1]},{label:"Délután",value:parts[2]},{label:"Este",value:parts[3]}])
     +'<div class="chartcard"><div class="charttitle">Figyelmet igényel</div>'
-      +(attention.length?attention.map(x=>'<button class="attnrow" data-action="open" data-id="'+x.t.id+'"><span class="attntitle">'+esc(x.t.title)+'</span><span class="attnreason">'+esc(x.reason)+'</span></button>').join(""):'<div class="chempty">Minden rendben — nincs elhanyagolt feladat</div>')
+      +(attention.length?attention.map(x=>'<button class="attnrow" data-action="open" data-id="'+esc(x.t.id)+'"><span class="attntitle">'+esc(x.t.title)+'</span><span class="attnreason">'+esc(x.reason)+'</span></button>').join(""):'<div class="chempty">Minden rendben — nincs elhanyagolt feladat</div>')
     +'</div>'
     +'<div class="statsince"><div class="statsincetop">'+icon("calendar")+' Az első feladat óta</div>'
       +'<div class="statsinceval">'+firstStr+'</div>'
@@ -951,7 +955,10 @@ function printDaily(){
   setTimeout(()=>{ try{ window.print(); }catch(e){ showToast("Ezen az eszközön a böngésző nyomtatás/megosztás menüjét használd."); } }, 60);
 }
 function greeting(){const h=new Date().getHours();return h<5?"Még fent vagy?":h<10?"Jó reggelt!":h<18?"Szép napot!":h<22?"Jó estét!":"Szép estét!";}
-function esc(s){return(s||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+function esc(s){return String(s||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+/* Biztonsag: csak beagyazott (data:/blob:) csatolmany-URL es ervenyes szin kerulhet HTML-attributumba. */
+function safeDataUrl(u){u=String(u||"");return /^(data:([\w.+-]+\/[\w.+-]+)?(;[\w=.+-]+)*(;base64)?,|blob:)/i.test(u)?esc(u):"#";}
+function safeColor(c){c=String(c||"");return /^(#[0-9a-f]{3,8}|[a-z]{3,20}|(rgb|hsl)a?\([\d\s.,%]+\))$/i.test(c)?c:"#888";}
 /* ---- Projektmenedzsment (felelős, Eisenhower, becslés) ---- */
 const PEOPLE=["Nagy László","Koronics Krisztián","Zubán Erna (Ernestina)","Huszti Enikő","Baka Aranka"];
 function peopleList(){ return (data&&data.people&&data.people.length)?data.people:PEOPLE; }
@@ -1028,7 +1035,7 @@ function noteEditorHTML(t){
       +'<span class="netitle"><span class="nesub">Leírás</span><span class="netask">'+esc(t.title||"")+'</span></span>'
       +'<button class="needitbtn'+(noteEditMode?" on":"")+'" id="needit" type="button" aria-label="Szerkesztés">'+icon("pencil")+'</button>'
       +'<button class="nedonebtn" data-action="closenote">Kész</button></header>'
-    +'<div class="nearea" id="netext" data-id="'+t.id+'" contenteditable="'+(noteEditMode?"true":"false")+'" role="textbox" aria-multiline="true" data-ph="Írj ide bármilyen megjegyzést, telefonszámot, e-mailt vagy weboldalt…">'+esc(t.note)+'</div>'
+    +'<div class="nearea" id="netext" data-id="'+esc(t.id)+'" contenteditable="'+(noteEditMode?"true":"false")+'" role="textbox" aria-multiline="true" data-ph="Írj ide bármilyen megjegyzést, telefonszámot, e-mailt vagy weboldalt…">'+esc(t.note)+'</div>'
   +'</div>';
 }
 /* Olvasas mod: contenteditable=false -> nincs billentyuzet es nincs iOS-sav.
@@ -1114,9 +1121,9 @@ function handleFiles(taskId, files){
 function attRow(a){
   const isImg=a.type&&a.type.indexOf("image/")===0;
   return '<div class="attitem">'
-    +'<a class="attthumb'+(isImg?"":" file")+'" href="'+a.data+'" download="'+esc(a.name)+'" target="_blank" rel="noopener">'+(isImg?'<img src="'+a.data+'" alt="">':icon("file"))+'</a>'
-    +'<a class="attname" href="'+a.data+'" download="'+esc(a.name)+'" target="_blank" rel="noopener"><span>'+esc(a.name)+'</span><small>'+fmtSize(a.size)+'</small></a>'
-    +'<button class="attdel" data-action="attdel" data-aid="'+a.id+'" aria-label="Törlés">'+icon("x")+'</button>'
+    +'<a class="attthumb'+(isImg?"":" file")+'" href="'+safeDataUrl(a.data)+'" download="'+esc(a.name)+'" target="_blank" rel="noopener">'+(isImg?'<img src="'+safeDataUrl(a.data)+'" alt="">':icon("file"))+'</a>'
+    +'<a class="attname" href="'+safeDataUrl(a.data)+'" download="'+esc(a.name)+'" target="_blank" rel="noopener"><span>'+esc(a.name)+'</span><small>'+fmtSize(a.size)+'</small></a>'
+    +'<button class="attdel" data-action="attdel" data-aid="'+esc(a.id)+'" aria-label="Törlés">'+icon("x")+'</button>'
   +'</div>';
 }
 function formatReminder(r){ if(!r) return ""; return formatDue(r.slice(0,10))+" "+r.slice(11,16); }
@@ -1386,9 +1393,9 @@ function render(){
   const listRows=(editLists?"":'<div class="listrow"><button class="listbtn '+(view.type==="smart"&&view.key==="all"?"active":"")+'" data-action="view" data-vt="smart" data-vk="all"><span class="dot" style="background:var(--ink-faint)"></span><span class="listname">Összes</span>'+(counts.all>0?'<span class="badge">'+counts.all+'</span>':'')+'</button></div>')
   +data.lists.map(l=>{
     if(editLists){
-      return '<div class="listrow"><input class="listedit" data-rename="'+l.id+'" value="'+esc(l.name)+'">'+(data.lists.length>1?'<button class="deletelist" data-action="dellist" data-id="'+l.id+'">'+icon("trash")+'</button>':'')+'</div>';
+      return '<div class="listrow"><input class="listedit" data-rename="'+esc(l.id)+'" value="'+esc(l.name)+'">'+(data.lists.length>1?'<button class="deletelist" data-action="dellist" data-id="'+esc(l.id)+'">'+icon("trash")+'</button>':'')+'</div>';
     }
-    return '<div class="listrow"><button class="listbtn '+(view.type==="list"&&view.key===l.id?"active":"")+'" data-action="view" data-vt="list" data-vk="'+l.id+'"><span class="dot" style="background:'+l.color+'"></span><span class="listname">'+esc(l.name)+'</span>'+(counts.lists[l.id]>0?'<span class="badge">'+counts.lists[l.id]+'</span>':'')+'</button></div>';
+    return '<div class="listrow"><button class="listbtn '+(view.type==="list"&&view.key===l.id?"active":"")+'" data-action="view" data-vt="list" data-vk="'+esc(l.id)+'"><span class="dot" style="background:'+safeColor(l.color)+'"></span><span class="listname">'+esc(l.name)+'</span>'+(counts.lists[l.id]>0?'<span class="badge">'+counts.lists[l.id]+'</span>':'')+'</button></div>';
   }).join("");
 
   const taskRow=(t,draggable,hideDue)=>{
@@ -1404,9 +1411,9 @@ function render(){
     const remChip=(!t.done&&rtime)?'<span class="due clock">'+icon("clock")+rtime+'</span>':"";
     const phoneLinks=(t.note&&/\d/.test(t.note))?extractLinks(t.note).filter(l=>l.type==="phone"):[];
     const callBtn=(!t.done&&phoneLinks.length===1)?'<a class="callrow" href="'+phoneLinks[0].href+'" aria-label="Hívás: '+esc(phoneLinks[0].label)+'" onclick="event.stopPropagation()">'+icon("phone")+'</a>':'';
-    return '<li class="task '+(t.done?"done-row":"")+(t.id===lastDoneId?" justdone":"")+(t.id===openTaskId?" opened":"")+'" data-id="'+t.id+'" style="--strip:'+strip+'">'
-      +'<button class="check '+(t.done?"on":"")+'" data-action="toggle" data-id="'+t.id+'">'+icon("check")+'</button>'
-      +'<button class="taskbody" data-action="open" data-id="'+t.id+'"><span class="tasktitle">'+esc(t.title)+'</span>'
+    return '<li class="task '+(t.done?"done-row":"")+(t.id===lastDoneId?" justdone":"")+(t.id===openTaskId?" opened":"")+'" data-id="'+esc(t.id)+'" style="--strip:'+strip+'">'
+      +'<button class="check '+(t.done?"on":"")+'" data-action="toggle" data-id="'+esc(t.id)+'">'+icon("check")+'</button>'
+      +'<button class="taskbody" data-action="open" data-id="'+esc(t.id)+'"><span class="tasktitle">'+esc(t.title)+'</span>'
       +'<span class="meta">'
       +(ln?'<span class="metalist">'+esc(ln.name)+'</span>':'')
       +((t.steps&&t.steps.length)?'<span class="stepchip">✓ '+(t.steps.filter(s=>s.done).length)+'/'+t.steps.length+'</span>':'')
@@ -1414,7 +1421,7 @@ function render(){
       +(t.note?'<span class="hasnote">'+icon("note")+'</span>':'')
       +'</span></button>'
       +callBtn
-      +'<button class="starbtn '+(t.important?"on":"")+'" data-action="star" data-id="'+t.id+'">'+icon("star",t.important?"var(--amber)":"none")+'</button>'
+      +'<button class="starbtn '+(t.important?"on":"")+'" data-action="star" data-id="'+esc(t.id)+'">'+icon("star",t.important?"var(--amber)":"none")+'</button>'
       +'</li>';
   };
   const timelineHTML=(list)=>{
@@ -1469,15 +1476,15 @@ function render(){
   let stepsHTML="";
   if(detail){
     const steps=(detail.steps||[]).slice().sort((a,b)=>((a.done?1:0)-(b.done?1:0))||((a.order||0)-(b.order||0)));
-    const rows=steps.map(s=>'<li class="step" data-id="'+s.id+'">'
-      +'<button class="stepcheck '+(s.done?"on":"")+'" data-action="stepdone" data-sid="'+s.id+'">'+icon("check")+'</button>'
-      +'<input class="steptext '+(s.done?"sdone":"")+'" data-steptext="'+s.id+'" value="'+esc(s.text)+'" placeholder="Lépés szövege…">'
-      +'<button class="stepdel" data-action="stepdel" data-sid="'+s.id+'" aria-label="Törlés">'+icon("x")+'</button>'
+    const rows=steps.map(s=>'<li class="step" data-id="'+esc(s.id)+'">'
+      +'<button class="stepcheck '+(s.done?"on":"")+'" data-action="stepdone" data-sid="'+esc(s.id)+'">'+icon("check")+'</button>'
+      +'<input class="steptext '+(s.done?"sdone":"")+'" data-steptext="'+esc(s.id)+'" value="'+esc(s.text)+'" placeholder="Lépés szövege…">'
+      +'<button class="stepdel" data-action="stepdel" data-sid="'+esc(s.id)+'" aria-label="Törlés">'+icon("x")+'</button>'
       +'<button class="stepgrip" aria-label="Húzás">'+GRIP+'</button>'
       +'</li>').join("");
     stepsHTML='<div class="field"><label class="fieldlabel">'+icon("list")+' Ellenőrzőlista</label>'
       +(rows?'<ul class="steplist">'+rows+'</ul>':'')
-      +'<div class="addstep"><button class="addstepbtn" data-action="addstep" data-id="'+detail.id+'">'+icon("plus")+'</button>'
+      +'<div class="addstep"><button class="addstepbtn" data-action="addstep" data-id="'+esc(detail.id)+'">'+icon("plus")+'</button>'
       +'<input id="stepinput" class="stepinput" placeholder="Lépés hozzáadása…"></div></div>';
   }
 
@@ -1546,11 +1553,11 @@ function render(){
         +'<button class="fsback" data-action="closesheet">'+icon("back")+'<span>Vissza</span></button>'
       +'</header>'
       +'<div class="fsbody">'
-        +'<div class="fstop"><button class="check big '+(detail.done?"on":"")+'" data-action="toggle" data-id="'+detail.id+'">'+icon("check")+'</button>'
-          +'<textarea class="fstitle" id="dtitle" rows="1" data-id="'+detail.id+'">'+esc(detail.title)+'</textarea>'
-          +'<button class="starbtn '+(detail.important?"on":"")+'" data-action="star" data-id="'+detail.id+'">'+icon("star",detail.important?"var(--amber)":"none")+'</button></div>'
+        +'<div class="fstop"><button class="check big '+(detail.done?"on":"")+'" data-action="toggle" data-id="'+esc(detail.id)+'">'+icon("check")+'</button>'
+          +'<textarea class="fstitle" id="dtitle" rows="1" data-id="'+esc(detail.id)+'">'+esc(detail.title)+'</textarea>'
+          +'<button class="starbtn '+(detail.important?"on":"")+'" data-action="star" data-id="'+esc(detail.id)+'">'+icon("star",detail.important?"var(--amber)":"none")+'</button></div>'
         +'<div class="field"><label class="fieldlabel">'+icon("list")+' Kategória</label>'
-          +'<div class="catrow">'+data.lists.map(l=>'<button class="catchip'+(detail.listId===l.id?" on":"")+'" data-action="setlist" data-lid="'+l.id+'" data-id="'+detail.id+'"><span class="catdot" style="background:'+l.color+'"></span>'+esc(l.name)+'</button>').join("")+'</div>'
+          +'<div class="catrow">'+data.lists.map(l=>'<button class="catchip'+(detail.listId===l.id?" on":"")+'" data-action="setlist" data-lid="'+esc(l.id)+'" data-id="'+esc(detail.id)+'"><span class="catdot" style="background:'+safeColor(l.color)+'"></span>'+esc(l.name)+'</button>').join("")+'</div>'
         +'</div>'
         +stepsHTML
         +'<div class="field"><label class="fieldlabel">'+icon("calendar")+' Ütemezés</label>'
@@ -1568,7 +1575,7 @@ function render(){
           +'<input type="file" id="fileinput" multiple style="display:none">'
           +'<button class="attadd" data-action="pickfile">'+icon("plus")+' Fájl hozzáadása</button>'
         +'</div>'
-        +'<button class="deltaskbtn" data-action="deltask" data-id="'+detail.id+'">'+icon("trash")+' Feladat törlése</button>'
+        +'<button class="deltaskbtn" data-action="deltask" data-id="'+esc(detail.id)+'">'+icon("trash")+' Feladat törlése</button>'
       +'</div>'
       +(schedOpen?schedSheetHTML(detail):"")
       +(noteEditor?noteEditorHTML(detail):"")
@@ -1730,13 +1737,13 @@ function addList(val){
 // Helyben frissítés teljes újrarajzolás nélkül (csillag / kategória — nincs "újratöltés")
 function refreshStar(id){
   const t=data.tasks.find(x=>x.id===id); if(!t) return;
-  document.querySelectorAll('.starbtn[data-id="'+id+'"]').forEach(btn=>{ btn.classList.toggle('on', !!t.important); btn.innerHTML=icon("star", t.important?"var(--amber)":"none"); });
+  document.querySelectorAll('.starbtn[data-id="'+esc(id)+'"]').forEach(btn=>{ btn.classList.toggle('on', !!t.important); btn.innerHTML=icon("star", t.important?"var(--amber)":"none"); });
 }
 function refreshCat(id){
   const t=data.tasks.find(x=>x.id===id); if(!t) return;
   const ln=listById(t.listId);
-  document.querySelectorAll('.catchip[data-id="'+id+'"]').forEach(c=>{ c.classList.toggle('on', c.dataset.lid===t.listId); });
-  const li=document.querySelector('.task[data-id="'+id+'"]');
+  document.querySelectorAll('.catchip[data-id="'+esc(id)+'"]').forEach(c=>{ c.classList.toggle('on', c.dataset.lid===t.listId); });
+  const li=document.querySelector('.task[data-id="'+esc(id)+'"]');
   if(li){ li.style.setProperty('--strip', ln?ln.color:'var(--ink-faint)'); const ml=li.querySelector('.metalist'); if(ml) ml.textContent=(ln?ln.name:''); }
 }
 // Az ütemező-sheet (naptár/emlékeztető) helyben frissül, nincs teljes oldal-újrarajzolás
@@ -1774,7 +1781,7 @@ document.getElementById("app").addEventListener("click",e=>{
     if(t.done){ const tid=id; const short=t.title.length>34?t.title.slice(0,33)+"…":t.title; showToast('„'+short+'” kész', 'Visszavonás', ()=>{ const tt=data.tasks.find(x=>x.id===tid); if(tt){ tt.done=false; tt.completedAt=null; data.completedTotal=Math.max(0,(data.completedTotal||1)-1); tt.mod=Date.now(); if(lastDoneId===tid)lastDoneId=null; save(); render(); } }); }
   }
   else if(a==="star"){ const t=data.tasks.find(x=>x.id===id); if(!t)return; t.important=!t.important; save(); refreshStar(id);
-    if(!t.important && view.type==="smart" && view.key==="important"){ const li=document.querySelector('.task[data-id="'+id+'"]'); if(li) li.remove(); } }
+    if(!t.important && view.type==="smart" && view.key==="important"){ const li=document.querySelector('.task[data-id="'+esc(id)+'"]'); if(li) li.remove(); } }
   else if(a==="open"){trackOpen(id);openTaskId=id;dueOpen=false;remindOpen=false;schedOpen=false;noteEditor=false;noteEditMode=false;render();}
   else if(a==="toggledue"){ dueOpen=!dueOpen; render(); }
   else if(a==="togglereminder"){ remindOpen=!remindOpen; render(); }
@@ -1824,7 +1831,7 @@ document.getElementById("app").addEventListener("click",e=>{
   else if(a==="togglebucket"){ const b=el.dataset.bucket; collapsedBuckets[b]=!collapsedBuckets[b]; render(); }
   else if(a==="qfilter"){ plannedFilter=el.dataset.key; render(); }
   else if(a==="setlist"){ const t=data.tasks.find(x=>x.id===id); if(t){ t.listId=el.dataset.lid; t.mod=Date.now(); save(); refreshCat(id);
-    if(view.type==="list" && view.key!==t.listId){ const li=document.querySelector('.task[data-id="'+id+'"]'); if(li) li.remove(); } } }
+    if(view.type==="list" && view.key!==t.listId){ const li=document.querySelector('.task[data-id="'+esc(id)+'"]'); if(li) li.remove(); } } }
   else if(a==="cleardone"){
     const dn=data.tasks.filter(t=>t.done);
     if(!dn.length){ showToast("Nincs kész feladat."); return; }
@@ -1882,8 +1889,8 @@ function dupesHTML(){
         const ln=listById(t.listId);
         const meta=[ln?esc(ln.name):"", t.due?formatDue(t.due):"nincs határidő", "létrehozva: "+dstr(t.createdAt), t.done?"kész":""].filter(Boolean).join(" · ");
         return '<div class="duperow">'
-          +'<button class="dupeopen" data-action="open" data-id="'+t.id+'"><span class="dupeidx">'+(i+1)+'.</span><span class="dupemeta">'+meta+'</span></button>'
-          +'<button class="dupedel" data-action="deltask" data-id="'+t.id+'" aria-label="Törlés">'+icon("trash")+'</button>'
+          +'<button class="dupeopen" data-action="open" data-id="'+esc(t.id)+'"><span class="dupeidx">'+(i+1)+'.</span><span class="dupemeta">'+meta+'</span></button>'
+          +'<button class="dupedel" data-action="deltask" data-id="'+esc(t.id)+'" aria-label="Törlés">'+icon("trash")+'</button>'
         +'</div>';
       }).join("")
     +'</div>').join("");
@@ -1946,7 +1953,7 @@ function footerSearch(){
   fd.innerHTML=matches.map(m=>{
     const t=m.t, ln=listById(t.listId);
     const meta=esc(ln?ln.name:"")+(t.due?" · "+formatDue(t.due):"");
-    return '<div class="sugg" data-id="'+t.id+'"><span class="dot" style="background:'+(ln?ln.color:"var(--ink-faint)")+'"></span>'
+    return '<div class="sugg" data-id="'+esc(t.id)+'"><span class="dot" style="background:'+(ln?ln.color:"var(--ink-faint)")+'"></span>'
       +'<div class="suggmain"><div class="suggtitle'+(t.done?" sdone":"")+'">'+highlight(t.title,raw)+'</div>'
       +'<div class="suggmeta">'+meta+'</div></div></div>';
   }).join("");
@@ -1973,7 +1980,7 @@ function updateSearch(){
     if(m.via==="step"){ const s=t.steps.find(s=>norm(s.text).includes(q)); if(s) sub="↳ lépés: "+esc(s.text); }
     else if(m.via==="note"){ sub="↳ a jegyzetben"; }
     const meta=esc(ln?ln.name:"")+(t.due?" · "+formatDue(t.due):"")+((t.steps&&t.steps.length)?" · "+t.steps.filter(s=>s.done).length+"/"+t.steps.length:"");
-    return '<div class="sugg" data-id="'+t.id+'">'
+    return '<div class="sugg" data-id="'+esc(t.id)+'">'
       +'<span class="dot" style="background:'+(ln?ln.color:"var(--ink-faint)")+'"></span>'
       +'<div class="suggmain"><div class="suggtitle'+(t.done?" sdone":"")+'">'+highlight(t.title,raw)+'</div>'
       +'<div class="suggmeta">'+meta+'</div>'

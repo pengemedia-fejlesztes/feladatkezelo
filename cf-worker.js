@@ -11,6 +11,13 @@
 const GH = "https://api.github.com";
 function cors(){ return { "Access-Control-Allow-Origin":"*", "Access-Control-Allow-Methods":"GET,POST,OPTIONS", "Access-Control-Allow-Headers":"Authorization,Content-Type" }; }
 function json(obj, status){ return new Response(JSON.stringify(obj,null,2), {status:status||200, headers:{"Content-Type":"application/json", ...cors()}}); }
+/* Idoben allando osszehasonlitas: a titok ne legyen karakterenkent kitalalhato valaszidobol. */
+async function sameSecret(a,b){
+  const enc=new TextEncoder(); const [x,y]=await Promise.all([crypto.subtle.digest("SHA-256",enc.encode(a)),crypto.subtle.digest("SHA-256",enc.encode(b))]);
+  const u=new Uint8Array(x), v=new Uint8Array(y); let d=0; for(let i=0;i<u.length;i++) d|=u[i]^v[i]; return d===0;
+}
+const MAX_BODY=200000, MAX_STR=50000;
+function cap(v){ return String(v==null?"":v).slice(0,MAX_STR); }
 function uid(){ return Math.random().toString(36).slice(2,10)+Date.now().toString(36).slice(-4); }
 function toReminderMs(v){ if(v==null) return null; if(typeof v==="number") return v; const t=Date.parse(v); return isNaN(t)?null:t; }
 function b64encode(str){ const bytes=new TextEncoder().encode(str); let bin=""; bytes.forEach(b=>bin+=String.fromCharCode(b)); return btoa(bin); }
@@ -58,9 +65,14 @@ async function handleApi(request, env){
   if(request.method==="OPTIONS") return new Response(null,{headers:cors()});
   const c={ REPO:env.REPO||"pengemedia-fejlesztes/feladatkezelo", FILE_PATH:env.FILE_PATH||"data/tasks.json", BRANCH:env.BRANCH||"main", GITHUB_TOKEN:env.GITHUB_TOKEN };
   const auth=request.headers.get("Authorization")||"";
-  if(!env.WEBHOOK_SECRET || auth!=="Bearer "+env.WEBHOOK_SECRET) return json({error:"Nincs jogosultsag"},401);
+  if(!env.WEBHOOK_SECRET || !(await sameSecret(auth,"Bearer "+env.WEBHOOK_SECRET))) return json({error:"Nincs jogosultsag"},401);
   let payload={}, op="list";
-  if(request.method==="POST"){ try{ payload=await request.json(); }catch(e){} op=payload.op||"list"; }
+  if(request.method==="POST"){
+    const raw=await request.text(); if(raw.length>MAX_BODY) return json({error:"Tul nagy keres"},413);
+    try{ payload=JSON.parse(raw)||{}; }catch(e){ return json({error:"Hibas JSON"},400); }
+    if(typeof payload!=="object"||Array.isArray(payload)) return json({error:"Hibas JSON"},400);
+    op=payload.op||"list";
+  } else if(request.method!=="GET") return json({error:"Nem tamogatott metodus"},405);
   try{
     if(op==="list"){ const g=await ghGet(c); return json({ok:true, lists:g.data.lists, tasks:g.data.tasks}); }
     /* Ekezet-fuggetlen kereses: {"op":"find","q":"ugyved"} megtalalja az "Ügyvéd"-et is. */
@@ -77,26 +89,26 @@ async function handleApi(request, env){
     const g=await ghGet(c); const data=g.data; const now=Date.now(); let result, msg;
     if(op==="add"){
       const t=payload.task||{}; const list=t.list?ensureList(data,t.list):(findList(data,t.listId)||data.lists[0]);
-      const task={ id:uid(), listId:list.id, title:String(t.title||""), done:!!t.done, important:!!t.important, note:String(t.note||""), due:String(t.due||""), createdAt:now, mod:now, order:data.tasks.length };
+      const task={ id:uid(), listId:list.id, title:cap(t.title), done:!!t.done, important:!!t.important, note:cap(t.note), due:cap(t.due).slice(0,10), createdAt:now, mod:now, order:data.tasks.length };
       const rem=toReminderMs(t.reminder); if(rem){ task.reminder=rem; task.reminderFired=false; }
-      if(Array.isArray(t.steps)) task.steps=t.steps.map((s,i)=>({id:uid(),text:String(s.text||s),done:!!s.done,order:i}));
+      if(Array.isArray(t.steps)) task.steps=t.steps.slice(0,200).map((s,i)=>({id:uid(),text:cap(s&&s.text||s),done:!!(s&&s.done),order:i}));
       data.tasks.push(task); data.createdTotal=(data.createdTotal||data.tasks.length)+1; result=task; msg="webhook: uj feladat - "+task.title.slice(0,60);
     } else {
       const r0=resolveTask(data,payload);
       if(r0.error) return json({error:r0.error, matches:r0.matches}, r0.status);
       const t=r0.task;
       if(op==="update"){ const f=payload.fields||{};
-        if("title" in f) t.title=String(f.title||""); if("note" in f) t.note=String(f.note||""); if("due" in f) t.due=String(f.due||"");
+        if("title" in f) t.title=cap(f.title); if("note" in f) t.note=cap(f.note); if("due" in f) t.due=cap(f.due).slice(0,10);
         if("important" in f) t.important=!!f.important; if("done" in f) t.done=!!f.done;
         if("reminder" in f){ const r=toReminderMs(f.reminder); if(r){ t.reminder=r; t.reminderFired=false; } else { delete t.reminder; delete t.reminderFired; } }
         msg="webhook: modositas - "+String(t.title||"").slice(0,60);
-      } else if(op==="setDue"){ t.due=String(payload.due||""); msg="webhook: hatarido - "+String(t.title||"").slice(0,60);
+      } else if(op==="setDue"){ t.due=cap(payload.due).slice(0,10); msg="webhook: hatarido - "+String(t.title||"").slice(0,60);
       } else if(op==="setReminder"){ const r=toReminderMs(payload.reminder); if(r){ t.reminder=r; t.reminderFired=false; } else { delete t.reminder; delete t.reminderFired; } msg="webhook: emlekezteto - "+String(t.title||"").slice(0,60);
       } else { return json({error:"Ismeretlen op: "+op},400); }
       t.mod=now; result=t;
     }
     await ghPut(c, data, g.sha, msg); return json({ok:true, op:op, result:result});
-  }catch(e){ return json({error:String((e&&e.message)||e)},500); }
+  }catch(e){ console.error(e); return json({error:"Belso hiba"},500); }
 }
 
 export default {

@@ -1,0 +1,20 @@
+# A Cloudflare Worker csak a webappot szolgalja ki – minden mas rejtett marad.
+.git
+.git/**
+.claude
+.wrangler
+.DS_Store
+**/.DS_Store
+.assetsignore
+.gitignore
+.nojekyll
+*.md
+*.py
+*.sh
+*.command
+*.jsonc
+cf-worker.js
+webhook
+scripts
+data
+feladatok.html
